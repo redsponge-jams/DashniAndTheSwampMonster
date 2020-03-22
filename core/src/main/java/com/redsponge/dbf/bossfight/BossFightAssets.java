@@ -9,7 +9,6 @@ import com.redsponge.redengine.assets.Asset;
 import com.redsponge.redengine.assets.AssetSpecifier;
 import com.redsponge.redengine.assets.atlas.AtlasAnimation;
 import com.redsponge.redengine.assets.atlas.AtlasFrame;
-import com.sun.org.apache.xerces.internal.dom.RangeImpl;
 
 public class BossFightAssets extends AssetSpecifier {
 
@@ -23,6 +22,14 @@ public class BossFightAssets extends AssetSpecifier {
     @AtlasAnimation(animationName = "idle", atlas = "playerAtlas", length = 6, playMode = PlayMode.LOOP_PINGPONG, frameDuration = 0.2f)
     private Animation<TextureRegion> playerIdleAnimation;
 
+    @AtlasAnimation(animationName = "attack", atlas = "playerAtlas", length = 10, frameDuration = 0.05f)
+    private Animation<TextureRegion> playerAttackHorizAnimation;
+
+    @AtlasAnimation(animationName = "attack_up", atlas = "playerAtlas", length = 10, frameDuration = 0.05f)
+    private Animation<TextureRegion> playerAttackUpAnimation;
+
+    @AtlasAnimation(animationName = "attack_down", atlas = "playerAtlas", length = 10, frameDuration = 0.05f)
+    private Animation<TextureRegion> playerAttackDownAnimation;
 
 
     @Asset("textures/target/target.atlas")
@@ -30,5 +37,18 @@ public class BossFightAssets extends AssetSpecifier {
 
     @AtlasFrame(frameName = "idle", atlas = "targetAtlas")
     private TextureRegion targetIdle;
+
+
+    @Asset("textures/octopus/octopus.atlas")
+    public TextureAtlas octopusAtlas;
+
+    @AtlasAnimation(animationName = "raise",atlas = "octopusAtlas", length = 2, playMode = PlayMode.NORMAL)
+    private Animation<TextureRegion> octopusRaiseAnimation;
+
+    @AtlasAnimation(animationName = "stun",atlas = "octopusAtlas", length = 2)
+    private Animation<TextureRegion> octopusStunAnimation;
+
+    @AtlasAnimation(animationName = "sink",atlas = "octopusAtlas", length = 2, playMode = PlayMode.NORMAL)
+    private Animation<TextureRegion> octopusSinkAnimation;
 
 }

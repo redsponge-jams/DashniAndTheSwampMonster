@@ -33,8 +33,8 @@ public class BossFightScreen extends AbstractScreen {
         attackBoxes = new DelayedRemovalArray<>();
         attackBoxes.add(new Rectangle(10, 10, 20, 20));
 
-        addEntity(new DashniPlayer(batch, shapeRenderer));
         addEntity(new TargetOctopus(batch, shapeRenderer));
+        addEntity(new DashniPlayer(batch, shapeRenderer));
         addEntity(new Island(batch, shapeRenderer, 0, 0, getScreenWidth(), 10));
         addEntity(new Island(batch, shapeRenderer, 300, 50, 100, 10));
 
@@ -61,6 +61,14 @@ public class BossFightScreen extends AbstractScreen {
         }
         shapeRenderer.end();
         renderEntities();
+    }
+
+    @Override
+    public void notified(Object notifier, int notification) {
+        super.notified(notifier, notification);
+        if(notification == Notifications.TARGET_OCTOPUS_DOWN) {
+            addEntity(new OctopusPunchHead(batch, shapeRenderer));
+        }
     }
 
     @Override

@@ -8,6 +8,7 @@ public class PackTextures {
         System.out.println("HAI");
         proc("player");
         proc("target");
+        proc("octopus");
     }
 
     private static void proc(String s) {
