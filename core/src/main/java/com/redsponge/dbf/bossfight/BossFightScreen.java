@@ -1,6 +1,9 @@
 package com.redsponge.dbf.bossfight;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
@@ -19,6 +22,8 @@ public class BossFightScreen extends AbstractScreen {
     private PhysicsSystem physicsSystem;
 
     private DelayedRemovalArray<Rectangle> attackBoxes;
+    private Texture background;
+    private Texture waste;
 
     public BossFightScreen(GameAccessor ga) {
         super(ga);
@@ -37,6 +42,8 @@ public class BossFightScreen extends AbstractScreen {
         addEntity(new DashniPlayer(batch, shapeRenderer));
         addEntity(new Island(batch, shapeRenderer, 0, 0, getScreenWidth(), 10));
         addEntity(new Island(batch, shapeRenderer, 300, 50, 100, 10));
+        addEntity(new Background(batch, shapeRenderer));
+        addEntity(new Waste(batch, shapeRenderer));
 
 
         pdr = new PhysicsDebugRenderer();
@@ -44,6 +51,9 @@ public class BossFightScreen extends AbstractScreen {
 
     @Override
     public void tick(float v) {
+        if(Gdx.input.isKeyJustPressed(Keys.R)) {
+            addEntity(new SideAttack(batch, shapeRenderer, 100));
+        }
         tickEntities(v);
         updateEngine(v);
     }

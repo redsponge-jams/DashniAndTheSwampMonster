@@ -11,7 +11,6 @@ import com.redsponge.redengine.screen.INotified;
 import com.redsponge.redengine.screen.components.AnimationComponent;
 import com.redsponge.redengine.screen.entity.ScreenEntity;
 import com.redsponge.redengine.screen.systems.RenderSystem;
-import org.graalvm.compiler.asm.aarch64.AArch64MacroAssembler.PatchLabelKind;
 
 public class OctopusPunchHead extends ScreenEntity implements INotified {
 

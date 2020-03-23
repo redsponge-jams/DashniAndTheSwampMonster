@@ -35,6 +35,7 @@ public class DashniPlayer extends ScreenEntity {
     private float lowJumpMultiplier = 4f;
 
     private Animation<TextureRegion> idleAnimation;
+    private Animation<TextureRegion> runAnimation;
     private Animation<TextureRegion> attackAnimation;
     private Animation<TextureRegion> attackUpAnimation;
     private Animation<TextureRegion> attackDownAnimation;
@@ -53,13 +54,15 @@ public class DashniPlayer extends ScreenEntity {
     private boolean isAttacking;
     private AttackType attackType;
 
+
     public DashniPlayer(SpriteBatch batch, ShapeRenderer shapeRenderer) {
         super(batch, shapeRenderer);
     }
 
     @Override
     public void added() {
-        size.set(32, 32);
+        size.set(18, 32);
+        render.setOffsetX(-6);
         pos.set(screen.getScreenWidth() / 2f - size.getX() / 2f, screen.getScreenHeight() / 2f - size.getY() / 2f);
         render.setUseRegW(true).setUseRegH(true);
         physics = new PhysicsComponent(PBodyType.ACTOR);
@@ -73,6 +76,7 @@ public class DashniPlayer extends ScreenEntity {
     @Override
     public void loadAssets() {
         this.idleAnimation = assets.getAnimation("playerIdleAnimation");
+        this.runAnimation = assets.getAnimation("playerRunAnimation");
         this.attackAnimation = assets.getAnimation("playerAttackHorizAnimation");
         this.attackUpAnimation = assets.getAnimation("playerAttackUpAnimation");
         this.attackDownAnimation = assets.getAnimation("playerAttackDownAnimation");
@@ -116,6 +120,7 @@ public class DashniPlayer extends ScreenEntity {
             if(Input.isJustAttacking() && !isAttacking && attackCooldown <= 0) {
                 beginAttacking();
                 processAttack(delta);
+                return;
             }
 
             updateStrafing(delta);
@@ -123,6 +128,11 @@ public class DashniPlayer extends ScreenEntity {
             vel.setY(vel.getY() + gravity * delta);
 
             render.setFlipX(lookingLeft);
+            if(Input.getHorizontal() == 0) {
+                anim.setAnimation(idleAnimation);
+            } else {
+                anim.setAnimation(runAnimation);
+            }
         }
 
 
@@ -179,7 +189,7 @@ public class DashniPlayer extends ScreenEntity {
             attackBox.set(0, 0, 0, 0);
         }
         if(attackType == AttackType.REGULAR && lookingLeft) {
-            render.setOffsetX(-96);
+            render.setOffsetX(-96-8);
         }
         if(attackAnimation.isAnimationFinished(attackTime)) {
             endAttack();
@@ -208,7 +218,7 @@ public class DashniPlayer extends ScreenEntity {
         isAttacking = false;
         anim.setAnimation(idleAnimation);
         attackCooldown = .1f;
-        render.setOffsetX(0).setOffsetY(0);
+        render.setOffsetX(-6).setOffsetY(0);
         attackBox = null;
     }
 

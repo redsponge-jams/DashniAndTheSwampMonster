@@ -1,13 +1,16 @@
 package com.redsponge.dbf.bossfight;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.redsponge.redengine.screen.INotified;
+import com.redsponge.redengine.screen.components.AnimationComponent;
 import com.redsponge.redengine.screen.components.TextureComponent;
 import com.redsponge.redengine.screen.entity.ScreenEntity;
 import com.redsponge.redengine.screen.systems.RenderSystem;
@@ -17,15 +20,21 @@ import com.redsponge.redengine.utils.MathUtilities;
 
 public class TargetOctopus extends ScreenEntity implements INotified {
 
-    private static final Color stunColor = new Color(1, 1, 1, 0.5f);
+    private static final Color stunColor = new Color(1, 1, 1, 0.3f);
 
-    private TextureComponent tex;
+    private AnimationComponent anim;
+
+    private Animation<TextureRegion> idleAnimation;
+    private Animation<TextureRegion> hurtAnimation;
 
     private IntVector2 targetLoc;
     private Vector2 singularVel;
 
     private int hitsLeft;
     private Rectangle self;
+    private float timeExists;
+
+    private float hurtTime;
 
     public TargetOctopus(SpriteBatch batch, ShapeRenderer shapeRenderer) {
         super(batch, shapeRenderer);
@@ -49,16 +58,29 @@ public class TargetOctopus extends ScreenEntity implements INotified {
 
     @Override
     public void additionalTick(float delta) {
+        timeExists += delta;
         if(Vector2.dst2(pos.getX() + size.getX() / 2f, pos.getY() + size.getY() / 2f, targetLoc.x, targetLoc.y) < 1000) {
             generateTarget();
         }
-        if(hitsLeft == 0) {
+        if(hurtTime > 0) {
+            hurtTime -= delta;
+            render.getColor().lerp(stunColor, 0.1f);
+            if(hurtTime <= 0) {
+                anim.setAnimation(idleAnimation);
+                anim.setAnimationTime(0);
+            }
+            vel.set(0, 0);
+        }
+        else if(hitsLeft == 0) {
+            render.setRotation(MathUtilities.lerp(render.getRotation(), 0, 0.3f));
             pos.setX(MathUtilities.lerp(pos.getX(), screen.getScreenWidth() / 2f - size.getX() / 2f, 0.2f));
             pos.setY(MathUtilities.lerp(pos.getY(), screen.getScreenHeight() / 2f - size.getY() / 2f + 100, 0.2f));
             vel.set(0, 0);
             render.getColor().lerp(stunColor, 0.1f);
         } else {
-            render.getColor().lerp(Color.WHITE, 0.1f);
+            anim.setAnimationSpeed(1);
+            render.setRotation(MathUtilities.lerp(render.getRotation(), (float) Math.sin(3 * timeExists) * 10, 0.1f));
+            render.getColor().a =((float)Math.sin(timeExists) + 1) / 8 + 0.75f;
 
             float diffX = targetLoc.x - (pos.getX() + size.getX() / 2f);
             float diffY = targetLoc.y - (pos.getY() + size.getY() / 2f);
@@ -86,19 +108,24 @@ public class TargetOctopus extends ScreenEntity implements INotified {
 
     @Override
     public void loadAssets() {
-        tex = new TextureComponent(assets.getTextureRegion("targetIdle"));
-        add(tex);
+        idleAnimation = assets.getAnimation("targetIdleAnimation");
+        hurtAnimation = assets.getAnimation("targetHurtAnimation");
+        anim = new AnimationComponent(idleAnimation);
+        add(anim);
     }
 
     @Override
     public void notified(Object o, int i) {
-        if(i == Notifications.PLAYER_ATTACK_BOX_SPAWNED && hitsLeft > 0) {
+        if(i == Notifications.PLAYER_ATTACK_BOX_SPAWNED && hitsLeft > 0 && hurtTime <= 0) {
             Rectangle attack = ((DashniPlayer)o).getAttackBox();
             if(attack.overlaps(self)) {
                 attacked();
             }
         } else if(hitsLeft == 0 && i == Notifications.OCTOPUS_EYE_GONE) {
             hitsLeft = 5;
+            anim.setAnimationSpeed(1);
+            anim.setAnimation(idleAnimation);
+            anim.setAnimationTime(0);
         }
     }
 
@@ -107,6 +134,14 @@ public class TargetOctopus extends ScreenEntity implements INotified {
         hitsLeft--;
         if(hitsLeft == 0) {
             notifyScreen(Notifications.TARGET_OCTOPUS_DOWN);
+            anim.setAnimation(hurtAnimation);
+            anim.setAnimationTime(0.3f);
+            anim.setAnimationSpeed(0);
+        } else {
+            hurtTime = hurtAnimation.getAnimationDuration();
+            anim.setAnimation(hurtAnimation);
+            anim.setAnimationTime(3);
+            render.getColor().set(1, 0.2f, 0.2f, 0.5f);
         }
     }
 }

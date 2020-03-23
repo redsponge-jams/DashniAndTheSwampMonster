@@ -1,6 +1,7 @@
 package com.redsponge.dbf.bossfight;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -9,6 +10,7 @@ import com.redsponge.redengine.assets.Asset;
 import com.redsponge.redengine.assets.AssetSpecifier;
 import com.redsponge.redengine.assets.atlas.AtlasAnimation;
 import com.redsponge.redengine.assets.atlas.AtlasFrame;
+import com.redsponge.redengine.screen.components.AnimationComponent;
 
 public class BossFightAssets extends AssetSpecifier {
 
@@ -31,12 +33,18 @@ public class BossFightAssets extends AssetSpecifier {
     @AtlasAnimation(animationName = "attack_down", atlas = "playerAtlas", length = 10, frameDuration = 0.05f)
     private Animation<TextureRegion> playerAttackDownAnimation;
 
+    @AtlasAnimation(animationName = "run", atlas = "playerAtlas", length = 12, frameDuration = 0.05f)
+    private Animation<TextureRegion> playerRunAnimation;
+
 
     @Asset("textures/target/target.atlas")
     public TextureAtlas targetAtlas;
 
-    @AtlasFrame(frameName = "idle", atlas = "targetAtlas")
-    private TextureRegion targetIdle;
+    @AtlasAnimation(animationName = "idle", atlas = "targetAtlas", length = 6, frameDuration = 0.2f)
+    private Animation<TextureRegion> targetIdleAnimation;
+
+    @AtlasAnimation(animationName = "hurt", atlas = "targetAtlas", length = 4, playMode = PlayMode.LOOP_PINGPONG)
+    private Animation<TextureRegion> targetHurtAnimation;
 
 
     @Asset("textures/octopus/octopus.atlas")
@@ -51,4 +59,21 @@ public class BossFightAssets extends AssetSpecifier {
     @AtlasAnimation(animationName = "sink",atlas = "octopusAtlas", length = 2, playMode = PlayMode.NORMAL)
     private Animation<TextureRegion> octopusSinkAnimation;
 
+
+    @AtlasAnimation(animationName = "side_signal", atlas = "octopusAtlas", length = 1, playMode = PlayMode.NORMAL, frameDuration = 0.4f)
+    private Animation<TextureRegion> octopusAttackSideSignalAnimation;
+
+    @AtlasAnimation(animationName = "side_attack", atlas = "octopusAtlas", length = 5, frameDuration = 0.08f, playMode = PlayMode.NORMAL)
+    private Animation<TextureRegion> octopusAttackSideAttackAnimation;
+
+    @AtlasAnimation(animationName = "side_out", atlas = "octopusAtlas", length = 4, playMode = PlayMode.NORMAL)
+    private Animation<TextureRegion> octopusAttackSideEndAnimation;
+
+
+
+    @Asset("textures/detail/background.png")
+    private Texture background;
+
+    @Asset("textures/detail/waste.png")
+    private Texture waste;
 }
