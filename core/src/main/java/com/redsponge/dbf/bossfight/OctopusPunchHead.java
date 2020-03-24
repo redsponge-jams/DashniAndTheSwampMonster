@@ -22,6 +22,8 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
     private Rectangle eye;
     private float timeLeftStunned;
     private boolean sinking;
+    private float timeBeforeBored;
+    private boolean bored;
 
     public OctopusPunchHead(SpriteBatch batch, ShapeRenderer shapeRenderer) {
         super(batch, shapeRenderer);
@@ -30,8 +32,12 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
     @Override
     public void added() {
         pos.setX(640-128*2-30);
+        pos.setY(-10);
         pos.setZ(-2);
         size.set(128*2, 128*2);
+
+        render.setRenderOriginY(-20);
+        timeBeforeBored = 3;
     }
 
     @Override
@@ -53,11 +59,23 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
     @Override
     public void additionalTick(float delta) {
         super.additionalTick(delta);
+        if(bored) {
+            if(anim.getAnimationTime() <= 0) remove();
+            return;
+        }
+
         if(eye == null && raise.isAnimationFinished(anim.getAnimationTime())) {
-            eye = new Rectangle(pos.getX() + 11 * 2, pos.getY() + 2*(128-73), 61 * 2, 39 * 2);
+            eye = new Rectangle(pos.getX() + 8 * 2, pos.getY() + 2*(128-81), 31 * 2, 34 * 2);
+        }
+        if(eye != null) {
+            timeBeforeBored-=delta;
+            if(timeBeforeBored <= 0) {
+                sinkBored();
+            }
         }
 
         if(timeLeftStunned > 0) {
+            render.setRotation((float) (Math.sin(timeLeftStunned * 20) * 10));
             timeLeftStunned-= delta;
             if(timeLeftStunned <= 0) {
                 sink();
@@ -66,10 +84,17 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
         }
         if(sinking) {
             if(sink.isAnimationFinished(anim.getAnimationTime())) {
-                notifyScreen(Notifications.OCTOPUS_EYE_GONE);
                 remove();
             }
         }
+    }
+
+    private void sinkBored() {
+        eye = null;
+        anim.setAnimation(raise);
+        anim.setAnimationTime(raise.getAnimationDuration());
+        anim.setAnimationSpeed(-1);
+        bored = true;
     }
 
     @Override
@@ -95,7 +120,12 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
     private void ouch() {
         anim.setAnimation(stun);
         anim.setAnimationTime(0);
-        timeLeftStunned = 3;
+        timeLeftStunned = 1;
         eye.set(0, 0, 0, 0);
+    }
+
+    @Override
+    public void removed() {
+        notifyScreen(Notifications.OCTOPUS_EYE_GONE);
     }
 }

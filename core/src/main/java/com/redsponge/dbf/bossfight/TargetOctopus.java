@@ -48,7 +48,8 @@ public class TargetOctopus extends ScreenEntity implements INotified {
     @Override
     public void added() {
         pos.set(screen.getScreenWidth() / 2f, screen.getScreenHeight() / 2f);
-        size.set(64, 64);
+        size.set(48, 48);
+        render.setUseRegH(true).setUseRegW(true).setScaleX(2).setScaleY(2).setOffsetX(-8).setOffsetY(-8);
         generateTarget();
     }
 

@@ -11,13 +11,6 @@ raise
   orig: 128, 128
   offset: 0, 0
   index: 1
-sink
-  rotate: false
-  xy: 644, 336
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: 2
 raise
   rotate: false
   xy: 2, 132
@@ -25,13 +18,20 @@ raise
   orig: 128, 128
   offset: 0, 0
   index: 2
-sink
+raise
   rotate: false
-  xy: 2, 132
+  xy: 774, 336
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
-  index: 1
+  index: 3
+raise
+  rotate: false
+  xy: 2, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 4
 side_attack
   rotate: false
   xy: 2, 432
@@ -102,17 +102,87 @@ side_signal
   orig: 640, 32
   offset: 0, 0
   index: 1
+sink
+  rotate: false
+  xy: 132, 132
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 1
+sink
+  rotate: false
+  xy: 132, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 2
+sink
+  rotate: false
+  xy: 262, 132
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 3
+sink
+  rotate: false
+  xy: 262, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 4
 stun
   rotate: false
-  xy: 774, 336
+  xy: 392, 132
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 1
 stun
   rotate: false
-  xy: 2, 2
+  xy: 392, 2
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 2
+stun
+  rotate: false
+  xy: 522, 132
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 3
+stun
+  rotate: false
+  xy: 522, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 4
+stun
+  rotate: false
+  xy: 652, 206
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 5
+stun
+  rotate: false
+  xy: 652, 76
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 6
+stun
+  rotate: false
+  xy: 782, 206
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 7
+stun
+  rotate: false
+  xy: 782, 76
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 8

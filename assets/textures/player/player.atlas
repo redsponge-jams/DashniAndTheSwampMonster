@@ -52,7 +52,14 @@ attack
   size: 128, 48
   orig: 128, 48
   offset: 0, 0
-  index: 5
+  index: 8
+attack
+  rotate: false
+  xy: 2, 132
+  size: 128, 48
+  orig: 128, 48
+  offset: 0, 0
+  index: 6
 attack
   rotate: false
   xy: 2, 132
@@ -66,14 +73,7 @@ attack
   size: 128, 48
   orig: 128, 48
   offset: 0, 0
-  index: 8
-attack
-  rotate: false
-  xy: 2, 132
-  size: 128, 48
-  orig: 128, 48
-  offset: 0, 0
-  index: 6
+  index: 5
 attack_down
   rotate: false
   xy: 36, 2
@@ -122,14 +122,14 @@ attack_down
   size: 48, 128
   orig: 48, 128
   offset: 0, 0
-  index: 8
+  index: 5
 attack_down
   rotate: false
   xy: 186, 2
   size: 48, 128
   orig: 48, 128
   offset: 0, 0
-  index: 5
+  index: 8
 attack_down
   rotate: false
   xy: 186, 2
@@ -192,20 +192,6 @@ attack_up
   size: 48, 128
   orig: 48, 128
   offset: 0, 0
-  index: 7
-attack_up
-  rotate: false
-  xy: 386, 2
-  size: 48, 128
-  orig: 48, 128
-  offset: 0, 0
-  index: 8
-attack_up
-  rotate: false
-  xy: 386, 2
-  size: 48, 128
-  orig: 48, 128
-  offset: 0, 0
   index: 5
 attack_up
   rotate: false
@@ -214,6 +200,20 @@ attack_up
   orig: 48, 128
   offset: 0, 0
   index: 6
+attack_up
+  rotate: false
+  xy: 386, 2
+  size: 48, 128
+  orig: 48, 128
+  offset: 0, 0
+  index: 7
+attack_up
+  rotate: false
+  xy: 386, 2
+  size: 48, 128
+  orig: 48, 128
+  offset: 0, 0
+  index: 8
 idle
   rotate: false
   xy: 392, 182

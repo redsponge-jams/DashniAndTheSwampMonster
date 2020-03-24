@@ -3,17 +3,23 @@ package com.redsponge.dbf.bossfight;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
 import com.redsponge.redengine.assets.AssetSpecifier;
 import com.redsponge.redengine.physics.PhysicsDebugRenderer;
 import com.redsponge.redengine.screen.AbstractScreen;
+import com.redsponge.redengine.screen.components.Mappers;
+import com.redsponge.redengine.screen.entity.ScreenEntity;
 import com.redsponge.redengine.screen.systems.PhysicsSystem;
 import com.redsponge.redengine.screen.systems.RenderSystem;
 import com.redsponge.redengine.utils.GameAccessor;
+import com.redsponge.redengine.utils.holders.Pair;
+
+import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class BossFightScreen extends AbstractScreen {
 
@@ -22,11 +28,16 @@ public class BossFightScreen extends AbstractScreen {
     private PhysicsSystem physicsSystem;
 
     private DelayedRemovalArray<Rectangle> attackBoxes;
-    private Texture background;
-    private Texture waste;
+
+    private ConcurrentHashMap<ScreenEntity, Float> scheduledEntities;
+    private DashniPlayer player;
 
     public BossFightScreen(GameAccessor ga) {
         super(ga);
+    }
+
+    public void addScheduledEntity(float time, ScreenEntity entity) {
+        scheduledEntities.put(entity, time);
     }
 
     @Override
@@ -39,7 +50,7 @@ public class BossFightScreen extends AbstractScreen {
         attackBoxes.add(new Rectangle(10, 10, 20, 20));
 
         addEntity(new TargetOctopus(batch, shapeRenderer));
-        addEntity(new DashniPlayer(batch, shapeRenderer));
+        addEntity(player = new DashniPlayer(batch, shapeRenderer));
         addEntity(new Island(batch, shapeRenderer, 0, 0, getScreenWidth(), 10));
         addEntity(new Island(batch, shapeRenderer, 300, 50, 100, 10));
         addEntity(new Background(batch, shapeRenderer));
@@ -47,12 +58,25 @@ public class BossFightScreen extends AbstractScreen {
 
 
         pdr = new PhysicsDebugRenderer();
+
+        scheduledEntities = new ConcurrentHashMap<>();
     }
 
     @Override
     public void tick(float v) {
+        for (ScreenEntity screenEntity : scheduledEntities.keySet()) {
+            scheduledEntities.put(screenEntity, scheduledEntities.get(screenEntity) - v);
+            if(scheduledEntities.get(screenEntity) <= 0) {
+                addEntity(screenEntity);
+                scheduledEntities.remove(screenEntity);
+            }
+        }
+
         if(Gdx.input.isKeyJustPressed(Keys.R)) {
-            addEntity(new SideAttack(batch, shapeRenderer, 100));
+            BossAttacks.stairs(batch, shapeRenderer, this);
+        }
+        if(Gdx.input.isKeyJustPressed(Keys.E)) {
+            BossAttacks.closeLine(batch, shapeRenderer, this, (int) Mappers.position.get(player).getY());
         }
         tickEntities(v);
         updateEngine(v);

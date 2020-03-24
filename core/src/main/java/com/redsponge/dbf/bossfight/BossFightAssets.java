@@ -50,13 +50,13 @@ public class BossFightAssets extends AssetSpecifier {
     @Asset("textures/octopus/octopus.atlas")
     public TextureAtlas octopusAtlas;
 
-    @AtlasAnimation(animationName = "raise",atlas = "octopusAtlas", length = 2, playMode = PlayMode.NORMAL)
+    @AtlasAnimation(animationName = "raise",atlas = "octopusAtlas", length = 4, frameDuration = 0.05f, playMode = PlayMode.NORMAL)
     private Animation<TextureRegion> octopusRaiseAnimation;
 
-    @AtlasAnimation(animationName = "stun",atlas = "octopusAtlas", length = 2)
+    @AtlasAnimation(animationName = "stun",atlas = "octopusAtlas", length = 8, frameDuration = 0.05f)
     private Animation<TextureRegion> octopusStunAnimation;
 
-    @AtlasAnimation(animationName = "sink",atlas = "octopusAtlas", length = 2, playMode = PlayMode.NORMAL)
+    @AtlasAnimation(animationName = "sink",atlas = "octopusAtlas", length = 4, frameDuration = 0.05f, playMode = PlayMode.NORMAL)
     private Animation<TextureRegion> octopusSinkAnimation;
 
 

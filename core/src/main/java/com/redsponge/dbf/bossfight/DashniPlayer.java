@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.redsponge.dbf.input.Input;
+import com.redsponge.redengine.physics.PActor;
 import com.redsponge.redengine.physics.PBodyType;
 import com.redsponge.redengine.physics.PEntity;
 import com.redsponge.redengine.screen.components.AnimationComponent;
@@ -54,6 +55,7 @@ public class DashniPlayer extends ScreenEntity {
     private boolean isAttacking;
     private AttackType attackType;
 
+    private int jumpsLeft;
 
     public DashniPlayer(SpriteBatch batch, ShapeRenderer shapeRenderer) {
         super(batch, shapeRenderer);
@@ -66,11 +68,21 @@ public class DashniPlayer extends ScreenEntity {
         pos.set(screen.getScreenWidth() / 2f - size.getX() / 2f, screen.getScreenHeight() / 2f - size.getY() / 2f);
         render.setUseRegW(true).setUseRegH(true);
         physics = new PhysicsComponent(PBodyType.ACTOR);
-        physics.setOnCollideY(this::onYCollide);
         add(physics);
 
         tmpA = new IntVector2();
         tmpB = new IntVector2();
+    }
+
+    @Override
+    public void addedToEngine() {
+        physics.setOnCollideY(this::onYCollide);
+        ((PActor)physics.getBody()).setRidingCheck((self, solid) -> {
+            if(solid.getPhysicsBodyTag().equals("Slippery")) {
+                return false;
+            }
+            return PActor.defaultRidingCheck.isRiding(self, solid);
+        });
     }
 
     @Override
@@ -114,8 +126,9 @@ public class DashniPlayer extends ScreenEntity {
         }
         else {
             attackCooldown -= delta;
-            if(Input.isJustJumping()) {
+            if(Input.isJustJumping() && canJump()) {
                 vel.setY(jumpVelocity);
+                jumpsLeft--;
             }
             if(Input.isJustAttacking() && !isAttacking && attackCooldown <= 0) {
                 beginAttacking();
@@ -149,6 +162,10 @@ public class DashniPlayer extends ScreenEntity {
             die();
             pos.set(100, 100);
         }
+    }
+
+    private boolean canJump() {
+        return jumpsLeft > 0;
     }
 
     @Override
@@ -217,7 +234,7 @@ public class DashniPlayer extends ScreenEntity {
     private void endAttack() {
         isAttacking = false;
         anim.setAnimation(idleAnimation);
-        attackCooldown = .1f;
+        attackCooldown = .3f;
         render.setOffsetX(-6).setOffsetY(0);
         attackBox = null;
     }
@@ -236,6 +253,9 @@ public class DashniPlayer extends ScreenEntity {
     }
 
     private void onYCollide(PEntity other) {
+        if(vel.getY() < 0) {
+            jumpsLeft = Integer.MAX_VALUE;
+        }
         vel.setY(0);
     }
 
