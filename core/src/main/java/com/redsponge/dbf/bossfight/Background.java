@@ -20,6 +20,6 @@ public class Background extends ScreenEntity {
 
     @Override
     public void loadAssets() {
-        add(new TextureComponent(assets.get("background", Texture.class)));
+        add(new TextureComponent(assets.getTextureRegion("background")));
     }
 }

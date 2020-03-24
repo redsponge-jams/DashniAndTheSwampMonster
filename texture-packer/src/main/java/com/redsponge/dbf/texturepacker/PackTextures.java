@@ -9,6 +9,8 @@ public class PackTextures {
         proc("player");
         proc("target");
         proc("octopus");
+        proc("attacks");
+        proc("detail");
     }
 
     private static void proc(String s) {

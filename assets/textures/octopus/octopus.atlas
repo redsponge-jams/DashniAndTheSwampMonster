@@ -1,188 +1,272 @@
 
 octopus.png
-size: 1024,512
+size: 1024,1024
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-raise
-  rotate: false
-  xy: 644, 336
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: 1
-raise
-  rotate: false
-  xy: 2, 132
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: 2
-raise
-  rotate: false
-  xy: 774, 336
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: 3
-raise
+bubble_attack
   rotate: false
   xy: 2, 2
+  size: 16, 64
+  orig: 16, 64
+  offset: 0, 0
+  index: 1
+bubble_attack
+  rotate: false
+  xy: 20, 2
+  size: 16, 64
+  orig: 16, 64
+  offset: 0, 0
+  index: 2
+bubble_end
+  rotate: false
+  xy: 38, 2
+  size: 16, 64
+  orig: 16, 64
+  offset: 0, 0
+  index: 1
+bubble_raise
+  rotate: false
+  xy: 38, 2
+  size: 16, 64
+  orig: 16, 64
+  offset: 0, 0
+  index: 2
+bubble_end
+  rotate: false
+  xy: 56, 2
+  size: 16, 64
+  orig: 16, 64
+  offset: 0, 0
+  index: 2
+bubble_raise
+  rotate: false
+  xy: 56, 2
+  size: 16, 64
+  orig: 16, 64
+  offset: 0, 0
+  index: 1
+bubble_idle
+  rotate: false
+  xy: 74, 2
+  size: 16, 64
+  orig: 16, 64
+  offset: 0, 0
+  index: 1
+bubble_signal
+  rotate: false
+  xy: 92, 2
+  size: 16, 64
+  orig: 16, 64
+  offset: 0, 0
+  index: 1
+raise
+  rotate: false
+  xy: 644, 894
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 1
+raise
+  rotate: false
+  xy: 2, 588
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 2
+raise
+  rotate: false
+  xy: 644, 764
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 3
+raise
+  rotate: false
+  xy: 774, 894
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 4
 side_attack
   rotate: false
-  xy: 2, 432
+  xy: 2, 990
   size: 640, 32
   orig: 640, 32
   offset: 0, 0
   index: 1
 side_out
   rotate: false
-  xy: 2, 432
+  xy: 2, 990
   size: 640, 32
   orig: 640, 32
   offset: 0, 0
   index: 4
 side_attack
   rotate: false
-  xy: 2, 398
-  size: 640, 32
-  orig: 640, 32
-  offset: 0, 0
-  index: 2
-side_out
-  rotate: false
-  xy: 2, 398
-  size: 640, 32
-  orig: 640, 32
-  offset: 0, 0
-  index: 3
-side_attack
-  rotate: false
-  xy: 2, 364
-  size: 640, 32
-  orig: 640, 32
-  offset: 0, 0
-  index: 3
-side_out
-  rotate: false
-  xy: 2, 364
+  xy: 2, 956
   size: 640, 32
   orig: 640, 32
   offset: 0, 0
   index: 2
 side_attack
   rotate: false
-  xy: 2, 330
+  xy: 2, 922
+  size: 640, 32
+  orig: 640, 32
+  offset: 0, 0
+  index: 3
+side_attack
+  rotate: false
+  xy: 2, 888
   size: 640, 32
   orig: 640, 32
   offset: 0, 0
   index: 4
-side_out
-  rotate: false
-  xy: 2, 330
-  size: 640, 32
-  orig: 640, 32
-  offset: 0, 0
-  index: 1
 side_attack
   rotate: false
-  xy: 2, 296
+  xy: 2, 854
   size: 640, 32
   orig: 640, 32
   offset: 0, 0
   index: 5
+side_out
+  rotate: false
+  xy: 2, 820
+  size: 640, 32
+  orig: 640, 32
+  offset: 0, 0
+  index: 1
+side_out
+  rotate: false
+  xy: 2, 786
+  size: 640, 32
+  orig: 640, 32
+  offset: 0, 0
+  index: 2
+side_out
+  rotate: false
+  xy: 2, 752
+  size: 640, 32
+  orig: 640, 32
+  offset: 0, 0
+  index: 3
 side_signal
   rotate: false
-  xy: 2, 262
+  xy: 2, 718
   size: 640, 32
   orig: 640, 32
   offset: 0, 0
   index: 1
 sink
   rotate: false
-  xy: 132, 132
+  xy: 2, 458
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 1
 sink
   rotate: false
-  xy: 132, 2
+  xy: 132, 588
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 2
 sink
   rotate: false
-  xy: 262, 132
+  xy: 774, 764
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 3
 sink
   rotate: false
-  xy: 262, 2
+  xy: 2, 328
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 4
 stun
   rotate: false
-  xy: 392, 132
+  xy: 132, 458
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 1
 stun
   rotate: false
-  xy: 392, 2
+  xy: 262, 588
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 2
 stun
   rotate: false
-  xy: 522, 132
+  xy: 2, 198
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 3
 stun
   rotate: false
-  xy: 522, 2
+  xy: 132, 328
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 4
 stun
   rotate: false
-  xy: 652, 206
+  xy: 262, 458
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 5
 stun
   rotate: false
-  xy: 652, 76
+  xy: 392, 588
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 6
 stun
   rotate: false
-  xy: 782, 206
+  xy: 2, 68
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 7
 stun
   rotate: false
-  xy: 782, 76
+  xy: 132, 198
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 8
+stun
+  rotate: false
+  xy: 262, 328
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 9
+stun
+  rotate: false
+  xy: 392, 458
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 10
+stun
+  rotate: false
+  xy: 132, 68
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 11
+stun
+  rotate: false
+  xy: 262, 198
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 12

@@ -53,7 +53,7 @@ public class SideAttack extends ScreenEntity {
         landablePart = new PSolid(pWorld);
         landablePart.pos.set(640 * (comingFromRight ? -1 : 1), y + 12);
         landablePart.size.set(640, 6);
-        landablePart.setPhysicsBodyTag("Slippery");
+//        landablePart.setPhysicsBodyTag("Slippery");
         ouchBox = new Rectangle();
         ((BossFightScreen)screen).getAttackBoxes().add(ouchBox);
     }

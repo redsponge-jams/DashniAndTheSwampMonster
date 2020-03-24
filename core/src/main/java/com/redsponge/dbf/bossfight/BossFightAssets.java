@@ -53,7 +53,7 @@ public class BossFightAssets extends AssetSpecifier {
     @AtlasAnimation(animationName = "raise",atlas = "octopusAtlas", length = 4, frameDuration = 0.05f, playMode = PlayMode.NORMAL)
     private Animation<TextureRegion> octopusRaiseAnimation;
 
-    @AtlasAnimation(animationName = "stun",atlas = "octopusAtlas", length = 8, frameDuration = 0.05f)
+    @AtlasAnimation(animationName = "stun",atlas = "octopusAtlas", length = 12, frameDuration = 0.08f)
     private Animation<TextureRegion> octopusStunAnimation;
 
     @AtlasAnimation(animationName = "sink",atlas = "octopusAtlas", length = 4, frameDuration = 0.05f, playMode = PlayMode.NORMAL)
@@ -70,10 +70,38 @@ public class BossFightAssets extends AssetSpecifier {
     private Animation<TextureRegion> octopusAttackSideEndAnimation;
 
 
+    @AtlasAnimation(animationName = "bubble_signal", atlas = "octopusAtlas", length = 1, playMode = PlayMode.NORMAL, frameDuration = 0.4f)
+    private Animation<TextureRegion> octopusAttackBubbleSignalAnimation;
 
-    @Asset("textures/detail/background.png")
-    private Texture background;
+    @AtlasAnimation(animationName = "bubble_raise", atlas = "octopusAtlas", length = 2, playMode = PlayMode.NORMAL, frameDuration = 0.1f)
+    private Animation<TextureRegion> octopusAttackBubbleRaiseAnimation;
 
-    @Asset("textures/detail/waste.png")
-    private Texture waste;
+    @AtlasAnimation(animationName = "bubble_idle", atlas = "octopusAtlas", length = 1, playMode = PlayMode.NORMAL, frameDuration = 0.4f)
+    private Animation<TextureRegion> octopusAttackBubbleIdleAnimation;
+
+    @AtlasAnimation(animationName = "bubble_attack", atlas = "octopusAtlas", length = 2, frameDuration = 0.1f, playMode = PlayMode.LOOP_PINGPONG)
+    private Animation<TextureRegion> octopusAttackBubbleAttackAnimation;
+
+    @AtlasAnimation(animationName = "bubble_end", atlas = "octopusAtlas", length = 2, playMode = PlayMode.NORMAL)
+    private Animation<TextureRegion> octopusAttackBubbleEndAnimation;
+
+
+    @Asset("textures/detail/detail.atlas")
+    private TextureAtlas detailAtlas;
+
+    @AtlasFrame(frameName = "background", atlas = "detailAtlas")
+    private TextureRegion background;
+
+    @AtlasAnimation(animationName = "water", atlas = "detailAtlas", length = 4)
+    private Animation<TextureRegion> water;
+
+    @AtlasFrame(frameName = "island", atlas = "detailAtlas")
+    private TextureRegion island;
+
+
+    @Asset("textures/attacks/attacks.atlas")
+    private TextureAtlas attackAtlas;
+
+    @AtlasFrame(frameName = "bubble", atlas = "attackAtlas")
+    private TextureRegion bubble;
 }

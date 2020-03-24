@@ -3,11 +3,12 @@ package com.redsponge.dbf.bossfight;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.redsponge.redengine.screen.components.AnimationComponent;
 import com.redsponge.redengine.screen.components.TextureComponent;
 import com.redsponge.redengine.screen.entity.ScreenEntity;
 
-public class Waste extends ScreenEntity {
-    public Waste(SpriteBatch batch, ShapeRenderer shapeRenderer) {
+public class Water extends ScreenEntity {
+    public Water(SpriteBatch batch, ShapeRenderer shapeRenderer) {
         super(batch, shapeRenderer);
     }
 
@@ -15,10 +16,11 @@ public class Waste extends ScreenEntity {
     public void added() {
         pos.set(0, 0, 10);
         size.set(screen.getScreenWidth(), screen.getScreenHeight());
+        render.setUseRegH(true).setUseRegW(true).getColor().a = 0.8f;
     }
 
     @Override
     public void loadAssets() {
-        add(new TextureComponent(assets.get("waste", Texture.class)));
+        add(new AnimationComponent(assets.getAnimation("water")));
     }
 }

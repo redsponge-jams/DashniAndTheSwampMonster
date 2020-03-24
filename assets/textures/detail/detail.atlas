@@ -1,0 +1,48 @@
+
+detail.png
+size: 1024,1024
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+background
+  rotate: false
+  xy: 2, 394
+  size: 640, 360
+  orig: 640, 360
+  offset: 0, 0
+  index: -1
+island
+  rotate: false
+  xy: 644, 740
+  size: 16, 14
+  orig: 16, 14
+  offset: 0, 0
+  index: -1
+water
+  rotate: false
+  xy: 2, 296
+  size: 640, 96
+  orig: 640, 96
+  offset: 0, 0
+  index: 1
+water
+  rotate: false
+  xy: 2, 198
+  size: 640, 96
+  orig: 640, 96
+  offset: 0, 0
+  index: 2
+water
+  rotate: false
+  xy: 2, 100
+  size: 640, 96
+  orig: 640, 96
+  offset: 0, 0
+  index: 3
+water
+  rotate: false
+  xy: 2, 2
+  size: 640, 96
+  orig: 640, 96
+  offset: 0, 0
+  index: 4

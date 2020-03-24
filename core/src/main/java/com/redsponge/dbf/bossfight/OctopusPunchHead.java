@@ -11,6 +11,8 @@ import com.redsponge.redengine.screen.INotified;
 import com.redsponge.redengine.screen.components.AnimationComponent;
 import com.redsponge.redengine.screen.entity.ScreenEntity;
 import com.redsponge.redengine.screen.systems.RenderSystem;
+import com.redsponge.redengine.utils.Logger;
+import sun.print.DialogOwnerAccessor;
 
 public class OctopusPunchHead extends ScreenEntity implements INotified {
 
@@ -21,9 +23,10 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
     private AnimationComponent anim;
     private Rectangle eye;
     private float timeLeftStunned;
-    private boolean sinking;
     private float timeBeforeBored;
     private boolean bored;
+
+    private HeadState state;
 
     public OctopusPunchHead(SpriteBatch batch, ShapeRenderer shapeRenderer) {
         super(batch, shapeRenderer);
@@ -31,7 +34,7 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
 
     @Override
     public void added() {
-        pos.setX(640-128*2-30);
+        pos.setX(640-128*2);
         pos.setY(-10);
         pos.setZ(-2);
         size.set(128*2, 128*2);
@@ -47,13 +50,14 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
         sink = assets.getAnimation("octopusSinkAnimation");
 
         anim = new AnimationComponent(raise);
+        state = HeadState.RAISE;
         add(anim);
     }
 
     public void sink() {
-        eye.set(0, 0, 0, 0);
         anim.setAnimation(sink);
         anim.setAnimationTime(0);
+        state = HeadState.OUT;
     }
 
     @Override
@@ -64,27 +68,29 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
             return;
         }
 
-        if(eye == null && raise.isAnimationFinished(anim.getAnimationTime())) {
-            eye = new Rectangle(pos.getX() + 8 * 2, pos.getY() + 2*(128-81), 31 * 2, 34 * 2);
+        if(state == HeadState.OUT) {
+            if(sink.isAnimationFinished(anim.getAnimationTime())) {
+                remove();
+            }
+            return;
         }
-        if(eye != null) {
+
+        if(state == HeadState.IDLE) {
             timeBeforeBored-=delta;
             if(timeBeforeBored <= 0) {
                 sinkBored();
             }
         }
 
-        if(timeLeftStunned > 0) {
-            render.setRotation((float) (Math.sin(timeLeftStunned * 20) * 10));
-            timeLeftStunned-= delta;
-            if(timeLeftStunned <= 0) {
-                sink();
-                sinking = true;
-            }
+        if(state == HeadState.RAISE && eye == null && raise.isAnimationFinished(anim.getAnimationTime())) {
+            eye = new Rectangle(pos.getX() + 8 * 2, pos.getY() + 2*(128-81), 31 * 2, 34 * 2);
+            state = HeadState.IDLE;
         }
-        if(sinking) {
-            if(sink.isAnimationFinished(anim.getAnimationTime())) {
-                remove();
+
+        if(state == HeadState.STUN) {
+            timeLeftStunned -= delta;
+            if (timeLeftStunned <= 0) {
+                sink();
             }
         }
     }
@@ -120,12 +126,20 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
     private void ouch() {
         anim.setAnimation(stun);
         anim.setAnimationTime(0);
-        timeLeftStunned = 1;
+        timeLeftStunned = 2;
+        state = HeadState.STUN;
         eye.set(0, 0, 0, 0);
     }
 
     @Override
     public void removed() {
         notifyScreen(Notifications.OCTOPUS_EYE_GONE);
+    }
+
+    private enum HeadState {
+        RAISE,
+        IDLE,
+        STUN,
+        OUT
     }
 }

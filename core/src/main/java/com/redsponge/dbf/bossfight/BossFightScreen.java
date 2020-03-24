@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
@@ -12,13 +11,12 @@ import com.redsponge.redengine.assets.AssetSpecifier;
 import com.redsponge.redengine.physics.PhysicsDebugRenderer;
 import com.redsponge.redengine.screen.AbstractScreen;
 import com.redsponge.redengine.screen.components.Mappers;
+import com.redsponge.redengine.screen.components.PositionComponent;
 import com.redsponge.redengine.screen.entity.ScreenEntity;
 import com.redsponge.redengine.screen.systems.PhysicsSystem;
 import com.redsponge.redengine.screen.systems.RenderSystem;
 import com.redsponge.redengine.utils.GameAccessor;
-import com.redsponge.redengine.utils.holders.Pair;
 
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class BossFightScreen extends AbstractScreen {
@@ -31,6 +29,8 @@ public class BossFightScreen extends AbstractScreen {
 
     private ConcurrentHashMap<ScreenEntity, Float> scheduledEntities;
     private DashniPlayer player;
+
+    private Island mainIsland;
 
     public BossFightScreen(GameAccessor ga) {
         super(ga);
@@ -51,15 +51,19 @@ public class BossFightScreen extends AbstractScreen {
 
         addEntity(new TargetOctopus(batch, shapeRenderer));
         addEntity(player = new DashniPlayer(batch, shapeRenderer));
-        addEntity(new Island(batch, shapeRenderer, 0, 0, getScreenWidth(), 10));
-        addEntity(new Island(batch, shapeRenderer, 300, 50, 100, 10));
+        addEntity(mainIsland = new Island(batch, shapeRenderer, 300, 50, 100, 20));
         addEntity(new Background(batch, shapeRenderer));
-        addEntity(new Waste(batch, shapeRenderer));
+        addEntity(new Water(batch, shapeRenderer));
 
 
         pdr = new PhysicsDebugRenderer();
 
         scheduledEntities = new ConcurrentHashMap<>();
+    }
+
+    public void spawnBubble(float x, float y) {
+        PositionComponent playerPos = Mappers.position.get(player);
+        addEntity(new AttackBubble(batch, shapeRenderer, x, y, playerPos.getX(), playerPos.getY()));
     }
 
     @Override
@@ -77,6 +81,12 @@ public class BossFightScreen extends AbstractScreen {
         }
         if(Gdx.input.isKeyJustPressed(Keys.E)) {
             BossAttacks.closeLine(batch, shapeRenderer, this, (int) Mappers.position.get(player).getY());
+        }
+        if(Gdx.input.isKeyJustPressed(Keys.T)) {
+            mainIsland.boost();
+        }
+        if(Gdx.input.isKeyJustPressed(Keys.J)) {
+            addEntity(new BubbleAttackArm(batch, shapeRenderer, 100, 0.1f, 10));
         }
         tickEntities(v);
         updateEngine(v);
