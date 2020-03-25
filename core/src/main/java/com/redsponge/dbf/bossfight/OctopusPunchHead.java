@@ -1,5 +1,6 @@
 package com.redsponge.dbf.bossfight;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -11,8 +12,6 @@ import com.redsponge.redengine.screen.INotified;
 import com.redsponge.redengine.screen.components.AnimationComponent;
 import com.redsponge.redengine.screen.entity.ScreenEntity;
 import com.redsponge.redengine.screen.systems.RenderSystem;
-import com.redsponge.redengine.utils.Logger;
-import sun.print.DialogOwnerAccessor;
 
 public class OctopusPunchHead extends ScreenEntity implements INotified {
 
@@ -27,6 +26,8 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
     private boolean bored;
 
     private HeadState state;
+
+    private Sound stunSound;
 
     public OctopusPunchHead(SpriteBatch batch, ShapeRenderer shapeRenderer) {
         super(batch, shapeRenderer);
@@ -49,6 +50,7 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
         stun = assets.getAnimation("octopusStunAnimation");
         sink = assets.getAnimation("octopusSinkAnimation");
 
+        stunSound = assets.get("octopusStunSound", Sound.class);
         anim = new AnimationComponent(raise);
         state = HeadState.RAISE;
         add(anim);
@@ -58,6 +60,7 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
         anim.setAnimation(sink);
         anim.setAnimationTime(0);
         state = HeadState.OUT;
+        stunSound.stop();
     }
 
     @Override
@@ -129,6 +132,7 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
         timeLeftStunned = 2;
         state = HeadState.STUN;
         eye.set(0, 0, 0, 0);
+        stunSound.play();
     }
 
     @Override

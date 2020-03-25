@@ -1,5 +1,6 @@
 package com.redsponge.dbf.bossfight;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -34,6 +35,8 @@ public class DashniPlayer extends ScreenEntity {
     private float jumpVelocity = 320;
     private float fallMultiplier = 3f;
     private float lowJumpMultiplier = 4f;
+
+    private Sound attackSound;
 
     private Animation<TextureRegion> idleAnimation;
     private Animation<TextureRegion> runAnimation;
@@ -94,6 +97,7 @@ public class DashniPlayer extends ScreenEntity {
         this.attackDownAnimation = assets.getAnimation("playerAttackDownAnimation");
 
         anim = new AnimationComponent(idleAnimation);
+        attackSound = assets.get("dashniAttackSound", Sound.class);
         add(anim);
     }
 
@@ -181,6 +185,7 @@ public class DashniPlayer extends ScreenEntity {
 
     private void beginAttacking() {
         float vert = Input.getVertical();
+        attackSound.play();
         if(vert > 0) {
             attackType = AttackType.UP;
             anim.setAnimation(attackUpAnimation);

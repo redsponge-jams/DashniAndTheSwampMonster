@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.redsponge.redengine.screen.components.AnimationComponent;
+import com.redsponge.redengine.screen.components.Mappers;
 import com.redsponge.redengine.screen.entity.ScreenEntity;
 import com.redsponge.redengine.utils.Logger;
 
@@ -31,6 +32,7 @@ public class BubbleAttackArm extends ScreenEntity {
     private float idleTimer;
     private float attackTime;
     private boolean spawnedBubble;
+    private boolean isRemoved;
 
     public BubbleAttackArm(SpriteBatch batch, ShapeRenderer shapeRenderer, int x, float telegraphTime, int persistenceTime) {
         super(batch, shapeRenderer);
@@ -65,6 +67,7 @@ public class BubbleAttackArm extends ScreenEntity {
 
     @Override
     public void additionalTick(float delta) {
+        render.setFlipX(Mappers.position.get(((BossFightScreen)screen).getPlayer()).getX() > pos.getX());
         if(phase == BubbleAttackPhase.SIGNAL) {
             signalTimeCounter += delta;
             if(signalTimeCounter >= telegraphTime) {
@@ -133,6 +136,11 @@ public class BubbleAttackArm extends ScreenEntity {
     @Override
     public void removed() {
         ((BossFightScreen)screen).getAttackBoxes().removeValue(ouchBox, true);
+        isRemoved = true;
+    }
+
+    public boolean isRemoved() {
+        return isRemoved;
     }
 
     private enum BubbleAttackPhase {

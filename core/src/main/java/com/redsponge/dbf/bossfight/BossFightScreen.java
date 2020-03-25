@@ -1,5 +1,6 @@
 package com.redsponge.dbf.bossfight;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
@@ -32,6 +33,10 @@ public class BossFightScreen extends AbstractScreen {
 
     private Island mainIsland;
 
+    private DelayedRemovalArray<Island> islands;
+
+    private BossAttackManager bam;
+
     public BossFightScreen(GameAccessor ga) {
         super(ga);
     }
@@ -45,13 +50,20 @@ public class BossFightScreen extends AbstractScreen {
         physicsSystem = getEntitySystem(PhysicsSystem.class);
         renderSystem = getEntitySystem(RenderSystem.class);
         renderSystem.setBackground(Color.GRAY);
+        this.bam = new BossAttackManager(this);
 
+        islands = new DelayedRemovalArray<Island>();
+        islands.add(new Island(batch, shapeRenderer, 300, 20, 100, 20));
+        islands.add(new Island(batch, shapeRenderer, 150, 20, 100, 20));
+
+        for (int i = 0; i < islands.size; i++) {
+            addEntity(islands.get(i));
+        }
         attackBoxes = new DelayedRemovalArray<>();
         attackBoxes.add(new Rectangle(10, 10, 20, 20));
 
         addEntity(new TargetOctopus(batch, shapeRenderer));
         addEntity(player = new DashniPlayer(batch, shapeRenderer));
-        addEntity(mainIsland = new Island(batch, shapeRenderer, 300, 50, 100, 20));
         addEntity(new Background(batch, shapeRenderer));
         addEntity(new Water(batch, shapeRenderer));
 
@@ -68,6 +80,7 @@ public class BossFightScreen extends AbstractScreen {
 
     @Override
     public void tick(float v) {
+        bam.update(v);
         for (ScreenEntity screenEntity : scheduledEntities.keySet()) {
             scheduledEntities.put(screenEntity, scheduledEntities.get(screenEntity) - v);
             if(scheduledEntities.get(screenEntity) <= 0) {
@@ -83,7 +96,7 @@ public class BossFightScreen extends AbstractScreen {
             BossAttacks.closeLine(batch, shapeRenderer, this, (int) Mappers.position.get(player).getY());
         }
         if(Gdx.input.isKeyJustPressed(Keys.T)) {
-            mainIsland.boost();
+            islands.get(0).boost();
         }
         if(Gdx.input.isKeyJustPressed(Keys.J)) {
             addEntity(new BubbleAttackArm(batch, shapeRenderer, 100, 0.1f, 10));
@@ -107,12 +120,17 @@ public class BossFightScreen extends AbstractScreen {
         renderEntities();
     }
 
+
+
     @Override
     public void notified(Object notifier, int notification) {
         super.notified(notifier, notification);
         if(notification == Notifications.TARGET_OCTOPUS_DOWN) {
             addEntity(new OctopusPunchHead(batch, shapeRenderer));
         }
+    }
+
+    private void processSpawnOfBossAttacks(float delta) {
     }
 
     @Override
@@ -142,5 +160,9 @@ public class BossFightScreen extends AbstractScreen {
 
     public Array<Rectangle> getAttackBoxes() {
         return attackBoxes;
+    }
+
+    public Entity getPlayer() {
+        return player;
     }
 }

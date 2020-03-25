@@ -1,6 +1,7 @@
 package com.redsponge.dbf.bossfight;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
@@ -63,11 +64,8 @@ public class BossFightAssets extends AssetSpecifier {
     @AtlasAnimation(animationName = "side_signal", atlas = "octopusAtlas", length = 1, playMode = PlayMode.NORMAL, frameDuration = 0.4f)
     private Animation<TextureRegion> octopusAttackSideSignalAnimation;
 
-    @AtlasAnimation(animationName = "side_attack", atlas = "octopusAtlas", length = 5, frameDuration = 0.08f, playMode = PlayMode.NORMAL)
+    @AtlasAnimation(animationName = "side_attack", atlas = "octopusAtlas", length = 6, frameDuration = 0.06f, playMode = PlayMode.NORMAL)
     private Animation<TextureRegion> octopusAttackSideAttackAnimation;
-
-    @AtlasAnimation(animationName = "side_out", atlas = "octopusAtlas", length = 4, playMode = PlayMode.NORMAL)
-    private Animation<TextureRegion> octopusAttackSideEndAnimation;
 
 
     @AtlasAnimation(animationName = "bubble_signal", atlas = "octopusAtlas", length = 1, playMode = PlayMode.NORMAL, frameDuration = 0.4f)
@@ -92,7 +90,7 @@ public class BossFightAssets extends AssetSpecifier {
     @AtlasFrame(frameName = "background", atlas = "detailAtlas")
     private TextureRegion background;
 
-    @AtlasAnimation(animationName = "water", atlas = "detailAtlas", length = 4)
+    @AtlasAnimation(animationName = "water", atlas = "detailAtlas", length = 4, frameDuration = 0.3f)
     private Animation<TextureRegion> water;
 
     @AtlasFrame(frameName = "island", atlas = "detailAtlas")
@@ -104,4 +102,15 @@ public class BossFightAssets extends AssetSpecifier {
 
     @AtlasFrame(frameName = "bubble", atlas = "attackAtlas")
     private TextureRegion bubble;
+
+
+
+    @Asset("sounds/dashni_attack.ogg")
+    private Sound dashniAttackSound;
+
+    @Asset("sounds/ghost_ouch.ogg")
+    private Sound ghostOuchSound;
+
+    @Asset("sounds/octopus_stun.ogg")
+    private Sound octopusStunSound;
 }

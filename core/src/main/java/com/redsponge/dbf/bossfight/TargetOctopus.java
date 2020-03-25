@@ -1,5 +1,6 @@
 package com.redsponge.dbf.bossfight;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -35,6 +36,8 @@ public class TargetOctopus extends ScreenEntity implements INotified {
     private float timeExists;
 
     private float hurtTime;
+
+    private Sound ouchSound;
 
     public TargetOctopus(SpriteBatch batch, ShapeRenderer shapeRenderer) {
         super(batch, shapeRenderer);
@@ -112,6 +115,7 @@ public class TargetOctopus extends ScreenEntity implements INotified {
         idleAnimation = assets.getAnimation("targetIdleAnimation");
         hurtAnimation = assets.getAnimation("targetHurtAnimation");
         anim = new AnimationComponent(idleAnimation);
+        ouchSound = assets.get("ghostOuchSound", Sound.class);
         add(anim);
     }
 
@@ -133,6 +137,7 @@ public class TargetOctopus extends ScreenEntity implements INotified {
     private void attacked() {
         Logger.log(this, "OUCHY WOWCHI");
         hitsLeft--;
+        ouchSound.play();
         if(hitsLeft == 0) {
             notifyScreen(Notifications.TARGET_OCTOPUS_DOWN);
             anim.setAnimation(hurtAnimation);
