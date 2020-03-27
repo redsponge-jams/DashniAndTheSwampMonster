@@ -208,7 +208,7 @@ public class DashniPlayer extends ScreenEntity {
         if(attackTime > 0.2f && attackBox == null) {
             createAttackBox();
             notifyScreen(Notifications.PLAYER_ATTACK_BOX_SPAWNED);
-            attackBox.set(0, 0, 0, 0);
+//            attackBox.set(0, 0, 0, 0);
         }
         if(attackType == AttackType.REGULAR && lookingLeft) {
             render.setOffsetX(-96-8);
@@ -248,7 +248,7 @@ public class DashniPlayer extends ScreenEntity {
     }
 
     private void die() {
-        Logger.log(this, "F");
+        notifyScreen(Notifications.DASHNI_DEAD);
     }
 
     private void updateBetterJump(float delta) {

@@ -17,8 +17,10 @@ import com.redsponge.redengine.screen.components.PositionComponent;
 import com.redsponge.redengine.screen.entity.ScreenEntity;
 import com.redsponge.redengine.screen.systems.PhysicsSystem;
 import com.redsponge.redengine.screen.systems.RenderSystem;
+import com.redsponge.redengine.transitions.Transitions;
 import com.redsponge.redengine.utils.GameAccessor;
 import com.redsponge.redengine.utils.IntVector2;
+import com.redsponge.redengine.utils.MathUtilities;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -47,6 +49,8 @@ public class BossFightScreen extends AbstractScreen {
     public static void progressPhase() {
         if(phase == FightPhase.ZERO) {
             phase = FightPhase.ONE;
+        } else if(phase == FightPhase.ONE) {
+            phase = FightPhase.TWO;
         }
     }
 
@@ -77,11 +81,11 @@ public class BossFightScreen extends AbstractScreen {
             }
         },
         ONE {
-            float time;
+            float time = 4;
             IntVector2 octoPoint = new IntVector2(640 / 2, 360 / 4 * 3);
             @Override
             public IntVector2 createOctopusPoint() {
-                return octoPoint;
+                return octoPoint.set(MathUtils.random(100, 640 - 100), octoPoint.y);
             }
 
             @Override
@@ -92,8 +96,7 @@ public class BossFightScreen extends AbstractScreen {
             public void processAttack(float delta, BossFightScreen screen, BossAttackManager bam) {
                 time += delta;
                 if(time > 5) {
-                    screen.addScheduledEntity(0, new SideAttack(screen.batch, screen.shapeRenderer, 50, MathUtils.randomBoolean(), screen.getScreenWidth() / 2, 2, 2, .8f));
-                    screen.addScheduledEntity(0.5f, new SideAttack(screen.batch, screen.shapeRenderer, 100, MathUtils.randomBoolean(), screen.getScreenWidth() / 2 - 100, 2, 2, .8f));
+                    BossAttacks.stairwayI(screen.batch, screen.shapeRenderer, screen);
                     time -= 5;
                 }
             }
@@ -105,7 +108,78 @@ public class BossFightScreen extends AbstractScreen {
 
             @Override
             public int getOctopusLife() {
-                return 3;
+                return 1;
+            }
+        },
+        TWO {
+            private float time = 4;
+            @Override
+            public IntVector2 createOctopusPoint() {
+                return new IntVector2(MathUtils.random(100, 640 - 100), 300);
+            }
+
+            @Override
+            public float getOctopusLerpPower() {
+                return 0.1f;
+            }
+
+            @Override
+            public void processAttack(float delta, BossFightScreen screen, BossAttackManager bam) {
+                time += delta;
+                if(time > 5) {
+                    time -= 5;
+                    if(MathUtils.randomBoolean()) {
+                        BossAttacks.stairwayI(screen.batch, screen.shapeRenderer, screen);
+                    } else {
+                        BossAttacks.closeLine(screen.batch, screen.shapeRenderer, screen, (int) Mappers.position.get(screen.player).getY());
+                    }
+                }
+            }
+
+            @Override
+            public float getOctopusSpeed() {
+                return 100;
+            }
+
+            @Override
+            public int getOctopusLife() {
+                return 5;
+            }
+        },
+        THREE {
+            private float time;
+            private BubbleAttackArm bubbleArm;
+            @Override
+            public IntVector2 createOctopusPoint() {
+                return new IntVector2(MathUtils.random(100, 640 - 100), 300);
+            }
+
+            @Override
+            public float getOctopusLerpPower() {
+                return 0.1f;
+            }
+
+            @Override
+            public void processAttack(float delta, BossFightScreen screen, BossAttackManager bam) {
+                time += delta;
+                if(time > 5) {
+                    time -= 5;
+                    if(MathUtils.randomBoolean()) {
+                        BossAttacks.stairs(screen.batch, screen.shapeRenderer, screen);
+                    } else {
+                        BossAttacks.closeLine(screen.batch, screen.shapeRenderer, screen, (int) Mappers.position.get(screen.player).getY());
+                    }
+                }
+            }
+
+            @Override
+            public float getOctopusSpeed() {
+                return 100;
+            }
+
+            @Override
+            public int getOctopusLife() {
+                return 5;
             }
         }
         ;
@@ -150,7 +224,6 @@ public class BossFightScreen extends AbstractScreen {
             addEntity(islands.get(i));
         }
         attackBoxes = new DelayedRemovalArray<>();
-        attackBoxes.add(new Rectangle(10, 10, 20, 20));
 
         addEntity(new TargetOctopus(batch, shapeRenderer));
         addEntity(player = new DashniPlayer(batch, shapeRenderer));
@@ -170,6 +243,7 @@ public class BossFightScreen extends AbstractScreen {
 
     @Override
     public void tick(float v) {
+        if(transitioning) return;
         if(!headUp) {
             phase.processAttack(v, this, bam);
         }
@@ -205,15 +279,15 @@ public class BossFightScreen extends AbstractScreen {
         renderSystem.getViewport().apply();
         batch.setProjectionMatrix(renderSystem.getCamera().combined);
 
-//        pdr.render(physicsSystem.getPhysicsWorld(), renderSystem.getViewport().getCamera().combined);
+        pdr.render(physicsSystem.getPhysicsWorld(), renderSystem.getViewport().getCamera().combined);
 
-//        shapeRenderer.begin(ShapeType.Line);
-//        shapeRenderer.setColor(Color.RED);
-//        for (int i = 0; i < attackBoxes.size; i++) {
-//            Rectangle r = attackBoxes.get(i);
-//            shapeRenderer.rect(r.x, r.y, r.width, r.height);
-//        }
-//        shapeRenderer.end();
+        shapeRenderer.begin(ShapeType.Line);
+        shapeRenderer.setColor(Color.RED);
+        for (int i = 0; i < attackBoxes.size; i++) {
+            Rectangle r = attackBoxes.get(i);
+            shapeRenderer.rect(r.x, r.y, r.width, r.height);
+        }
+        shapeRenderer.end();
         renderEntities();
     }
 
@@ -227,6 +301,8 @@ public class BossFightScreen extends AbstractScreen {
             headUp = true;
         } else if(notification == Notifications.OCTOPUS_EYE_GONE) {
             headUp = false;
+        } else if(notification == Notifications.DASHNI_DEAD) {
+            ga.transitionTo(new BossFightScreen(ga), Transitions.linearFade(2, batch, shapeRenderer));
         }
     }
 
