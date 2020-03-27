@@ -1,6 +1,5 @@
 package com.redsponge.dbf.bossfight;
 
-import com.badlogic.gdx.math.MathUtils;
 import com.redsponge.redengine.screen.INotified;
 import com.redsponge.redengine.screen.components.Mappers;
 import com.redsponge.redengine.utils.GeneralUtils;
@@ -38,7 +37,7 @@ public class BossAttackManager implements INotified {
             timeSinceBubbleAttacker += delta;
             if(timeSinceBubbleAttacker > 3) {
                 if(true) {
-                    bubbleAttacker = new BubbleAttackArm(screen.getBatch(), screen.getShapeRenderer(), GeneralUtils.randomItem(new Integer[] {120, 420}), 2, 5);
+                    bubbleAttacker = new BubbleAttackArm(screen.getBatch(), screen.getShapeRenderer(), GeneralUtils.randomItem(new Integer[] {120, 420}), 2, 5, 1);
                     screen.addEntity(bubbleAttacker);
                 }
             }

@@ -1,6 +1,5 @@
 package com.redsponge.dbf.bossfight;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool.PooledEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -36,11 +35,14 @@ public class BubbleAttackArm extends ScreenEntity {
 
     private PooledEffect bubbles;
 
-    public BubbleAttackArm(SpriteBatch batch, ShapeRenderer shapeRenderer, int x, float telegraphTime, int persistenceTime) {
+    private float timeBetweenAttacks;
+
+    public BubbleAttackArm(SpriteBatch batch, ShapeRenderer shapeRenderer, int x, float telegraphTime, int persistenceTime, float timeBetweenAttacks) {
         super(batch, shapeRenderer);
         this.x = x;
         this.telegraphTime = telegraphTime;
         this.persistenceTime = persistenceTime;
+        this.timeBetweenAttacks = timeBetweenAttacks;
         this.phase = BubbleAttackPhase.SIGNAL;
     }
 
@@ -81,8 +83,8 @@ public class BubbleAttackArm extends ScreenEntity {
         } else if(phase == BubbleAttackPhase.IDLE) {
             shootTimer += delta;
             idleTimer += delta;
-            if((shootTimer > .2f)) {
-                shootTimer -= .2f;
+            if((shootTimer > timeBetweenAttacks)) {
+                shootTimer -= timeBetweenAttacks;
                 spawnBubble();
             }
             if(idleTimer > persistenceTime) {

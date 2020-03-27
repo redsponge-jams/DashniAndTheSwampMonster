@@ -11,7 +11,7 @@ public class BossAttacks {
         screen.addScheduledEntity(0.5f, new SideAttack(batch, shapeRenderer, 100, MathUtils.randomBoolean(), screen.getScreenWidth() / 2 - 100, 2, 2, .8f));
     }
 
-    public static void stairs(SpriteBatch batch, ShapeRenderer sr, BossFightScreen screen) {
+    public static void stairwayII(SpriteBatch batch, ShapeRenderer sr, BossFightScreen screen) {
         for(int i = 0; i < 4; i++) {
             screen.addScheduledEntity(i * 0.2f, new SideAttack(batch, sr, i * 80 + 50, MathUtils.randomBoolean(), (7 - i) * 60, 0.2f, 3, 1));
         }
