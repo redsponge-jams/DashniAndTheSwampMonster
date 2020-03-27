@@ -38,7 +38,7 @@ public class BossAttackManager implements INotified {
             timeSinceBubbleAttacker += delta;
             if(timeSinceBubbleAttacker > 3) {
                 if(true) {
-                    bubbleAttacker = new BubbleAttackArm(screen.getBatch(), screen.getShapeRenderer(), GeneralUtils.randomItem(new Integer[] {120, 420}), 0.3f, 5);
+                    bubbleAttacker = new BubbleAttackArm(screen.getBatch(), screen.getShapeRenderer(), GeneralUtils.randomItem(new Integer[] {120, 420}), 2, 5);
                     screen.addEntity(bubbleAttacker);
                 }
             }

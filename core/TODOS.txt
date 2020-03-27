@@ -1,0 +1,2 @@
+ - Phases
+ - Head come up signal with bubbles

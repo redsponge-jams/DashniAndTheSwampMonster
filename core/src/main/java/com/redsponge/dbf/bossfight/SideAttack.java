@@ -29,18 +29,21 @@ public class SideAttack extends ScreenEntity implements INotified {
     private Rectangle ouchBox;
     private float signalTimeCounter;
 
-    private boolean comingFromRight;
+    private boolean comingFromLeft;
     private int length;
     private float telegraphTime;
     private float persistenceTime;
 
-    public SideAttack(SpriteBatch batch, ShapeRenderer shapeRenderer, int y, boolean comingFromRight, int length, float telegraphTime, float persistenceTime) {
+    private float attackSpeed;
+
+    public SideAttack(SpriteBatch batch, ShapeRenderer shapeRenderer, int y, boolean comingFromRight, int length, float telegraphTime, float persistenceTime, float attackSpeed) {
         super(batch, shapeRenderer);
         this.y = y;
-        this.comingFromRight = comingFromRight;
+        this.comingFromLeft = comingFromRight;
         this.length = length;
         this.telegraphTime = telegraphTime;
         this.persistenceTime = persistenceTime;
+        this.attackSpeed = attackSpeed;
         this.phase = SideAttackPhase.SIGNAL;
     }
 
@@ -48,10 +51,9 @@ public class SideAttack extends ScreenEntity implements INotified {
     public void added() {
         pos.set(0, y);
         size.set(640, 32);
-        render.setFlipX(comingFromRight);
+        render.setFlipX(comingFromLeft);
         pWorld = screen.getEntitySystem(PhysicsSystem.class).getPhysicsWorld();
         landablePart = new PSolid(pWorld);
-        landablePart.pos.set(640 * (comingFromRight ? -1 : 1), y + 12);
         landablePart.size.set(640, 6);
         landablePart.setPhysicsBodyTag("Slippery");
         ouchBox = new Rectangle();
@@ -69,48 +71,62 @@ public class SideAttack extends ScreenEntity implements INotified {
 
     @Override
     public void additionalTick(float delta) {
+        if(((BossFightScreen)screen).isHeadUp() && phase != SideAttackPhase.OUT) {
+            if(phase == SideAttackPhase.SIGNAL) {
+                remove();
+            } else {
+                end();
+            }
+        }
+
         if(phase == SideAttackPhase.SIGNAL) {
             signalTimeCounter += delta;
-            if(signalTimeCounter >= telegraphTime) {
+            if(signalAnimation.isAnimationFinished(signalTimeCounter)) {
                 beginAttack();
             }
         } else if(phase == SideAttackPhase.ATTACK) {
-            if(comingFromRight) {
-                pos.setX(length - 640);
+
+            if(comingFromLeft) {
+                moveStandBoxTo(length * anim.getAnimationTime() / attackAnimation.getAnimationDuration() - 640, pos.getY() + 12);
             } else {
-                pos.setX(640 - length);
+                moveStandBoxTo(640 - length * anim.getAnimationTime() / attackAnimation.getAnimationDuration(), pos.getY() + 12);
             }
+
             if(attackAnimation.isAnimationFinished(anim.getAnimationTime())) {
                 attackLingerTime = persistenceTime;
                 phase = SideAttackPhase.WAIT;
+                if(comingFromLeft) {
+                    moveStandBoxTo(length - 640, pos.getY() + 12);
+                } else {
+                    moveStandBoxTo(640 - length, pos.getY() + 12);
+                }
             }
-            if(comingFromRight) {
-                landablePart.move(((length - 60) / (attackAnimation.getAnimationDuration())) * delta, 0);
-                ouchBox.set(landablePart.pos.x - 3, landablePart.pos.y - 3, landablePart.size.x + 6, landablePart.size.y);
-            } else {
-                landablePart.move(((-length + 60) / (attackAnimation.getAnimationDuration())) * delta, 0);
-                ouchBox.set(landablePart.pos.x - 3, landablePart.pos.y - 3, landablePart.size.x + 6, landablePart.size.y);
-            }
-            Logger.log(this, landablePart.pos, landablePart.size);
+            ouchBox.set(landablePart.pos.x - 3, landablePart.pos.y - 3, landablePart.size.x + 6, landablePart.size.y);
         } else if(phase == SideAttackPhase.WAIT) {
              attackLingerTime -= delta;
              if(attackLingerTime <= 0) {
                  end();
              }
         } else if(phase == SideAttackPhase.OUT) {
-            if(comingFromRight) {
-                landablePart.move(((60 - length) / (attackAnimation.getAnimationDuration())) * delta, 0);
-                ouchBox.set(landablePart.pos.x - 3, landablePart.pos.y - 3, landablePart.size.x + 6, landablePart.size.y);
+
+            if(comingFromLeft) {
+                moveStandBoxTo(length * anim.getAnimationTime() / attackAnimation.getAnimationDuration() - 640, pos.getY() + 12);
             } else {
-                landablePart.move((-(60 - length) / (attackAnimation.getAnimationDuration())) * delta, 0);
-                ouchBox.set(landablePart.pos.x - 3, landablePart.pos.y - 3, landablePart.size.x + 6, landablePart.size.y);
+                moveStandBoxTo(640 - length * anim.getAnimationTime() / attackAnimation.getAnimationDuration(), pos.getY() + 12);
             }
+
+            ouchBox.set(landablePart.pos.x - 3, landablePart.pos.y - 3, landablePart.size.x + 6, landablePart.size.y);
+
             if(anim.getAnimationTime() <= 0) {
                 remove();
             }
         } else {
             Logger.error(this, "This really shouldn't happen! phase of side attack became", phase);
         }
+    }
+
+    private void moveStandBoxTo(float x, float y) {
+        landablePart.move( x - landablePart.pos.x, y - landablePart.pos.y);
     }
 
     private void end() {
@@ -121,8 +137,16 @@ public class SideAttack extends ScreenEntity implements INotified {
     }
 
     private void beginAttack() {
+        if(comingFromLeft) {
+            pos.set(-640 + length + 50, y);
+            landablePart.pos.set(-999999, y);
+        } else {
+            pos.set(640 - length - 50, y);
+            landablePart.pos.set(-999999, y);
+        }
         anim.setAnimation(attackAnimation);
         anim.setAnimationTime(0);
+        anim.setAnimationSpeed(attackSpeed);
         phase = SideAttackPhase.ATTACK;
         pWorld.addSolid(landablePart);
     }

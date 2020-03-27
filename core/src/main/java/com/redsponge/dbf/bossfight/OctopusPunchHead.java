@@ -133,6 +133,7 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
         state = HeadState.STUN;
         eye.set(0, 0, 0, 0);
         stunSound.play();
+        BossFightScreen.progressPhase();
     }
 
     @Override

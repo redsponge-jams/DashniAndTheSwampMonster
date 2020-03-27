@@ -1,10 +1,8 @@
 package com.redsponge.dbf.bossfight;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.redsponge.redengine.screen.components.AnimationComponent;
-import com.redsponge.redengine.screen.components.TextureComponent;
 import com.redsponge.redengine.screen.entity.ScreenEntity;
 
 public class Water extends ScreenEntity {

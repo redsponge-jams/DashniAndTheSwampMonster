@@ -1,6 +1,8 @@
 package com.redsponge.dbf.bossfight;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.ParticleEffectPool.PooledEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -12,11 +14,9 @@ import com.redsponge.redengine.utils.Logger;
 
 public class BubbleAttackArm extends ScreenEntity {
 
-    private Animation<TextureRegion> signalAnimation;
     private Animation<TextureRegion> raiseAnimation;
     private Animation<TextureRegion> idleAnimation;
     private Animation<TextureRegion> attackAnimation;
-    private Animation<TextureRegion> endAnimation;
 
     private int x;
     private AnimationComponent anim;
@@ -34,6 +34,8 @@ public class BubbleAttackArm extends ScreenEntity {
     private boolean spawnedBubble;
     private boolean isRemoved;
 
+    private PooledEffect bubbles;
+
     public BubbleAttackArm(SpriteBatch batch, ShapeRenderer shapeRenderer, int x, float telegraphTime, int persistenceTime) {
         super(batch, shapeRenderer);
         this.x = x;
@@ -47,22 +49,20 @@ public class BubbleAttackArm extends ScreenEntity {
         pos.set(x, 0);
         size.set(32, 128);
         ouchBox = new Rectangle();
-        ouchBox.x = x;
+        ouchBox.x = x + 8;
         ouchBox.y = 0;
-        ouchBox.width = 32;
+        ouchBox.width = 16;
         ((BossFightScreen)screen).getAttackBoxes().add(ouchBox);
     }
 
     @Override
     public void loadAssets() {
-        signalAnimation = assets.getAnimation("octopusAttackBubbleSignalAnimation");
         raiseAnimation = assets.getAnimation("octopusAttackBubbleRaiseAnimation");
         idleAnimation = assets.getAnimation("octopusAttackBubbleIdleAnimation");
         attackAnimation = assets.getAnimation("octopusAttackBubbleAttackAnimation");
-        endAnimation = assets.getAnimation("octopusAttackBubbleEndAnimation");
 
-        anim = new AnimationComponent(signalAnimation);
-        add(anim);
+        bubbles = ((BossFightScreen)screen).getPm().spawnBubbles((int) pos.getX(), (int) pos.getY() + 16);
+        anim = new AnimationComponent(raiseAnimation);
     }
 
     @Override
@@ -99,7 +99,7 @@ public class BubbleAttackArm extends ScreenEntity {
                 beginIdle();
             }
         } else if(phase == BubbleAttackPhase.OUT) {
-            if(endAnimation.isAnimationFinished(anim.getAnimationTime())) {
+            if(anim.getAnimationTime() <= 0) {
                 remove();
             }
         } else {
@@ -122,8 +122,9 @@ public class BubbleAttackArm extends ScreenEntity {
     }
 
     private void end() {
-        anim.setAnimation(endAnimation);
-        anim.setAnimationTime(0);
+        anim.setAnimation(raiseAnimation);
+        anim.setAnimationTime(raiseAnimation.getAnimationDuration());
+        anim.setAnimationSpeed(-1);
         phase = BubbleAttackPhase.OUT;
     }
 
@@ -131,6 +132,8 @@ public class BubbleAttackArm extends ScreenEntity {
         anim.setAnimation(raiseAnimation);
         anim.setAnimationTime(0);
         phase = BubbleAttackPhase.RAISE;
+        add(anim);
+        bubbles.allowCompletion();
     }
 
     @Override

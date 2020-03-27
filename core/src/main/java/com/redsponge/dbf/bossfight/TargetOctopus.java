@@ -7,12 +7,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.redsponge.redengine.screen.INotified;
 import com.redsponge.redengine.screen.components.AnimationComponent;
-import com.redsponge.redengine.screen.components.TextureComponent;
 import com.redsponge.redengine.screen.entity.ScreenEntity;
 import com.redsponge.redengine.screen.systems.RenderSystem;
 import com.redsponge.redengine.utils.IntVector2;
@@ -27,6 +25,7 @@ public class TargetOctopus extends ScreenEntity implements INotified {
 
     private Animation<TextureRegion> idleAnimation;
     private Animation<TextureRegion> hurtAnimation;
+    private Animation<TextureRegion> sleepAnimation;
 
     private IntVector2 targetLoc;
     private Vector2 singularVel;
@@ -39,25 +38,26 @@ public class TargetOctopus extends ScreenEntity implements INotified {
 
     private Sound ouchSound;
 
+
     public TargetOctopus(SpriteBatch batch, ShapeRenderer shapeRenderer) {
         super(batch, shapeRenderer);
         targetLoc = new IntVector2();
         singularVel = new Vector2();
         singularVel.set(1, 1);
         self = new Rectangle();
-        hitsLeft = 5;
+        hitsLeft = BossFightScreen.phase.getOctopusLife();
     }
 
     @Override
     public void added() {
-        pos.set(screen.getScreenWidth() / 2f, screen.getScreenHeight() / 2f);
+        pos.set(screen.getScreenWidth() / 2f - 24, screen.getScreenHeight() / 3);
         size.set(48, 48);
         render.setUseRegH(true).setUseRegW(true).setScaleX(2).setScaleY(2).setOffsetX(-8).setOffsetY(-8);
         generateTarget();
     }
 
     private void generateTarget() {
-        targetLoc.set(MathUtils.random(screen.getScreenWidth()), MathUtils.random(screen.getScreenHeight()));
+        targetLoc.set(BossFightScreen.phase.createOctopusPoint());
     }
 
     @Override
@@ -93,8 +93,8 @@ public class TargetOctopus extends ScreenEntity implements INotified {
             float wantedVX = (float) Math.cos(angle);
             float wantedVY = (float) Math.sin(angle);
 
-            vel.setX(MathUtilities.lerp(vel.getX(), wantedVX * 100, 0.01f));
-            vel.setY(MathUtilities.lerp(vel.getY(), wantedVY * 100, 0.01f));
+            vel.setX(MathUtilities.lerp(vel.getX(), wantedVX * BossFightScreen.phase.getOctopusSpeed(), BossFightScreen.phase.getOctopusLerpPower()));
+            vel.setY(MathUtilities.lerp(vel.getY(), wantedVY * BossFightScreen.phase.getOctopusSpeed(), BossFightScreen.phase.getOctopusLerpPower()));
             self.set(pos.getX(), pos.getY(), size.getX(), size.getY());
         }
     }
@@ -114,7 +114,8 @@ public class TargetOctopus extends ScreenEntity implements INotified {
     public void loadAssets() {
         idleAnimation = assets.getAnimation("targetIdleAnimation");
         hurtAnimation = assets.getAnimation("targetHurtAnimation");
-        anim = new AnimationComponent(idleAnimation);
+        sleepAnimation = assets.getAnimation("targetSleepAnimation");
+        anim = new AnimationComponent(sleepAnimation);
         ouchSound = assets.get("ghostOuchSound", Sound.class);
         add(anim);
     }
@@ -127,7 +128,8 @@ public class TargetOctopus extends ScreenEntity implements INotified {
                 attacked();
             }
         } else if(hitsLeft == 0 && i == Notifications.OCTOPUS_EYE_GONE) {
-            hitsLeft = 5;
+            hitsLeft = BossFightScreen.phase.getOctopusLife();
+            generateTarget();
             anim.setAnimationSpeed(1);
             anim.setAnimation(idleAnimation);
             anim.setAnimationTime(0);

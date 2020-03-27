@@ -213,6 +213,9 @@ public class DashniPlayer extends ScreenEntity {
         if(attackType == AttackType.REGULAR && lookingLeft) {
             render.setOffsetX(-96-8);
         }
+        if(attackType == AttackType.DOWN && lookingLeft) {
+            render.setOffsetX(-16);
+        }
         if(attackAnimation.isAnimationFinished(attackTime)) {
             endAttack();
         }
@@ -221,16 +224,16 @@ public class DashniPlayer extends ScreenEntity {
     private void createAttackBox() {
         switch (attackType) {
             case UP: {
-                attackBox = new Rectangle(pos.getX(), pos.getY() + size.getY(), 32, 96);
+                attackBox = new Rectangle(pos.getX(), pos.getY() + size.getY(), 32, 80);
             } break;
             case DOWN: {
-                attackBox = new Rectangle(pos.getX(), pos.getY() - 96, 32, 96);
+                attackBox = new Rectangle(pos.getX() + 8, pos.getY() - 80, 16, 80);
             } break;
             case REGULAR: {
                 if(lookingLeft) {
-                    attackBox = new Rectangle(pos.getX() - 96, pos.getY(), 96, 32);
+                    attackBox = new Rectangle(pos.getX() - 80, pos.getY() + 10, 80, 32);
                 } else {
-                    attackBox = new Rectangle(pos.getX() + size.getX(), pos.getY(), 96, 32);
+                    attackBox = new Rectangle(pos.getX() + size.getX(), pos.getY() + 10, 80, 32);
                 }
             } break;
         }
@@ -259,7 +262,7 @@ public class DashniPlayer extends ScreenEntity {
 
     private void onYCollide(PEntity other) {
         if(vel.getY() < 0) {
-            jumpsLeft = Integer.MAX_VALUE;
+            jumpsLeft = 1;
         }
         vel.setY(0);
     }

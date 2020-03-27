@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
@@ -17,6 +18,7 @@ import com.redsponge.redengine.screen.entity.ScreenEntity;
 import com.redsponge.redengine.screen.systems.PhysicsSystem;
 import com.redsponge.redengine.screen.systems.RenderSystem;
 import com.redsponge.redengine.utils.GameAccessor;
+import com.redsponge.redengine.utils.IntVector2;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -25,6 +27,8 @@ public class BossFightScreen extends AbstractScreen {
     private RenderSystem renderSystem;
     private PhysicsDebugRenderer pdr;
     private PhysicsSystem physicsSystem;
+
+    private ParticleManager pm;
 
     private DelayedRemovalArray<Rectangle> attackBoxes;
 
@@ -37,6 +41,88 @@ public class BossFightScreen extends AbstractScreen {
 
     private BossAttackManager bam;
 
+    public static FightPhase phase;
+    private boolean headUp;
+
+    public static void progressPhase() {
+        if(phase == FightPhase.ZERO) {
+            phase = FightPhase.ONE;
+        }
+    }
+
+    public enum FightPhase {
+        ZERO {
+            IntVector2 octoPoint = new IntVector2(640 / 2, 360 / 3 + 20);
+            @Override
+            public IntVector2 createOctopusPoint() {
+                return octoPoint;
+            }
+
+            @Override
+            public float getOctopusSpeed() {
+                return 0;
+            }
+
+            public void processAttack(float delta, BossFightScreen screen, BossAttackManager bam) {
+            }
+
+            @Override
+            public float getOctopusLerpPower() {
+                return 1;
+            }
+
+            @Override
+            public int getOctopusLife() {
+                return 1;
+            }
+        },
+        ONE {
+            float time;
+            IntVector2 octoPoint = new IntVector2(640 / 2, 360 / 4 * 3);
+            @Override
+            public IntVector2 createOctopusPoint() {
+                return octoPoint;
+            }
+
+            @Override
+            public float getOctopusSpeed() {
+                return 0;
+            }
+
+            public void processAttack(float delta, BossFightScreen screen, BossAttackManager bam) {
+                time += delta;
+                if(time > 5) {
+                    screen.addScheduledEntity(0, new SideAttack(screen.batch, screen.shapeRenderer, 50, MathUtils.randomBoolean(), screen.getScreenWidth() / 2, 2, 2, .8f));
+                    screen.addScheduledEntity(0.5f, new SideAttack(screen.batch, screen.shapeRenderer, 100, MathUtils.randomBoolean(), screen.getScreenWidth() / 2 - 100, 2, 2, .8f));
+                    time -= 5;
+                }
+            }
+
+            @Override
+            public float getOctopusLerpPower() {
+                return 1;
+            }
+
+            @Override
+            public int getOctopusLife() {
+                return 3;
+            }
+        }
+        ;
+
+        public IntVector2 createOctopusPoint() { throw new RuntimeException("Not Implemented"); }
+
+        public float getOctopusSpeed() { throw new RuntimeException("Not Implemented");}
+
+        public void processAttack(float delta, BossFightScreen screen, BossAttackManager bam) { throw new RuntimeException("Not Implemented");}
+
+        public float getOctopusLerpPower() {  throw new RuntimeException("Not Implemented"); }
+
+        public int getOctopusLife() {
+            throw new RuntimeException("Not Implemented");
+        }
+    }
+
     public BossFightScreen(GameAccessor ga) {
         super(ga);
     }
@@ -47,6 +133,10 @@ public class BossFightScreen extends AbstractScreen {
 
     @Override
     public void show() {
+        phase = FightPhase.ZERO;
+        pm = new ParticleManager(batch, shapeRenderer);
+        addEntity(pm);
+
         physicsSystem = getEntitySystem(PhysicsSystem.class);
         renderSystem = getEntitySystem(RenderSystem.class);
         renderSystem.setBackground(Color.GRAY);
@@ -80,7 +170,10 @@ public class BossFightScreen extends AbstractScreen {
 
     @Override
     public void tick(float v) {
-        bam.update(v);
+        if(!headUp) {
+            phase.processAttack(v, this, bam);
+        }
+        pm.additionalTick(v);
         for (ScreenEntity screenEntity : scheduledEntities.keySet()) {
             scheduledEntities.put(screenEntity, scheduledEntities.get(screenEntity) - v);
             if(scheduledEntities.get(screenEntity) <= 0) {
@@ -88,6 +181,7 @@ public class BossFightScreen extends AbstractScreen {
                 scheduledEntities.remove(screenEntity);
             }
         }
+
 
         if(Gdx.input.isKeyJustPressed(Keys.R)) {
             BossAttacks.stairs(batch, shapeRenderer, this);
@@ -107,16 +201,19 @@ public class BossFightScreen extends AbstractScreen {
 
     @Override
     public void render() {
-        renderSystem.getViewport().apply();
-        pdr.render(physicsSystem.getPhysicsWorld(), renderSystem.getViewport().getCamera().combined);
 
-        shapeRenderer.begin(ShapeType.Line);
-        shapeRenderer.setColor(Color.RED);
-        for (int i = 0; i < attackBoxes.size; i++) {
-            Rectangle r = attackBoxes.get(i);
-            shapeRenderer.rect(r.x, r.y, r.width, r.height);
-        }
-        shapeRenderer.end();
+        renderSystem.getViewport().apply();
+        batch.setProjectionMatrix(renderSystem.getCamera().combined);
+
+//        pdr.render(physicsSystem.getPhysicsWorld(), renderSystem.getViewport().getCamera().combined);
+
+//        shapeRenderer.begin(ShapeType.Line);
+//        shapeRenderer.setColor(Color.RED);
+//        for (int i = 0; i < attackBoxes.size; i++) {
+//            Rectangle r = attackBoxes.get(i);
+//            shapeRenderer.rect(r.x, r.y, r.width, r.height);
+//        }
+//        shapeRenderer.end();
         renderEntities();
     }
 
@@ -127,10 +224,10 @@ public class BossFightScreen extends AbstractScreen {
         super.notified(notifier, notification);
         if(notification == Notifications.TARGET_OCTOPUS_DOWN) {
             addEntity(new OctopusPunchHead(batch, shapeRenderer));
+            headUp = true;
+        } else if(notification == Notifications.OCTOPUS_EYE_GONE) {
+            headUp = false;
         }
-    }
-
-    private void processSpawnOfBossAttacks(float delta) {
     }
 
     @Override
@@ -164,5 +261,13 @@ public class BossFightScreen extends AbstractScreen {
 
     public Entity getPlayer() {
         return player;
+    }
+
+    public ParticleManager getPm() {
+        return pm;
+    }
+
+    public boolean isHeadUp() {
+        return headUp;
     }
 }

@@ -2,16 +2,15 @@ package com.redsponge.dbf.bossfight;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.redsponge.redengine.assets.Asset;
 import com.redsponge.redengine.assets.AssetSpecifier;
 import com.redsponge.redengine.assets.atlas.AtlasAnimation;
 import com.redsponge.redengine.assets.atlas.AtlasFrame;
-import com.redsponge.redengine.screen.components.AnimationComponent;
 
 public class BossFightAssets extends AssetSpecifier {
 
@@ -47,6 +46,9 @@ public class BossFightAssets extends AssetSpecifier {
     @AtlasAnimation(animationName = "hurt", atlas = "targetAtlas", length = 4, playMode = PlayMode.LOOP_PINGPONG)
     private Animation<TextureRegion> targetHurtAnimation;
 
+    @AtlasAnimation(animationName = "sleeping", atlas = "targetAtlas", length = 4, frameDuration = .5f)
+    private Animation<TextureRegion> targetSleepAnimation;
+
 
     @Asset("textures/octopus/octopus.atlas")
     public TextureAtlas octopusAtlas;
@@ -61,27 +63,21 @@ public class BossFightAssets extends AssetSpecifier {
     private Animation<TextureRegion> octopusSinkAnimation;
 
 
-    @AtlasAnimation(animationName = "side_signal", atlas = "octopusAtlas", length = 1, playMode = PlayMode.NORMAL, frameDuration = 0.4f)
+    @AtlasAnimation(animationName = "side_signal", atlas = "octopusAtlas", length = 16, playMode = PlayMode.NORMAL, frameDuration = 0.1f)
     private Animation<TextureRegion> octopusAttackSideSignalAnimation;
 
     @AtlasAnimation(animationName = "side_attack", atlas = "octopusAtlas", length = 6, frameDuration = 0.06f, playMode = PlayMode.NORMAL)
     private Animation<TextureRegion> octopusAttackSideAttackAnimation;
 
 
-    @AtlasAnimation(animationName = "bubble_signal", atlas = "octopusAtlas", length = 1, playMode = PlayMode.NORMAL, frameDuration = 0.4f)
-    private Animation<TextureRegion> octopusAttackBubbleSignalAnimation;
-
-    @AtlasAnimation(animationName = "bubble_raise", atlas = "octopusAtlas", length = 2, playMode = PlayMode.NORMAL, frameDuration = 0.1f)
+    @AtlasAnimation(animationName = "bubble_raise", atlas = "octopusAtlas", length = 5, playMode = PlayMode.NORMAL, frameDuration = 0.2f/5)
     private Animation<TextureRegion> octopusAttackBubbleRaiseAnimation;
 
     @AtlasAnimation(animationName = "bubble_idle", atlas = "octopusAtlas", length = 1, playMode = PlayMode.NORMAL, frameDuration = 0.4f)
     private Animation<TextureRegion> octopusAttackBubbleIdleAnimation;
 
-    @AtlasAnimation(animationName = "bubble_attack", atlas = "octopusAtlas", length = 2, frameDuration = 0.1f, playMode = PlayMode.LOOP_PINGPONG)
+    @AtlasAnimation(animationName = "bubble_attack", atlas = "octopusAtlas", length = 4, frameDuration = 0.1f)
     private Animation<TextureRegion> octopusAttackBubbleAttackAnimation;
-
-    @AtlasAnimation(animationName = "bubble_end", atlas = "octopusAtlas", length = 2, playMode = PlayMode.NORMAL)
-    private Animation<TextureRegion> octopusAttackBubbleEndAnimation;
 
 
     @Asset("textures/detail/detail.atlas")
@@ -102,6 +98,10 @@ public class BossFightAssets extends AssetSpecifier {
 
     @AtlasFrame(frameName = "bubble", atlas = "attackAtlas")
     private TextureRegion bubble;
+
+
+    @Asset("particles/bubbling.p")
+    private ParticleEffect bubblingWaterParticle;
 
 
 
