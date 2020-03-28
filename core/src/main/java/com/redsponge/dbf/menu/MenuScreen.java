@@ -57,7 +57,6 @@ public class MenuScreen extends AbstractScreen {
         showMenuScreen();
 
         Gdx.input.setInputProcessor(stage);
-        System.out.println(intro + " " + intro.getPosition() + " " + intro.isPlaying());
         loop = Gdx.audio.newMusic(Gdx.files.internal("music/musica_loop.ogg"));
 
         if(intro == null) {
