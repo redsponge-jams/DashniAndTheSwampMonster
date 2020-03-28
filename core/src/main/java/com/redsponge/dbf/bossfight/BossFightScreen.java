@@ -541,19 +541,6 @@ public class BossFightScreen extends AbstractScreen {
             }
         }
 
-
-        if(Gdx.input.isKeyJustPressed(Keys.R)) {
-            BossAttacks.stairwayII(batch, shapeRenderer, this);
-        }
-        if(Gdx.input.isKeyJustPressed(Keys.E)) {
-            BossAttacks.closeLine(batch, shapeRenderer, this, (int) Mappers.position.get(player).getY());
-        }
-        if(Gdx.input.isKeyJustPressed(Keys.T)) {
-            islands.get(0).boost();
-        }
-        if(Gdx.input.isKeyJustPressed(Keys.J)) {
-            addEntity(new BubbleAttackArm(batch, shapeRenderer, 100, 0.1f, 10, 0.2f));
-        }
         tickEntities(v);
         updateEngine(v);
     }
