@@ -1,0 +1,69 @@
+
+intro.png
+size: 512,256
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+intro
+  rotate: false
+  xy: 2, 150
+  size: 128, 72
+  orig: 128, 72
+  offset: 0, 0
+  index: 1
+intro
+  rotate: false
+  xy: 2, 76
+  size: 128, 72
+  orig: 128, 72
+  offset: 0, 0
+  index: 2
+intro
+  rotate: false
+  xy: 132, 150
+  size: 128, 72
+  orig: 128, 72
+  offset: 0, 0
+  index: 3
+intro
+  rotate: false
+  xy: 2, 2
+  size: 128, 72
+  orig: 128, 72
+  offset: 0, 0
+  index: 4
+intro
+  rotate: false
+  xy: 132, 76
+  size: 128, 72
+  orig: 128, 72
+  offset: 0, 0
+  index: 5
+intro
+  rotate: false
+  xy: 262, 150
+  size: 128, 72
+  orig: 128, 72
+  offset: 0, 0
+  index: 6
+intro
+  rotate: false
+  xy: 132, 2
+  size: 128, 72
+  orig: 128, 72
+  offset: 0, 0
+  index: 7
+intro
+  rotate: false
+  xy: 262, 76
+  size: 128, 72
+  orig: 128, 72
+  offset: 0, 0
+  index: 8
+win
+  rotate: false
+  xy: 262, 2
+  size: 128, 72
+  orig: 128, 72
+  offset: 0, 0
+  index: -1

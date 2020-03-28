@@ -11,6 +11,7 @@ public class PackTextures {
         proc("octopus");
         proc("attacks");
         proc("detail");
+        proc("intro");
     }
 
     private static void proc(String s) {

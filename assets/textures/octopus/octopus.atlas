@@ -6,371 +6,476 @@ filter: Nearest,Nearest
 repeat: none
 bubble_attack
   rotate: false
-  xy: 904, 766
+  xy: 904, 832
   size: 48, 128
   orig: 48, 128
   offset: 0, 0
   index: 1
 bubble_attack
   rotate: false
-  xy: 522, 392
+  xy: 522, 458
   size: 48, 128
   orig: 48, 128
   offset: 0, 0
   index: 2
 bubble_attack
   rotate: false
-  xy: 522, 392
+  xy: 522, 458
   size: 48, 128
   orig: 48, 128
   offset: 0, 0
   index: 4
 bubble_attack
   rotate: false
-  xy: 904, 636
+  xy: 904, 702
   size: 48, 128
   orig: 48, 128
   offset: 0, 0
   index: 3
 bubble_idle
   rotate: false
-  xy: 954, 766
+  xy: 954, 832
   size: 48, 128
   orig: 48, 128
   offset: 0, 0
   index: 1
 bubble_raise
   rotate: false
-  xy: 954, 766
+  xy: 954, 832
   size: 48, 128
   orig: 48, 128
   offset: 0, 0
   index: 5
 bubble_raise
   rotate: false
-  xy: 522, 262
+  xy: 522, 328
   size: 48, 128
   orig: 48, 128
   offset: 0, 0
   index: 1
 bubble_raise
   rotate: false
-  xy: 572, 392
+  xy: 572, 458
   size: 48, 128
   orig: 48, 128
   offset: 0, 0
   index: 2
 bubble_raise
   rotate: false
-  xy: 954, 636
+  xy: 954, 702
   size: 48, 128
   orig: 48, 128
   offset: 0, 0
   index: 3
 bubble_raise
   rotate: false
-  xy: 522, 132
+  xy: 522, 198
   size: 48, 128
   orig: 48, 128
   offset: 0, 0
   index: 4
 bubble_signal
   rotate: false
-  xy: 644, 570
+  xy: 2, 2
   size: 16, 64
   orig: 16, 64
   offset: 0, 0
   index: 1
+flag
+  rotate: false
+  xy: 572, 328
+  size: 48, 128
+  orig: 48, 128
+  offset: 0, 0
+  index: 1
+flag
+  rotate: false
+  xy: 522, 68
+  size: 48, 128
+  orig: 48, 128
+  offset: 0, 0
+  index: 2
+flag
+  rotate: false
+  xy: 572, 198
+  size: 48, 128
+  orig: 48, 128
+  offset: 0, 0
+  index: 3
+flag
+  rotate: false
+  xy: 572, 68
+  size: 48, 128
+  orig: 48, 128
+  offset: 0, 0
+  index: 4
+flag
+  rotate: false
+  xy: 644, 572
+  size: 48, 128
+  orig: 48, 128
+  offset: 0, 0
+  index: 5
+flag
+  rotate: false
+  xy: 694, 572
+  size: 48, 128
+  orig: 48, 128
+  offset: 0, 0
+  index: 6
+flag
+  rotate: false
+  xy: 744, 572
+  size: 48, 128
+  orig: 48, 128
+  offset: 0, 0
+  index: 7
+flag
+  rotate: false
+  xy: 794, 572
+  size: 48, 128
+  orig: 48, 128
+  offset: 0, 0
+  index: 8
+flag
+  rotate: false
+  xy: 844, 572
+  size: 48, 128
+  orig: 48, 128
+  offset: 0, 0
+  index: 9
+flag
+  rotate: false
+  xy: 894, 572
+  size: 48, 128
+  orig: 48, 128
+  offset: 0, 0
+  index: 10
+flag
+  rotate: false
+  xy: 944, 572
+  size: 48, 128
+  orig: 48, 128
+  offset: 0, 0
+  index: 11
+flag
+  rotate: false
+  xy: 622, 442
+  size: 48, 128
+  orig: 48, 128
+  offset: 0, 0
+  index: 12
+flag_raise
+  rotate: false
+  xy: 622, 312
+  size: 48, 128
+  orig: 48, 128
+  offset: 0, 0
+  index: 1
+flag_raise
+  rotate: false
+  xy: 672, 442
+  size: 48, 128
+  orig: 48, 128
+  offset: 0, 0
+  index: 2
+flag_raise
+  rotate: false
+  xy: 622, 182
+  size: 48, 128
+  orig: 48, 128
+  offset: 0, 0
+  index: 3
 raise
   rotate: false
-  xy: 644, 766
+  xy: 644, 832
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 1
 raise
   rotate: false
-  xy: 2, 392
+  xy: 2, 458
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 2
 raise
   rotate: false
-  xy: 644, 636
+  xy: 644, 702
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 3
 raise
   rotate: false
-  xy: 774, 766
+  xy: 774, 832
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 4
 side_attack
   rotate: false
-  xy: 2, 862
+  xy: 2, 928
   size: 640, 32
   orig: 640, 32
   offset: 0, 0
   index: 1
 side_signal
   rotate: false
-  xy: 2, 862
+  xy: 2, 928
   size: 640, 32
   orig: 640, 32
   offset: 0, 0
   index: 9
 side_signal
   rotate: false
-  xy: 2, 862
-  size: 640, 32
-  orig: 640, 32
-  offset: 0, 0
-  index: 8
-side_signal
-  rotate: false
-  xy: 2, 862
+  xy: 2, 928
   size: 640, 32
   orig: 640, 32
   offset: 0, 0
   index: 10
+side_signal
+  rotate: false
+  xy: 2, 928
+  size: 640, 32
+  orig: 640, 32
+  offset: 0, 0
+  index: 8
 side_attack
   rotate: false
-  xy: 2, 828
+  xy: 2, 894
   size: 640, 32
   orig: 640, 32
   offset: 0, 0
   index: 2
 side_attack
   rotate: false
-  xy: 2, 794
+  xy: 2, 860
   size: 640, 32
   orig: 640, 32
   offset: 0, 0
   index: 3
 side_attack
   rotate: false
-  xy: 2, 760
+  xy: 2, 826
   size: 640, 32
   orig: 640, 32
   offset: 0, 0
   index: 4
 side_attack
   rotate: false
-  xy: 2, 726
+  xy: 2, 792
   size: 640, 32
   orig: 640, 32
   offset: 0, 0
   index: 5
 side_attack
   rotate: false
-  xy: 2, 692
+  xy: 2, 758
   size: 640, 32
   orig: 640, 32
   offset: 0, 0
   index: 6
 side_signal
   rotate: false
-  xy: 2, 658
+  xy: 2, 724
   size: 640, 32
   orig: 640, 32
   offset: 0, 0
   index: 1
 side_signal
   rotate: false
-  xy: 2, 624
+  xy: 2, 690
   size: 640, 32
   orig: 640, 32
   offset: 0, 0
   index: 2
 side_signal
   rotate: false
-  xy: 2, 624
+  xy: 2, 690
   size: 640, 32
   orig: 640, 32
   offset: 0, 0
   index: 16
 side_signal
   rotate: false
-  xy: 2, 590
+  xy: 2, 656
   size: 640, 32
   orig: 640, 32
   offset: 0, 0
   index: 3
 side_signal
   rotate: false
-  xy: 2, 590
+  xy: 2, 656
   size: 640, 32
   orig: 640, 32
   offset: 0, 0
   index: 15
 side_signal
   rotate: false
-  xy: 2, 556
+  xy: 2, 622
   size: 640, 32
   orig: 640, 32
   offset: 0, 0
   index: 4
 side_signal
   rotate: false
-  xy: 2, 556
+  xy: 2, 622
+  size: 640, 32
+  orig: 640, 32
+  offset: 0, 0
+  index: 5
+side_signal
+  rotate: false
+  xy: 2, 622
   size: 640, 32
   orig: 640, 32
   offset: 0, 0
   index: 13
 side_signal
   rotate: false
-  xy: 2, 556
-  size: 640, 32
-  orig: 640, 32
-  offset: 0, 0
-  index: 5
-side_signal
-  rotate: false
-  xy: 2, 556
+  xy: 2, 622
   size: 640, 32
   orig: 640, 32
   offset: 0, 0
   index: 14
 side_signal
   rotate: false
-  xy: 2, 522
+  xy: 2, 588
   size: 640, 32
   orig: 640, 32
   offset: 0, 0
   index: 6
 side_signal
   rotate: false
-  xy: 2, 522
-  size: 640, 32
-  orig: 640, 32
-  offset: 0, 0
-  index: 11
-side_signal
-  rotate: false
-  xy: 2, 522
+  xy: 2, 588
   size: 640, 32
   orig: 640, 32
   offset: 0, 0
   index: 12
 side_signal
   rotate: false
-  xy: 2, 522
+  xy: 2, 588
   size: 640, 32
   orig: 640, 32
   offset: 0, 0
   index: 7
+side_signal
+  rotate: false
+  xy: 2, 588
+  size: 640, 32
+  orig: 640, 32
+  offset: 0, 0
+  index: 11
 sink
   rotate: false
-  xy: 2, 262
+  xy: 2, 328
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 1
 sink
   rotate: false
-  xy: 132, 392
+  xy: 132, 458
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 2
 sink
   rotate: false
-  xy: 774, 636
+  xy: 774, 702
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 3
 sink
   rotate: false
-  xy: 2, 132
+  xy: 2, 198
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 4
 stun
   rotate: false
-  xy: 132, 262
+  xy: 132, 328
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 1
 stun
   rotate: false
-  xy: 262, 392
+  xy: 262, 458
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 2
 stun
   rotate: false
-  xy: 2, 2
+  xy: 2, 68
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 3
 stun
   rotate: false
-  xy: 132, 132
+  xy: 132, 198
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 4
 stun
   rotate: false
-  xy: 262, 262
+  xy: 262, 328
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 5
 stun
   rotate: false
-  xy: 392, 392
+  xy: 392, 458
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 6
 stun
   rotate: false
-  xy: 132, 2
+  xy: 132, 68
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 7
 stun
   rotate: false
-  xy: 262, 132
+  xy: 262, 198
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 8
 stun
   rotate: false
-  xy: 392, 262
+  xy: 392, 328
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 9
 stun
   rotate: false
-  xy: 262, 2
+  xy: 262, 68
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 10
 stun
   rotate: false
-  xy: 392, 132
+  xy: 392, 198
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 11
 stun
   rotate: false
-  xy: 392, 2
+  xy: 392, 68
   size: 128, 128
   orig: 128, 128
   offset: 0, 0

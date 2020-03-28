@@ -1,103 +1,124 @@
 
 target.png
-size: 128,128
+size: 512,64
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+flag
+  rotate: false
+  xy: 2, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 1
+flag
+  rotate: false
+  xy: 36, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 2
+flag
+  rotate: false
+  xy: 70, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 3
 hurt
   rotate: false
-  xy: 2, 70
+  xy: 104, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: 1
 hurt
   rotate: false
-  xy: 2, 36
+  xy: 138, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: 2
 hurt
   rotate: false
-  xy: 2, 36
+  xy: 138, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: 4
 hurt
   rotate: false
-  xy: 2, 36
+  xy: 138, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: 3
 idle
   rotate: false
-  xy: 36, 70
+  xy: 172, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: 1
 idle
   rotate: false
-  xy: 36, 70
+  xy: 172, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: 2
 idle
   rotate: false
-  xy: 2, 2
+  xy: 206, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: 3
 idle
   rotate: false
-  xy: 2, 2
+  xy: 206, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: 6
 idle
   rotate: false
-  xy: 36, 36
+  xy: 240, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: 4
 idle
   rotate: false
-  xy: 36, 36
+  xy: 240, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: 5
 sleeping
   rotate: false
-  xy: 70, 70
+  xy: 274, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: 1
 sleeping
   rotate: false
-  xy: 36, 2
+  xy: 308, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: 2
 sleeping
   rotate: false
-  xy: 36, 2
+  xy: 308, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: 4
 sleeping
   rotate: false
-  xy: 70, 36
+  xy: 342, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

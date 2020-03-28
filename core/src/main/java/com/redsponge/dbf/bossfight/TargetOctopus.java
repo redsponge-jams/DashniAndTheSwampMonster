@@ -26,6 +26,7 @@ public class TargetOctopus extends ScreenEntity implements INotified {
     private Animation<TextureRegion> idleAnimation;
     private Animation<TextureRegion> hurtAnimation;
     private Animation<TextureRegion> sleepAnimation;
+    private Animation<TextureRegion> flagAnimation;
 
     private IntVector2 targetLoc;
     private Vector2 singularVel;
@@ -37,6 +38,7 @@ public class TargetOctopus extends ScreenEntity implements INotified {
     private float hurtTime;
 
     private Sound ouchSound;
+    private boolean done;
 
 
     public TargetOctopus(SpriteBatch batch, ShapeRenderer shapeRenderer) {
@@ -97,6 +99,9 @@ public class TargetOctopus extends ScreenEntity implements INotified {
             vel.setY(MathUtilities.lerp(vel.getY(), wantedVY * BossFightScreen.phase.getOctopusSpeed(), BossFightScreen.phase.getOctopusLerpPower()));
             self.set(pos.getX(), pos.getY(), size.getX(), size.getY());
         }
+        if(done) {
+            vel.set(0, 0);
+        }
     }
 
     @Override
@@ -115,6 +120,7 @@ public class TargetOctopus extends ScreenEntity implements INotified {
         idleAnimation = assets.getAnimation("targetIdleAnimation");
         hurtAnimation = assets.getAnimation("targetHurtAnimation");
         sleepAnimation = assets.getAnimation("targetSleepAnimation");
+        flagAnimation = assets.getAnimation("targetFlagAnimation");
         anim = new AnimationComponent(sleepAnimation);
         ouchSound = assets.get("ghostOuchSound", Sound.class);
         add(anim);
@@ -122,6 +128,7 @@ public class TargetOctopus extends ScreenEntity implements INotified {
 
     @Override
     public void notified(Object o, int i) {
+        if(done) return;
         if(i == Notifications.PLAYER_ATTACK_BOX_SPAWNED && hitsLeft > 0 && hurtTime <= 0) {
             Rectangle attack = ((DashniPlayer)o).getAttackBox();
             if(attack.overlaps(self)) {
@@ -133,6 +140,9 @@ public class TargetOctopus extends ScreenEntity implements INotified {
             anim.setAnimationSpeed(1);
             anim.setAnimation(idleAnimation);
             anim.setAnimationTime(0);
+        } else if(i == Notifications.RAISED_FLAG) {
+            anim.setAnimation(flagAnimation);
+            done = true;
         }
     }
 

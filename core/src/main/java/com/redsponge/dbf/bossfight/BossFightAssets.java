@@ -49,6 +49,9 @@ public class BossFightAssets extends AssetSpecifier {
     @AtlasAnimation(animationName = "sleeping", atlas = "targetAtlas", length = 4, frameDuration = .5f)
     private Animation<TextureRegion> targetSleepAnimation;
 
+    @AtlasAnimation(animationName = "flag", atlas = "targetAtlas", length = 3, frameDuration = .2f, playMode = PlayMode.LOOP_PINGPONG)
+    private Animation<TextureRegion> targetFlagAnimation;
+
 
     @Asset("textures/octopus/octopus.atlas")
     public TextureAtlas octopusAtlas;
@@ -78,6 +81,12 @@ public class BossFightAssets extends AssetSpecifier {
 
     @AtlasAnimation(animationName = "bubble_attack", atlas = "octopusAtlas", length = 4, frameDuration = 0.1f)
     private Animation<TextureRegion> octopusAttackBubbleAttackAnimation;
+
+    @AtlasAnimation(animationName = "flag_raise", atlas = "octopusAtlas", length = 3, frameDuration = 0.02f, playMode = PlayMode.NORMAL)
+    private Animation<TextureRegion> octopusWhiteFlagRaiseAnimation;
+
+    @AtlasAnimation(animationName = "flag", atlas = "octopusAtlas", length = 12)
+    private Animation<TextureRegion> octopusWhiteFlagAnimation;
 
 
     @Asset("textures/detail/detail.atlas")

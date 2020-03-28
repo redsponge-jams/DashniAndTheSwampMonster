@@ -10,7 +10,9 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.redsponge.redengine.assets.AssetSpecifier;
+import com.redsponge.redengine.assets.Fonts;
 import com.redsponge.redengine.physics.PhysicsDebugRenderer;
 import com.redsponge.redengine.screen.AbstractScreen;
 import com.redsponge.redengine.screen.components.Mappers;
@@ -33,6 +35,8 @@ public class BossFightScreen extends AbstractScreen {
 
     private ParticleManager pm;
 
+    private static MusicManager mm;
+
     private DelayedRemovalArray<Rectangle> attackBoxes;
 
     private ConcurrentHashMap<ScreenEntity, Float> scheduledEntities;
@@ -45,7 +49,12 @@ public class BossFightScreen extends AbstractScreen {
     public static FightPhase phase;
     private boolean headUp;
 
+    private FitViewport guiViewport;
+
+    private int hits;
+
     public static void progressPhase() {
+        mm.swap();
         if(phase == FightPhase.ZERO) {
             phase = FightPhase.ONE;
         } else if(phase == FightPhase.ONE) {
@@ -56,6 +65,10 @@ public class BossFightScreen extends AbstractScreen {
             phase = FightPhase.FOUR;
         } else if(phase == FightPhase.FOUR) {
             phase = FightPhase.FIVE;
+        } else if(phase == FightPhase.FIVE) {
+            phase = FightPhase.SIX;
+        } else if(phase == FightPhase.SIX) {
+            phase = FightPhase.WIN;
         }
     }
 
@@ -148,7 +161,7 @@ public class BossFightScreen extends AbstractScreen {
 
             @Override
             public int getOctopusLife() {
-                return 5;
+                return 3;
             }
         },
         THREE {
@@ -218,7 +231,7 @@ public class BossFightScreen extends AbstractScreen {
                 timeUntilGeiserChosen -= delta;
                 if(timeUntilGeiserChosen <= 0 && chosenIsland == null) {
                     chosenIsland = screen.islands.random();
-                    timeUntilGeiser = MathUtils.random(2, 4);
+                    timeUntilGeiser = 2;
                     PositionComponent pos = Mappers.position.get(chosenIsland);
                     bubbles = screen.getPm().spawnBubbles((int) pos.getX() + 10, (int) pos.getY());
                 }
@@ -229,7 +242,7 @@ public class BossFightScreen extends AbstractScreen {
                         chosenIsland.boost();
                         bubbles.allowCompletion();
                         chosenIsland = null;
-                        timeUntilGeiserChosen = MathUtils.random(3, 5);
+                        timeUntilGeiserChosen = 5;
                     }
                 }
 
@@ -257,7 +270,7 @@ public class BossFightScreen extends AbstractScreen {
 
             @Override
             public int getOctopusLife() {
-                return 3;
+                return 5;
             }
         },
         FIVE {
@@ -284,7 +297,7 @@ public class BossFightScreen extends AbstractScreen {
                 timeUntilGeiserChosen -= delta;
                 if(timeUntilGeiserChosen <= 0 && chosenIsland == null) {
                     chosenIsland = screen.islands.random();
-                    timeUntilGeiser = MathUtils.random(2, 4);
+                    timeUntilGeiser = 2;
                     PositionComponent pos = Mappers.position.get(chosenIsland);
                     bubbles = screen.getPm().spawnBubbles((int) pos.getX() + 10, (int) pos.getY());
                 }
@@ -295,7 +308,7 @@ public class BossFightScreen extends AbstractScreen {
                         chosenIsland.boost();
                         bubbles.allowCompletion();
                         chosenIsland = null;
-                        timeUntilGeiserChosen = MathUtils.random(3, 5);
+                        timeUntilGeiserChosen = 3;
                     }
                 }
 
@@ -323,7 +336,98 @@ public class BossFightScreen extends AbstractScreen {
 
             @Override
             public int getOctopusLife() {
-                return 3;
+                return 5;
+            }
+        },
+        SIX {
+            private float timeUntilGeiserChosen;
+            private float time = 3;
+            private float timeUntilGeiser;
+            private Island chosenIsland;
+            private BubbleAttackArm bubbleArm;
+            private ParticleEffectPool.PooledEffect bubbles;
+
+            @Override
+            public IntVector2 createOctopusPoint() {
+                return new IntVector2(MathUtils.random(100, 640 - 100), MathUtils.random(250, 300));
+            }
+
+            @Override
+            public float getOctopusLerpPower() {
+                return 0.1f;
+            }
+
+            @Override
+            public void processAttack(float delta, BossFightScreen screen, BossAttackManager bam) {
+                time += delta;
+                timeUntilGeiserChosen -= delta;
+                if(timeUntilGeiserChosen <= 0 && chosenIsland == null) {
+                    chosenIsland = screen.islands.random();
+                    timeUntilGeiser = 2;
+                    PositionComponent pos = Mappers.position.get(chosenIsland);
+                    bubbles = screen.getPm().spawnBubbles((int) pos.getX() + 10, (int) pos.getY());
+                }
+                if(chosenIsland != null) {
+                    timeUntilGeiser -= delta;
+
+                    if (timeUntilGeiser <= 0) {
+                        chosenIsland.boost();
+                        bubbles.allowCompletion();
+                        chosenIsland = null;
+                        timeUntilGeiserChosen = 1;
+                    }
+                }
+
+                if(time > 4) {
+                    time -= 4;
+                    float option = MathUtils.random();
+                    if(option < 1/3f) {
+                        BossAttacks.stairwayII(screen.batch, screen.shapeRenderer, screen);
+                    } else if(option > 1/3f && option < 2/3f){
+                        BossAttacks.closeLine(screen.batch, screen.shapeRenderer, screen, (int) Mappers.position.get(screen.player).getY());
+                    } else {
+                        bubbleArm = new BubbleAttackArm(screen.batch, screen.shapeRenderer, GeneralUtils.randomItem(new Integer[] {100, 500}), 2, 5, .4f);
+                        screen.addEntity(bubbleArm);
+                    }
+                }
+                if(bubbleArm != null && bubbleArm.isRemoved()) {
+                    bubbleArm = null;
+                }
+            }
+
+            @Override
+            public float getOctopusSpeed() {
+                return 300;
+            }
+
+            @Override
+            public int getOctopusLife() {
+                return 1;
+            }
+        },
+        WIN {
+            @Override
+            public IntVector2 createOctopusPoint() {
+                return new IntVector2(90, 230);
+            }
+
+            @Override
+            public float getOctopusSpeed() {
+                return 50;
+            }
+
+            @Override
+            public void processAttack(float delta, BossFightScreen screen, BossAttackManager bam) {
+            }
+
+            @Override
+            public float getOctopusLerpPower() {
+                return 0.1f;
+            }
+
+            @Override
+            public int getOctopusLife() {
+                return Integer.MAX_VALUE;
             }
         }
         ;
@@ -351,7 +455,9 @@ public class BossFightScreen extends AbstractScreen {
 
     @Override
     public void show() {
-        phase = FightPhase.ZERO;
+        mm = new MusicManager();
+        phase = FightPhase.SIX;
+        guiViewport = new FitViewport(getScreenWidth(), getScreenHeight());
         pm = new ParticleManager(batch, shapeRenderer);
         addEntity(pm);
 
@@ -388,7 +494,7 @@ public class BossFightScreen extends AbstractScreen {
     @Override
     public void tick(float v) {
         if(transitioning) return;
-        if(!headUp) {
+        if(!headUp && phase != FightPhase.WIN) {
             phase.processAttack(v, this, bam);
         }
         pm.additionalTick(v);
@@ -433,6 +539,12 @@ public class BossFightScreen extends AbstractScreen {
         }
         shapeRenderer.end();
         renderEntities();
+
+        guiViewport.apply();
+        batch.setProjectionMatrix(guiViewport.getCamera().combined);
+        batch.begin();
+        Fonts.getFont("pixelmix").getFont(16).draw(batch, "Hits: " + hits, 10, 300);
+        batch.end();
     }
 
 
@@ -446,7 +558,8 @@ public class BossFightScreen extends AbstractScreen {
         } else if(notification == Notifications.OCTOPUS_EYE_GONE) {
             headUp = false;
         } else if(notification == Notifications.DASHNI_DEAD) {
-            ga.transitionTo(new BossFightScreen(ga), Transitions.linearFade(2, batch, shapeRenderer));
+            hits++;
+            //ga.transitionTo(new BossFightScreen(ga), Transitions.linearFade(2, batch, shapeRenderer));
         }
     }
 
@@ -468,6 +581,7 @@ public class BossFightScreen extends AbstractScreen {
     @Override
     public void reSize(int width, int height) {
         renderSystem.resize(width, height);
+        guiViewport.update(width, height, true);
     }
 
     @Override

@@ -70,6 +70,14 @@ public class BubbleAttackArm extends ScreenEntity {
     @Override
     public void additionalTick(float delta) {
         render.setFlipX(Mappers.position.get(((BossFightScreen)screen).getPlayer()).getX() > pos.getX());
+        if(((BossFightScreen)screen).isHeadUp() && phase != BubbleAttackPhase.OUT) {
+            if(phase == BubbleAttackPhase.SIGNAL) {
+                remove();
+            } else {
+                end();
+            }
+        }
+
         if(phase == BubbleAttackPhase.SIGNAL) {
             signalTimeCounter += delta;
             if(signalTimeCounter >= telegraphTime) {

@@ -19,7 +19,6 @@ import com.redsponge.redengine.screen.components.TextureComponent;
 import com.redsponge.redengine.screen.entity.ScreenEntity;
 import com.redsponge.redengine.screen.systems.RenderSystem;
 import com.redsponge.redengine.utils.IntVector2;
-import com.redsponge.redengine.utils.Logger;
 import com.redsponge.redengine.utils.MathUtilities;
 
 public class DashniPlayer extends ScreenEntity {
@@ -164,7 +163,7 @@ public class DashniPlayer extends ScreenEntity {
         }
         if(pos.getY() < 0) {
             die();
-            pos.set(100, 100);
+            pos.set(200, 200);
         }
     }
 

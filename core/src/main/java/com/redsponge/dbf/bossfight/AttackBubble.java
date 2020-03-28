@@ -3,10 +3,11 @@ package com.redsponge.dbf.bossfight;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.redsponge.redengine.screen.INotified;
 import com.redsponge.redengine.screen.components.TextureComponent;
 import com.redsponge.redengine.screen.entity.ScreenEntity;
 
-public class AttackBubble extends ScreenEntity {
+public class AttackBubble extends ScreenEntity implements INotified {
 
     private float x, y, px, py;
     private float timeAlive;
@@ -45,6 +46,13 @@ public class AttackBubble extends ScreenEntity {
     public void loadAssets() {
         TextureComponent tex = new TextureComponent(assets.getTextureRegion("bubble"));
         add(tex);
+    }
+
+    @Override
+    public void notified(Object o, int i) {
+        if(i == Notifications.TARGET_OCTOPUS_DOWN) {
+            remove();
+        }
     }
 
     @Override
