@@ -36,6 +36,9 @@ public class BossFightAssets extends AssetSpecifier {
     @AtlasAnimation(animationName = "run", atlas = "playerAtlas", length = 12, frameDuration = 0.05f)
     private Animation<TextureRegion> playerRunAnimation;
 
+    @AtlasAnimation(animationName = "dead", atlas = "playerAtlas", length = 2, frameDuration = 0.1f, playMode = PlayMode.NORMAL)
+    private Animation<TextureRegion> playerDieAnimation;
+
 
     @Asset("textures/target/target.atlas")
     public TextureAtlas targetAtlas;

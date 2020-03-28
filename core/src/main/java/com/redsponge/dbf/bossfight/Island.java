@@ -5,19 +5,19 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.redsponge.redengine.physics.PBodyType;
-import com.redsponge.redengine.screen.components.NinePatchComponent;
 import com.redsponge.redengine.screen.components.PhysicsComponent;
+import com.redsponge.redengine.screen.components.TextureComponent;
 import com.redsponge.redengine.screen.entity.ScreenEntity;
 
 public class Island extends ScreenEntity {
 
     private int x, y, w, h;
-    private NinePatch patch;
 
     private float timeExists;
     private float boostTime;
     private boolean boosting;
     private float boostYStart;
+    private TextureComponent tex;
     private PhysicsComponent physics;
 
     public Island(SpriteBatch batch, ShapeRenderer shapeRenderer, int x, int y, int w, int h) {
@@ -32,7 +32,8 @@ public class Island extends ScreenEntity {
     @Override
     public void added() {
         pos.set(x, y);
-        size.set(w, h);
+        size.set(w, h - 15);
+        render.setUseRegW(true).setUseRegH(true).setScaleX(2).setScaleY(2);
         add(physics = new PhysicsComponent(PBodyType.SOLID));
     }
 
@@ -49,15 +50,12 @@ public class Island extends ScreenEntity {
         } else {
             timeExists += delta;
             vel.setY((float) (Math.cos(2 * timeExists) * 10)); // derivative of sin
-            vel.setX((float) (-Math.sin(2 * timeExists) * 5)); // derivative of cos
         }
     }
 
     @Override
     public void loadAssets() {
-        patch = new NinePatch(assets.getTextureRegion("island"), 4, 4, 3, 7);
-        NinePatchComponent npc = new NinePatchComponent(patch);
-        add(npc);
+        add(tex = new TextureComponent(assets.getTextureRegion("island")));
     }
 
     public void boost() {

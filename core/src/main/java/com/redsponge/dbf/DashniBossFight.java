@@ -9,6 +9,6 @@ public class DashniBossFight extends EngineGame {
 
     @Override
     public void init() {
-        setScreen(new IntroScreen(ga));
+        setScreen(new MenuScreen(ga));
     }
 }

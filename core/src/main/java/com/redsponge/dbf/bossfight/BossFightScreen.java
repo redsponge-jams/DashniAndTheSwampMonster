@@ -4,13 +4,17 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.redsponge.dbf.menu.MenuScreen;
 import com.redsponge.redengine.assets.AssetSpecifier;
 import com.redsponge.redengine.assets.Fonts;
 import com.redsponge.redengine.physics.PhysicsDebugRenderer;
@@ -24,6 +28,7 @@ import com.redsponge.redengine.transitions.Transitions;
 import com.redsponge.redengine.utils.GameAccessor;
 import com.redsponge.redengine.utils.GeneralUtils;
 import com.redsponge.redengine.utils.IntVector2;
+import com.redsponge.redengine.utils.MathUtilities;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -52,6 +57,15 @@ public class BossFightScreen extends AbstractScreen {
     private FitViewport guiViewport;
 
     private int hits;
+    private boolean isDashniDead;
+
+    private IntVector2 deadDashniPos;
+
+    private Animation<TextureRegion> dashniDeadAnimation;
+    private float deadDashniTime;
+    private boolean raisedFlag;
+
+    private float raiseFlagCounter;
 
     public static void progressPhase() {
         mm.swap();
@@ -233,7 +247,7 @@ public class BossFightScreen extends AbstractScreen {
                     chosenIsland = screen.islands.random();
                     timeUntilGeiser = 2;
                     PositionComponent pos = Mappers.position.get(chosenIsland);
-                    bubbles = screen.getPm().spawnBubbles((int) pos.getX() + 10, (int) pos.getY());
+                    bubbles = screen.getPm().spawnLineBubbles((int) pos.getX(), (int) pos.getY());
                 }
                 if(chosenIsland != null) {
                     timeUntilGeiser -= delta;
@@ -299,7 +313,7 @@ public class BossFightScreen extends AbstractScreen {
                     chosenIsland = screen.islands.random();
                     timeUntilGeiser = 2;
                     PositionComponent pos = Mappers.position.get(chosenIsland);
-                    bubbles = screen.getPm().spawnBubbles((int) pos.getX() + 10, (int) pos.getY());
+                    bubbles = screen.getPm().spawnLineBubbles((int) pos.getX(), (int) pos.getY());
                 }
                 if(chosenIsland != null) {
                     timeUntilGeiser -= delta;
@@ -365,7 +379,7 @@ public class BossFightScreen extends AbstractScreen {
                     chosenIsland = screen.islands.random();
                     timeUntilGeiser = 2;
                     PositionComponent pos = Mappers.position.get(chosenIsland);
-                    bubbles = screen.getPm().spawnBubbles((int) pos.getX() + 10, (int) pos.getY());
+                    bubbles = screen.getPm().spawnLineBubbles((int) pos.getX(), (int) pos.getY());
                 }
                 if(chosenIsland != null) {
                     timeUntilGeiser -= delta;
@@ -463,12 +477,11 @@ public class BossFightScreen extends AbstractScreen {
 
         physicsSystem = getEntitySystem(PhysicsSystem.class);
         renderSystem = getEntitySystem(RenderSystem.class);
-        renderSystem.setBackground(Color.GRAY);
         this.bam = new BossAttackManager(this);
 
         islands = new DelayedRemovalArray<Island>();
-        islands.add(new Island(batch, shapeRenderer, 300, 20, 100, 20));
-        islands.add(new Island(batch, shapeRenderer, 150, 20, 100, 20));
+        islands.add(new Island(batch, shapeRenderer, 300, 10, 104, 42));
+        islands.add(new Island(batch, shapeRenderer, 150, 10, 104, 42));
 
         for (int i = 0; i < islands.size; i++) {
             addEntity(islands.get(i));
@@ -479,6 +492,8 @@ public class BossFightScreen extends AbstractScreen {
         addEntity(player = new DashniPlayer(batch, shapeRenderer));
         addEntity(new Background(batch, shapeRenderer));
         addEntity(new Water(batch, shapeRenderer));
+
+        dashniDeadAnimation = assets.getAnimation("playerDieAnimation");
 
 
         pdr = new PhysicsDebugRenderer();
@@ -494,8 +509,28 @@ public class BossFightScreen extends AbstractScreen {
     @Override
     public void tick(float v) {
         if(transitioning) return;
+        if(isDashniDead) {
+            if(Gdx.input.isKeyJustPressed(Keys.ENTER)) {
+                ga.transitionTo(new BossFightScreen(ga), Transitions.linearFade(1, batch, shapeRenderer));
+            }
+            else if(Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
+                ga.transitionTo(new MenuScreen(ga), Transitions.linearFade(1, batch, shapeRenderer));
+            }
+            deadDashniTime += v;
+            return;
+        }
+
         if(!headUp && phase != FightPhase.WIN) {
             phase.processAttack(v, this, bam);
+        }
+        if(phase == FightPhase.WIN && !raisedFlag) {
+            renderSystem.getCamera().position.lerp(new Vector3(150, getScreenHeight() / 2f, 0), 0.001f);
+            renderSystem.getCamera().zoom = MathUtilities.lerp(renderSystem.getCamera().zoom, 0.9f, 0.001f);
+        } else if(raisedFlag) {
+            raiseFlagCounter += v;
+            if(raiseFlagCounter > 5) {
+                ga.transitionTo(new WinScreen(ga), Transitions.sineCircle(2, batch, shapeRenderer));
+            }
         }
         pm.additionalTick(v);
         for (ScreenEntity screenEntity : scheduledEntities.keySet()) {
@@ -525,26 +560,56 @@ public class BossFightScreen extends AbstractScreen {
 
     @Override
     public void render() {
-
         renderSystem.getViewport().apply();
         batch.setProjectionMatrix(renderSystem.getCamera().combined);
 
-        pdr.render(physicsSystem.getPhysicsWorld(), renderSystem.getViewport().getCamera().combined);
+        if(isDashniDead) {
+            Gdx.gl.glClearColor(0, 0, 0, 1);
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        shapeRenderer.begin(ShapeType.Line);
-        shapeRenderer.setColor(Color.RED);
-        for (int i = 0; i < attackBoxes.size; i++) {
-            Rectangle r = attackBoxes.get(i);
-            shapeRenderer.rect(r.x, r.y, r.width, r.height);
+            float timeX = Math.max(deadDashniTime - 1, 0);
+            float yOffset = timeX * (1 - timeX);
+
+            batch.begin();
+            batch.getColor().a = 1;
+            batch.draw(dashniDeadAnimation.getKeyFrame(deadDashniTime), deadDashniPos.x, deadDashniPos.y + yOffset * 200);
+            if(deadDashniTime > 3) {
+                batch.getColor().a = Math.min(deadDashniTime - 3, 1);
+                BitmapFont font = Fonts.getFont("pixelmix", 32);
+                font.getColor().a = Math.min(deadDashniTime - 3, 1);
+                font.getData().setScale(1);
+                font.draw(batch, "You Died!", 0, 200, 0, "You died!".length(), getScreenWidth(), Align.center, true);
+
+                if(deadDashniTime >= 4) {
+                    font.getColor().a = Math.min(deadDashniTime - 4, 1);
+                    font.getData().setScale(0.5f);
+                    font.draw(batch, "Press Enter To Try Again", 0, 150, 0, "Press enter to try again".length(), getScreenWidth(), Align.center, true);
+                }
+                if(deadDashniTime >= 5) {
+                    font.getColor().a = Math.min(deadDashniTime - 5, 1);
+                    font.getData().setScale(0.5f);
+                    font.draw(batch, "Press ESC To Return To Menu", 0, 100, 0, "Press ESC To Return To Menu".length(), getScreenWidth(), Align.center, true);
+                }
+            }
+            batch.end();
+        } else {
+            pdr.render(physicsSystem.getPhysicsWorld(), renderSystem.getViewport().getCamera().combined);
+
+            shapeRenderer.begin(ShapeType.Line);
+            shapeRenderer.setColor(Color.RED);
+            for (int i = 0; i < attackBoxes.size; i++) {
+                Rectangle r = attackBoxes.get(i);
+                shapeRenderer.rect(r.x, r.y, r.width, r.height);
+            }
+            shapeRenderer.end();
+            renderEntities();
+
+            guiViewport.apply();
+            batch.setProjectionMatrix(guiViewport.getCamera().combined);
+            batch.begin();
+            Fonts.getFont("pixelmix").getFont(16).draw(batch, "Hits: " + hits, 10, 300);
+            batch.end();
         }
-        shapeRenderer.end();
-        renderEntities();
-
-        guiViewport.apply();
-        batch.setProjectionMatrix(guiViewport.getCamera().combined);
-        batch.begin();
-        Fonts.getFont("pixelmix").getFont(16).draw(batch, "Hits: " + hits, 10, 300);
-        batch.end();
     }
 
 
@@ -559,7 +624,13 @@ public class BossFightScreen extends AbstractScreen {
             headUp = false;
         } else if(notification == Notifications.DASHNI_DEAD) {
             hits++;
-            //ga.transitionTo(new BossFightScreen(ga), Transitions.linearFade(2, batch, shapeRenderer));
+            isDashniDead = true;
+            mm.stop();
+            PositionComponent pos = Mappers.position.get(player);
+            deadDashniPos = new IntVector2((int) pos.getX(),(int) pos.getY());
+            deadDashniTime = 0;
+        } else if(notification == Notifications.RAISED_FLAG) {
+            raisedFlag = true;
         }
     }
 
@@ -587,6 +658,7 @@ public class BossFightScreen extends AbstractScreen {
     @Override
     public void disposeAssets() {
         pdr.dispose();
+        mm.dispose();
     }
 
     public Array<Rectangle> getAttackBoxes() {

@@ -42,6 +42,7 @@ public class DashniPlayer extends ScreenEntity {
     private Animation<TextureRegion> attackAnimation;
     private Animation<TextureRegion> attackUpAnimation;
     private Animation<TextureRegion> attackDownAnimation;
+    private Animation<TextureRegion> deathAnimation;
 
     private float attackTime;
     private float attackCooldown;
@@ -58,6 +59,8 @@ public class DashniPlayer extends ScreenEntity {
     private AttackType attackType;
 
     private int jumpsLeft;
+    private boolean dead;
+    private boolean locked;
 
     public DashniPlayer(SpriteBatch batch, ShapeRenderer shapeRenderer) {
         super(batch, shapeRenderer);
@@ -94,6 +97,7 @@ public class DashniPlayer extends ScreenEntity {
         this.attackAnimation = assets.getAnimation("playerAttackHorizAnimation");
         this.attackUpAnimation = assets.getAnimation("playerAttackUpAnimation");
         this.attackDownAnimation = assets.getAnimation("playerAttackDownAnimation");
+        this.deathAnimation = assets.getAnimation("playerDieAnimation");
 
         anim = new AnimationComponent(idleAnimation);
         attackSound = assets.get("dashniAttackSound", Sound.class);
@@ -124,6 +128,15 @@ public class DashniPlayer extends ScreenEntity {
 
     @Override
     public void additionalTick(float delta) {
+        if(locked) {
+            vel.set(0, 0);
+            lookingLeft = true;
+            return;
+        }
+        if(dead) {
+            vel.set(0, 0);
+            return;
+        }
         if(isAttacking) {
             processAttack(delta);
         }
@@ -163,7 +176,6 @@ public class DashniPlayer extends ScreenEntity {
         }
         if(pos.getY() < 0) {
             die();
-            pos.set(200, 200);
         }
     }
 
@@ -207,13 +219,15 @@ public class DashniPlayer extends ScreenEntity {
         if(attackTime > 0.2f && attackBox == null) {
             createAttackBox();
             notifyScreen(Notifications.PLAYER_ATTACK_BOX_SPAWNED);
-//            attackBox.set(0, 0, 0, 0);
         }
         if(attackType == AttackType.REGULAR && lookingLeft) {
             render.setOffsetX(-96-8);
         }
         if(attackType == AttackType.DOWN && lookingLeft) {
             render.setOffsetX(-16);
+        }
+        if(attackType == AttackType.UP && lookingLeft) {
+            render.setOffsetX(-18);
         }
         if(attackAnimation.isAnimationFinished(attackTime)) {
             endAttack();
@@ -248,6 +262,9 @@ public class DashniPlayer extends ScreenEntity {
 
     private void die() {
         notifyScreen(Notifications.DASHNI_DEAD);
+        dead = true;
+        anim.setAnimation(deathAnimation);
+        anim.setAnimationTime(0);
     }
 
     private void updateBetterJump(float delta) {
@@ -262,6 +279,9 @@ public class DashniPlayer extends ScreenEntity {
     private void onYCollide(PEntity other) {
         if(vel.getY() < 0) {
             jumpsLeft = 1;
+            if(BossFightScreen.phase == BossFightScreen.FightPhase.WIN) {
+                locked = true;
+            }
         }
         vel.setY(0);
     }

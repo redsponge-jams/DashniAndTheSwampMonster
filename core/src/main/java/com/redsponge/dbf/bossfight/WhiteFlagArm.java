@@ -16,8 +16,6 @@ public class WhiteFlagArm extends ScreenEntity {
     private AnimationComponent anim;
 
     private PooledEffect bubbles;
-    private PooledEffect bubbles1;
-    private PooledEffect bubbles2;
     private float time = 0;
     private boolean didRaise;
 
@@ -30,8 +28,7 @@ public class WhiteFlagArm extends ScreenEntity {
         super.added();
         pos.set(50, 0);
         size.set(48 * 2, 128 * 2);
-        bubbles = ((BossFightScreen)screen).getPm().spawnBubbles(bubbleX , 0);
-        bubbles.getEmitters().get(0).setContinuous(true);
+        bubbles = ((BossFightScreen)screen).getPm().spawnIntenseBubbles(bubbleX , 0);
 
 
         pos.set(-5000,0);
@@ -50,24 +47,11 @@ public class WhiteFlagArm extends ScreenEntity {
     @Override
     public void additionalTick(float delta) {
         time += delta;
-        if(time > 2 & bubbles1 == null) {
-            bubbles1 = ((BossFightScreen)screen).getPm().spawnBubbles(bubbleX , 0);
-            bubbles1.getEmitters().get(0).setContinuous(true);
-        }
-        if(time > 4 && bubbles2 == null) {
-            bubbles2 = ((BossFightScreen)screen).getPm().spawnBubbles(bubbleX , 0);
-            bubbles2.getEmitters().get(0).setContinuous(true);
-        }
         Logger.log(this, time);
         if(time > 8f && bubbles != null && !didRaise) {
             anim.setAnimation(raiseAnimation);
             anim.setAnimationTime(0);
-            ((BossFightScreen)screen).getPm().getBubbles().removeValue(bubbles, true);
-            ((BossFightScreen)screen).getPm().getBubbles().removeValue(bubbles1, true);
-            ((BossFightScreen)screen).getPm().getBubbles().removeValue(bubbles2, true);
-            bubbles.free();
-            bubbles1.free();
-            bubbles2.free();
+            bubbles = null;
             pos.set(50, 0);
             notifyScreen(Notifications.RAISED_FLAG);
             didRaise = true;

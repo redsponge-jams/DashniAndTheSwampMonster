@@ -19,15 +19,20 @@ public class ParticleManager extends ScreenEntity {
     private ParticleEffectPool intenseBubblePool;
     private DelayedRemovalArray<PooledEffect> intenseBubbleEffects;
 
+    private ParticleEffectPool lineBubblePool;
+    private DelayedRemovalArray<PooledEffect> lineBubbleEffects;
+
     public ParticleManager(SpriteBatch batch, ShapeRenderer sr) {
         super(batch, sr);
         bubbleEffects = new DelayedRemovalArray<>();
         intenseBubbleEffects = new DelayedRemovalArray<>();
+        lineBubbleEffects = new DelayedRemovalArray<>();
     }
 
     @Override
     public void added() {
         add(new RenderRunnableComponent(this::render));
+        pos.setZ(5);
     }
 
     public void loadAssets() {
@@ -37,9 +42,15 @@ public class ParticleManager extends ScreenEntity {
         bubblePool = new ParticleEffectPool(effect, 10, 100);
 
         ParticleEffect intenseEffect = new ParticleEffect();
-        effect.load(Gdx.files.internal("particles/bubbling_tense.p"), Gdx.files.internal("particles"));
+        intenseEffect.load(Gdx.files.internal("particles/bubbling_tense.p"), Gdx.files.internal("particles"));
 
         intenseBubblePool = new ParticleEffectPool(intenseEffect, 10, 100);
+
+
+        ParticleEffect lineEffect = new ParticleEffect();
+        lineEffect.load(Gdx.files.internal("particles/bubbling_line.p"), Gdx.files.internal("particles"));
+
+        lineBubblePool = new ParticleEffectPool(lineEffect, 10, 100);
     }
 
     public PooledEffect spawnBubbles(int x, int y) {
@@ -56,23 +67,38 @@ public class ParticleManager extends ScreenEntity {
         return effect;
     }
 
-    public void additionalTick(float delta) {
-        for (int i = 0; i < bubbleEffects.size; i++) {
-            bubbleEffects.get(i).update(delta);
-            if(bubbleEffects.get(i).isComplete()) {
-                bubbleEffects.get(i).free();
-                bubbleEffects.removeIndex(i);
+    public PooledEffect spawnLineBubbles(int x, int y) {
+        PooledEffect effect = lineBubblePool.obtain();
+        effect.setPosition(x, y);
+        lineBubbleEffects.add(effect);
+        return effect;
+    }
+
+    private void updateEffect(DelayedRemovalArray<PooledEffect> effects, float delta) {
+        for (int i = 0; i < effects.size; i++) {
+            effects.get(i).update(delta);
+            if(effects.get(i).isComplete()) {
+                effects.get(i).free();
+                effects.removeIndex(i);
             }
         }
     }
 
-    public void render() {
-        for (int i = 0; i < bubbleEffects.size; i++) {
-            bubbleEffects.get(i).draw(batch);
+    public void additionalTick(float delta) {
+        updateEffect(bubbleEffects, delta);
+        updateEffect(intenseBubbleEffects, delta);
+        updateEffect(lineBubbleEffects, delta);
+    }
+
+    private void drawEffect(DelayedRemovalArray<PooledEffect> effects) {
+        for (int i = 0; i < effects.size; i++) {
+            effects.get(i).draw(batch);
         }
     }
 
-    public DelayedRemovalArray<PooledEffect> getBubbles() {
-        return bubbleEffects;
+    public void render() {
+        drawEffect(bubbleEffects);
+        drawEffect(intenseBubbleEffects);
+        drawEffect(lineBubbleEffects);
     }
 }

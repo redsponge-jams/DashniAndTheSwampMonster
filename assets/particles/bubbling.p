@@ -49,12 +49,12 @@ active: false
 - Y Offset - 
 active: false
 - Spawn Shape - 
-shape: line
+shape: point
 - Spawn Width - 
 lowMin: 0.0
 lowMax: 0.0
-highMin: 50.0
-highMax: 50.0
+highMin: 104.0
+highMax: 104.0
 relative: false
 scalingCount: 1
 scaling0: 1.0

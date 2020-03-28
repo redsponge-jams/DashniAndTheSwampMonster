@@ -13,9 +13,9 @@ background
   index: -1
 island
   rotate: false
-  xy: 644, 740
-  size: 16, 14
-  orig: 16, 14
+  xy: 644, 733
+  size: 51, 21
+  orig: 51, 21
   offset: 0, 0
   index: -1
 water

@@ -8,6 +8,7 @@ public class MusicManager {
     private String[] paths = {"music/birds.ogg", "music/1.ogg", "music/2.ogg", "music/3.ogg", "music/4.ogg", "music/5.ogg", "music/6.ogg", "music/final.ogg"};
     private boolean[] keepPosition = {false, true, true, true, true, true, false};
     private boolean[] loop = {true, true, true, true, true, true, true, false};
+    private float[] volume = {1, .25f, .25f, .25f, .25f, .25f, .25f, 1};
     private int currentIndex;
 
     private Music current;
@@ -16,7 +17,7 @@ public class MusicManager {
     private AssetManager am;
 
     public MusicManager() {
-        currentIndex = 6;
+        currentIndex = 5;
         am = new AssetManager();
         am.load(paths[currentIndex], Music.class);
         am.finishLoading();
@@ -24,6 +25,7 @@ public class MusicManager {
         current.play();
         current.setLooping(true);
         prepNext();
+        swap();
     }
 
     private void prepNext() {
@@ -43,6 +45,7 @@ public class MusicManager {
         }
         next.play();
         next.setLooping(loop[(currentIndex + 1) % paths.length]);
+        next.setVolume(volume[(currentIndex + 1) % paths.length]);
         next.setPosition(pos);
         current.stop();
 
@@ -56,5 +59,9 @@ public class MusicManager {
 
     public void dispose() {
         am.dispose();
+    }
+
+    public void stop() {
+        current.stop();
     }
 }

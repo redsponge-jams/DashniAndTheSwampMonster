@@ -227,7 +227,7 @@ side_signal
   size: 640, 32
   orig: 640, 32
   offset: 0, 0
-  index: 9
+  index: 8
 side_signal
   rotate: false
   xy: 2, 928
@@ -241,7 +241,7 @@ side_signal
   size: 640, 32
   orig: 640, 32
   offset: 0, 0
-  index: 8
+  index: 9
 side_attack
   rotate: false
   xy: 2, 894
@@ -353,6 +353,13 @@ side_signal
   size: 640, 32
   orig: 640, 32
   offset: 0, 0
+  index: 11
+side_signal
+  rotate: false
+  xy: 2, 588
+  size: 640, 32
+  orig: 640, 32
+  offset: 0, 0
   index: 12
 side_signal
   rotate: false
@@ -361,13 +368,6 @@ side_signal
   orig: 640, 32
   offset: 0, 0
   index: 7
-side_signal
-  rotate: false
-  xy: 2, 588
-  size: 640, 32
-  orig: 640, 32
-  offset: 0, 0
-  index: 11
 sink
   rotate: false
   xy: 2, 328
