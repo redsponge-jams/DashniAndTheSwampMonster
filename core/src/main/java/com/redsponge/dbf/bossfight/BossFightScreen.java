@@ -470,7 +470,7 @@ public class BossFightScreen extends AbstractScreen {
     @Override
     public void show() {
         mm = new MusicManager();
-        phase = FightPhase.SIX;
+        phase = FightPhase.ZERO;
         guiViewport = new FitViewport(getScreenWidth(), getScreenHeight());
         pm = new ParticleManager(batch, shapeRenderer);
         addEntity(pm);
@@ -514,7 +514,7 @@ public class BossFightScreen extends AbstractScreen {
                 ga.transitionTo(new BossFightScreen(ga), Transitions.linearFade(1, batch, shapeRenderer));
             }
             else if(Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
-                ga.transitionTo(new MenuScreen(ga), Transitions.linearFade(1, batch, shapeRenderer));
+                ga.transitionTo(new MenuScreen(ga, null), Transitions.linearFade(1, batch, shapeRenderer));
             }
             deadDashniTime += v;
             return;
@@ -593,22 +593,16 @@ public class BossFightScreen extends AbstractScreen {
             }
             batch.end();
         } else {
-            pdr.render(physicsSystem.getPhysicsWorld(), renderSystem.getViewport().getCamera().combined);
-
-            shapeRenderer.begin(ShapeType.Line);
-            shapeRenderer.setColor(Color.RED);
-            for (int i = 0; i < attackBoxes.size; i++) {
-                Rectangle r = attackBoxes.get(i);
-                shapeRenderer.rect(r.x, r.y, r.width, r.height);
-            }
-            shapeRenderer.end();
+//            pdr.render(physicsSystem.getPhysicsWorld(), renderSystem.getViewport().getCamera().combined);
+//
+//            shapeRenderer.begin(ShapeType.Line);
+//            shapeRenderer.setColor(Color.RED);
+//            for (int i = 0; i < attackBoxes.size; i++) {
+//                Rectangle r = attackBoxes.get(i);
+//                shapeRenderer.rect(r.x, r.y, r.width, r.height);
+//            }
+//            shapeRenderer.end();
             renderEntities();
-
-            guiViewport.apply();
-            batch.setProjectionMatrix(guiViewport.getCamera().combined);
-            batch.begin();
-            Fonts.getFont("pixelmix").getFont(16).draw(batch, "Hits: " + hits, 10, 300);
-            batch.end();
         }
     }
 

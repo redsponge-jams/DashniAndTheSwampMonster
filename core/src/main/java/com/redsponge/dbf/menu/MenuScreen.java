@@ -2,6 +2,7 @@ package com.redsponge.dbf.menu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Interpolation;
@@ -30,8 +31,12 @@ public class MenuScreen extends AbstractScreen {
     private Stage stage;
     private Skin skin;
 
-    public MenuScreen(GameAccessor ga) {
+    private Music intro, loop;
+    private boolean disposedIntro;
+
+    public MenuScreen(GameAccessor ga, Music alreadyStartedIntro) {
         super(ga);
+        this.intro = alreadyStartedIntro;
     }
 
     @Override
@@ -52,6 +57,27 @@ public class MenuScreen extends AbstractScreen {
         showMenuScreen();
 
         Gdx.input.setInputProcessor(stage);
+        System.out.println(intro + " " + intro.getPosition() + " " + intro.isPlaying());
+        loop = Gdx.audio.newMusic(Gdx.files.internal("music/musica_loop.ogg"));
+
+        if(intro == null) {
+            intro = Gdx.audio.newMusic(Gdx.files.internal("music/musica.ogg"));
+            intro.setVolume(0.5f);
+            intro.play();
+        } else if(!intro.isPlaying()){
+            intro.dispose();
+            loop.setLooping(true);
+            loop.setVolume(0.5f);
+            loop.play();
+        } else {
+            intro.setOnCompletionListener((music) -> {
+                intro.dispose();
+                disposedIntro = true;
+                loop.setVolume(0.5f);
+                loop.play();
+                loop.setLooping(true);
+            });
+        }
     }
 
     private void swapMenu(Runnable menuBuilder) {
@@ -96,8 +122,6 @@ public class MenuScreen extends AbstractScreen {
                 "Stay home & Wash your hands!",
                 "Don't ignore your ice cream",
                 "Dashni, Dashni, and Dashni.. AND DASHNI",
-                "And a new day will dawn, for those who stand long..",
-                "This is a random message, exit and re-enter credits if you're bored"
         };
 
         for(int i = 0; i < contents.length / 2; i++) {
@@ -179,5 +203,9 @@ public class MenuScreen extends AbstractScreen {
     @Override
     public void disposeAssets() {
         skin.dispose();
+        if(!disposedIntro) {
+            intro.dispose();
+        }
+        loop.dispose();
     }
 }

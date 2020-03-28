@@ -106,13 +106,13 @@ public class TargetOctopus extends ScreenEntity implements INotified {
 
     @Override
     public void additionalRender() {
-        shapeRenderer.setProjectionMatrix(screen.getEntitySystem(RenderSystem.class).getCamera().combined);
-        shapeRenderer.begin(ShapeType.Line);
-        shapeRenderer.setColor(Color.BLUE);
-        shapeRenderer.rect(pos.getX(), pos.getY(), size.getX(), size.getY());
-        shapeRenderer.setColor(Color.ORANGE);
-        shapeRenderer.circle(targetLoc.x, targetLoc.y, 10);
-        shapeRenderer.end();
+//        shapeRenderer.setProjectionMatrix(screen.getEntitySystem(RenderSystem.class).getCamera().combined);
+//        shapeRenderer.begin(ShapeType.Line);
+//        shapeRenderer.setColor(Color.BLUE);
+//        shapeRenderer.rect(pos.getX(), pos.getY(), size.getX(), size.getY());
+//        shapeRenderer.setColor(Color.ORANGE);
+//        shapeRenderer.circle(targetLoc.x, targetLoc.y, 10);
+//        shapeRenderer.end();
     }
 
     @Override

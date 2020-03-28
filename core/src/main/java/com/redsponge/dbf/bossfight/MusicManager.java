@@ -17,7 +17,7 @@ public class MusicManager {
     private AssetManager am;
 
     public MusicManager() {
-        currentIndex = 5;
+        currentIndex = 0;
         am = new AssetManager();
         am.load(paths[currentIndex], Music.class);
         am.finishLoading();
@@ -25,7 +25,6 @@ public class MusicManager {
         current.play();
         current.setLooping(true);
         prepNext();
-        swap();
     }
 
     private void prepNext() {

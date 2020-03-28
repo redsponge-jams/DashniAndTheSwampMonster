@@ -35,7 +35,7 @@ public class WinScreen extends AbstractScreen {
         if(transitioning) return;
         time += v;
         if(time > 5) {
-            ga.transitionTo(new MenuScreen(ga), Transitions.sineSlide(1, batch, shapeRenderer));
+            ga.transitionTo(new MenuScreen(ga, null), Transitions.sineSlide(1, batch, shapeRenderer));
         }
     }
 

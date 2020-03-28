@@ -1,12 +1,10 @@
 package com.redsponge.dbf.bossfight;
 
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.redsponge.dbf.input.Input;
@@ -17,7 +15,6 @@ import com.redsponge.redengine.screen.components.AnimationComponent;
 import com.redsponge.redengine.screen.components.PhysicsComponent;
 import com.redsponge.redengine.screen.components.TextureComponent;
 import com.redsponge.redengine.screen.entity.ScreenEntity;
-import com.redsponge.redengine.screen.systems.RenderSystem;
 import com.redsponge.redengine.utils.IntVector2;
 import com.redsponge.redengine.utils.MathUtilities;
 
@@ -185,13 +182,13 @@ public class DashniPlayer extends ScreenEntity {
 
     @Override
     public void additionalRender() {
-        shapeRenderer.setProjectionMatrix(screen.getEntitySystem(RenderSystem.class).getCamera().combined);
-        shapeRenderer.begin(ShapeType.Line);
-        if(attackBox != null) {
-            shapeRenderer.setColor(Color.RED);
-            shapeRenderer.rect(attackBox.x, attackBox.y, attackBox.width, attackBox.height);
-        }
-        shapeRenderer.end();
+//        shapeRenderer.setProjectionMatrix(screen.getEntitySystem(RenderSystem.class).getCamera().combined);
+//        shapeRenderer.begin(ShapeType.Line);
+//        if(attackBox != null) {
+//            shapeRenderer.setColor(Color.RED);
+//            shapeRenderer.rect(attackBox.x, attackBox.y, attackBox.width, attackBox.height);
+//        }
+//        shapeRenderer.end();
     }
 
     private void beginAttacking() {

@@ -43,6 +43,9 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
 
         render.setRenderOriginY(-20);
         timeBeforeBored = 3;
+        if(BossFightScreen.phase == FightPhase.ZERO) {
+            timeBeforeBored = Integer.MAX_VALUE;
+        }
     }
 
     @Override
@@ -109,13 +112,13 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
 
     @Override
     public void additionalRender() {
-        shapeRenderer.setProjectionMatrix(screen.getEntitySystem(RenderSystem.class).getCamera().combined);
-        shapeRenderer.begin(ShapeType.Line);
-        shapeRenderer.setColor(Color.GREEN);
-        if(eye != null) {
-            shapeRenderer.rect(eye.x, eye.y, eye.width, eye.height);
-        }
-        shapeRenderer.end();
+//        shapeRenderer.setProjectionMatrix(screen.getEntitySystem(RenderSystem.class).getCamera().combined);
+//        shapeRenderer.begin(ShapeType.Line);
+//        shapeRenderer.setColor(Color.GREEN);
+//        if(eye != null) {
+//            shapeRenderer.rect(eye.x, eye.y, eye.width, eye.height);
+//        }
+//        shapeRenderer.end();
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.redsponge.dbf.intro;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -26,6 +28,8 @@ public class IntroScreen extends AbstractScreen {
     private int frameIndex;
     private TypingLabel label;
 
+    private Music music;
+
     private Animation<TextureRegion> introAnimation;
 
     public IntroScreen(GameAccessor ga) {
@@ -38,6 +42,9 @@ public class IntroScreen extends AbstractScreen {
         viewport = new FitViewport(getScreenWidth(), getScreenHeight());
         frame = IntroFrame.LONG_AGO;
         frameIndex = 0;
+        music = Gdx.audio.newMusic(Gdx.files.internal("music/musica.ogg"));
+        music.setVolume(0.5f);
+        music.play();
 
         label = new TypingLabel("{SPEED=0.3} This is a testy testy test", new LabelStyle(Fonts.getFont("pixelmix", 16), Color.WHITE));
         setText(frame.getText());
@@ -68,11 +75,15 @@ public class IntroScreen extends AbstractScreen {
     @Override
     public void tick(float v) {
         if(transitioning) return;
+        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            ga.transitionTo(new MenuScreen(ga, music), Transitions.sineSlide(1, batch, shapeRenderer));
+            return;
+        }
         label.act(v);
         if(label.hasEnded()) {
             frameIndex++;
             if(frameIndex == IntroFrame.ALL.length) {
-                ga.transitionTo(new MenuScreen(ga), Transitions.sineSlide(1, batch, shapeRenderer));
+                ga.transitionTo(new MenuScreen(ga, music), Transitions.sineSlide(1, batch, shapeRenderer));
                 return;
             }
             frame = IntroFrame.ALL[frameIndex];
