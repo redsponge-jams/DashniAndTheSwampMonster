@@ -50,6 +50,12 @@ public class BossFightScreen extends AbstractScreen {
             phase = FightPhase.ONE;
         } else if(phase == FightPhase.ONE) {
             phase = FightPhase.TWO;
+        } else if(phase == FightPhase.TWO) {
+            phase = FightPhase.THREE;
+        } else if(phase == FightPhase.THREE) {
+            phase = FightPhase.FOUR;
+        } else if(phase == FightPhase.FOUR) {
+            phase = FightPhase.FIVE;
         }
     }
 
@@ -345,7 +351,7 @@ public class BossFightScreen extends AbstractScreen {
 
     @Override
     public void show() {
-        phase = FightPhase.FIVE;
+        phase = FightPhase.ZERO;
         pm = new ParticleManager(batch, shapeRenderer);
         addEntity(pm);
 
