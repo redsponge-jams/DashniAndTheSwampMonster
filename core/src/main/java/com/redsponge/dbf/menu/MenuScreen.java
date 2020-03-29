@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.redsponge.dbf.DashniBossFight;
 import com.redsponge.dbf.bossfight.BossFightScreen;
 import com.redsponge.redengine.assets.AssetSpecifier;
 import com.redsponge.redengine.screen.AbstractScreen;
@@ -32,6 +33,8 @@ public class MenuScreen extends AbstractScreen {
     private Music intro, loop;
     private boolean disposedIntro;
 
+    private Texture trophy;
+
     public MenuScreen(GameAccessor ga, Music alreadyStartedIntro) {
         super(ga);
         this.intro = alreadyStartedIntro;
@@ -39,6 +42,12 @@ public class MenuScreen extends AbstractScreen {
 
     @Override
     public void show() {
+        if(DashniBossFight.wonNormal) {
+            trophy = new Texture("menu/trophy_shown.png");
+        } else {
+            trophy = new Texture("menu/trophy_hidden.png");
+        }
+
         viewport = new FitViewport(640, 360);
         background = assets.get("background", Texture.class);
 
@@ -130,6 +139,7 @@ public class MenuScreen extends AbstractScreen {
                 "Stay home & Wash your hands!",
                 "Don't ignore your ice cream",
                 "Dashni, Dashni, and Dashni.. AND DASHNI",
+                "Normal = Trophy",
         };
 
         for(int i = 0; i < contents.length / 2; i++) {
@@ -193,6 +203,7 @@ public class MenuScreen extends AbstractScreen {
         batch.setProjectionMatrix(viewport.getCamera().combined);
         batch.begin();
         batch.draw(background, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
+        batch.draw(trophy, 50, 300, 64, 64);
         batch.end();
 
         stage.draw();
@@ -215,5 +226,6 @@ public class MenuScreen extends AbstractScreen {
             intro.dispose();
         }
         loop.dispose();
+        trophy.dispose();
     }
 }

@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.redsponge.dbf.DashniBossFight;
 import com.redsponge.dbf.menu.MenuScreen;
 import com.redsponge.redengine.assets.AssetSpecifier;
 import com.redsponge.redengine.assets.Fonts;
@@ -416,7 +417,7 @@ public class BossFightScreen extends AbstractScreen {
 
             @Override
             public int getOctopusLife() {
-                return 1;
+                return 5;
             }
         },
         WIN {
@@ -613,6 +614,9 @@ public class BossFightScreen extends AbstractScreen {
             deadDashniTime = 0;
         } else if(notification == Notifications.RAISED_FLAG) {
             raisedFlag = true;
+            if(!isEasy) {
+                DashniBossFight.wonNormal = true;
+            }
         }
     }
 
