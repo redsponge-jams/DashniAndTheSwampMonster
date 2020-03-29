@@ -3,10 +3,8 @@ package com.redsponge.dbf.bossfight;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.*;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
@@ -66,6 +64,8 @@ public class BossFightScreen extends AbstractScreen {
     private boolean raisedFlag;
 
     private float raiseFlagCounter;
+
+    private boolean isEasy;
 
     public static void progressPhase() {
         mm.swap();
@@ -459,8 +459,9 @@ public class BossFightScreen extends AbstractScreen {
         }
     }
 
-    public BossFightScreen(GameAccessor ga) {
+    public BossFightScreen(GameAccessor ga, boolean isEasy) {
         super(ga);
+        this.isEasy = isEasy;
     }
 
     public void addScheduledEntity(float time, ScreenEntity entity) {
@@ -511,7 +512,7 @@ public class BossFightScreen extends AbstractScreen {
         if(transitioning) return;
         if(isDashniDead) {
             if(Gdx.input.isKeyJustPressed(Keys.ENTER)) {
-                ga.transitionTo(new BossFightScreen(ga), Transitions.linearFade(1, batch, shapeRenderer));
+                ga.transitionTo(new BossFightScreen(ga, isEasy), Transitions.linearFade(1, batch, shapeRenderer));
             }
             else if(Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
                 ga.transitionTo(new MenuScreen(ga, null), Transitions.linearFade(1, batch, shapeRenderer));
@@ -656,5 +657,9 @@ public class BossFightScreen extends AbstractScreen {
 
     public boolean isHeadUp() {
         return headUp;
+    }
+
+    public boolean isEasy() {
+        return isEasy;
     }
 }

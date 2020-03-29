@@ -1,18 +1,15 @@
 package com.redsponge.dbf.bossfight;
 
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.redsponge.dbf.bossfight.BossFightScreen.FightPhase;
 import com.redsponge.redengine.screen.INotified;
 import com.redsponge.redengine.screen.components.AnimationComponent;
 import com.redsponge.redengine.screen.entity.ScreenEntity;
-import com.redsponge.redengine.screen.systems.RenderSystem;
 
 public class OctopusPunchHead extends ScreenEntity implements INotified {
 

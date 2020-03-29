@@ -13,7 +13,7 @@ public class DashniBossFight extends EngineGame {
 
     @Override
     public void init() {
-        setScreen(new SplashScreenScreen(ga, new ToastySplashScreen(ga), Transitions.linearFade(1, batch, shapeRenderer)));
-//        setScreen(new WinScreen(ga));
+//        setScreen(new SplashScreenScreen(ga, new ToastySplashScreen(ga), Transitions.linearFade(1, batch, shapeRenderer)));
+        setScreen(new WinScreen(ga));
     }
 }

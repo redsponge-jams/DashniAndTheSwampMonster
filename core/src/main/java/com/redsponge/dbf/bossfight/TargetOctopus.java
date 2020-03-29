@@ -136,6 +136,13 @@ public class TargetOctopus extends ScreenEntity implements INotified {
             }
         } else if(hitsLeft == 0 && i == Notifications.OCTOPUS_EYE_GONE) {
             hitsLeft = BossFightScreen.phase.getOctopusLife();
+            if(((BossFightScreen)screen).isEasy()) {
+                if(hitsLeft == 3) {
+                    hitsLeft = 2;
+                } else if(hitsLeft == 5) {
+                    hitsLeft = 3;
+                }
+            }
             generateTarget();
             anim.setAnimationSpeed(1);
             anim.setAnimation(idleAnimation);

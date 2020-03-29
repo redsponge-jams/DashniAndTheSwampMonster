@@ -1,7 +1,6 @@
 package com.redsponge.dbf.menu;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -15,7 +14,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.redsponge.dbf.bossfight.BossFightScreen;
-import com.redsponge.dbf.bossfight.MusicManager;
 import com.redsponge.redengine.assets.AssetSpecifier;
 import com.redsponge.redengine.screen.AbstractScreen;
 import com.redsponge.redengine.transitions.Transitions;
@@ -100,15 +98,19 @@ public class MenuScreen extends AbstractScreen {
     }
 
     public void showMenuScreen() {
-        addButton(viewport.getWorldWidth() / 2, 200, 1, "Play", () -> {
-            ga.transitionTo(new BossFightScreen(ga), Transitions.sineSlide(2, batch, shapeRenderer));
+        addButton(viewport.getWorldWidth() / 2, 200, 1, "Play (Normal - Recommended)", () -> {
+            ga.transitionTo(new BossFightScreen(ga, false), Transitions.sineSlide(2, batch, shapeRenderer));
         });
 
-        addButton(viewport.getWorldWidth() / 2, 150, 1.5f, "Credits", () -> {
+        addButton(viewport.getWorldWidth() / 2, 150, 1, "Play (Easy)", () -> {
+            ga.transitionTo(new BossFightScreen(ga, true), Transitions.sineSlide(2, batch, shapeRenderer));
+        });
+
+        addButton(viewport.getWorldWidth() / 2, 100, 1.5f, "Credits", () -> {
             swapMenu(this::showCredits);
         });
 
-        addButton(viewport.getWorldWidth() / 2, 100, 2, "Exit", () -> {
+        addButton(viewport.getWorldWidth() / 2, 50, 2, "Exit", () -> {
             Gdx.app.exit();
         });
     }
