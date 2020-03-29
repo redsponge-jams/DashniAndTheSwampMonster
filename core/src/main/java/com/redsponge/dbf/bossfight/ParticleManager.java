@@ -8,10 +8,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
+import com.redsponge.redengine.screen.INotified;
 import com.redsponge.redengine.screen.components.RenderRunnableComponent;
 import com.redsponge.redengine.screen.entity.ScreenEntity;
 
-public class ParticleManager extends ScreenEntity {
+public class ParticleManager extends ScreenEntity implements INotified {
 
     private ParticleEffectPool bubblePool;
     private DelayedRemovalArray<PooledEffect> bubbleEffects;
@@ -100,5 +101,21 @@ public class ParticleManager extends ScreenEntity {
         drawEffect(bubbleEffects);
         drawEffect(intenseBubbleEffects);
         drawEffect(lineBubbleEffects);
+    }
+
+    @Override
+    public void notified(Object o, int i) {
+        if(Notifications.TARGET_OCTOPUS_DOWN == i) {
+            removeAllSpawned(bubbleEffects);
+            removeAllSpawned(intenseBubbleEffects);
+            removeAllSpawned(lineBubbleEffects);
+        }
+    }
+
+    private void removeAllSpawned(DelayedRemovalArray<PooledEffect> effects) {
+        for (int i = 0; i < effects.size; i++) {
+            effects.get(i).free();
+        }
+        effects.clear();
     }
 }

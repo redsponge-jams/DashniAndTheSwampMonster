@@ -63,6 +63,13 @@ public class MenuScreen extends AbstractScreen {
             intro = Gdx.audio.newMusic(Gdx.files.internal("music/musica.ogg"));
             intro.setVolume(0.5f);
             intro.play();
+            intro.setOnCompletionListener((music) -> {
+                intro.dispose();
+                disposedIntro = true;
+                loop.setVolume(0.5f);
+                loop.play();
+                loop.setLooping(true);
+            });
         } else if(!intro.isPlaying()){
             intro.dispose();
             loop.setLooping(true);
