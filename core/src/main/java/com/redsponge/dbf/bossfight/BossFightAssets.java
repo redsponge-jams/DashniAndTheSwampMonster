@@ -125,4 +125,7 @@ public class BossFightAssets extends AssetSpecifier {
 
     @Asset("sounds/octopus_stun.ogg")
     private Sound octopusStunSound;
+
+    @Asset("sounds/bubbling.ogg")
+    private Sound bubblingSound;
 }
