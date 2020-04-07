@@ -4,8 +4,13 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -15,6 +20,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.redsponge.dbf.DashniBossFight;
 import com.redsponge.dbf.menu.MenuScreen;
 import com.redsponge.redengine.assets.AssetSpecifier;
@@ -30,6 +36,7 @@ import com.redsponge.redengine.transitions.Transitions;
 import com.redsponge.redengine.utils.GameAccessor;
 import com.redsponge.redengine.utils.GeneralUtils;
 import com.redsponge.redengine.utils.IntVector2;
+import com.redsponge.redengine.utils.Logger;
 import com.redsponge.redengine.utils.MathUtilities;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -75,6 +82,8 @@ public class BossFightScreen extends AbstractScreen {
     private Stage pauseStage;
     private boolean paused;
     private boolean grabScreen;
+
+    private Viewport pauseViewport;
 
     public static void progressPhase() {
         mm.swap();
@@ -549,43 +558,62 @@ public class BossFightScreen extends AbstractScreen {
             deadDashniTime += v;
             return;
         }
-        if(Gdx.input.isKeyPressed(Keys.ESCAPE)) {
+        if(Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
             togglePause();
         }
 
-        if(!headUp && phase != FightPhase.WIN) {
-            phase.processAttack(v, this, bam);
-        }
-        if(phase == FightPhase.WIN && !raisedFlag) {
-            renderSystem.getCamera().position.lerp(new Vector3(150, getScreenHeight() / 2f, 0), 0.001f);
-            renderSystem.getCamera().zoom = MathUtilities.lerp(renderSystem.getCamera().zoom, 0.9f, 0.001f);
-        } else if(raisedFlag) {
-            raiseFlagCounter += v;
-            if(raiseFlagCounter > 5) {
-                ga.transitionTo(new WinScreen(ga), Transitions.sineCircle(2, batch, shapeRenderer));
+        if(!paused) {
+            if (!headUp && phase != FightPhase.WIN) {
+                phase.processAttack(v, this, bam);
             }
-        }
-        pm.additionalTick(v);
-        for (ScreenEntity screenEntity : scheduledEntities.keySet()) {
-            scheduledEntities.put(screenEntity, scheduledEntities.get(screenEntity) - v);
-            if(scheduledEntities.get(screenEntity) <= 0) {
-                addEntity(screenEntity);
-                scheduledEntities.remove(screenEntity);
+            if (phase == FightPhase.WIN && !raisedFlag) {
+                renderSystem.getCamera().position.lerp(new Vector3(150, getScreenHeight() / 2f, 0), 0.001f);
+                renderSystem.getCamera().zoom = MathUtilities.lerp(renderSystem.getCamera().zoom, 0.9f, 0.001f);
+            } else if (raisedFlag) {
+                raiseFlagCounter += v;
+                if (raiseFlagCounter > 5) {
+                    ga.transitionTo(new WinScreen(ga), Transitions.sineCircle(2, batch, shapeRenderer));
+                }
+            }
+            pm.additionalTick(v);
+            for (ScreenEntity screenEntity : scheduledEntities.keySet()) {
+                scheduledEntities.put(screenEntity, scheduledEntities.get(screenEntity) - v);
+                if (scheduledEntities.get(screenEntity) <= 0) {
+                    addEntity(screenEntity);
+                    scheduledEntities.remove(screenEntity);
+                }
             }
         }
 
-        tickEntities(v);
         if(grabScreen) {
             pauseFrame.begin();
         }
-        updateEngine(v);
+        if(!paused || grabScreen) {
+            tickEntities(v);
+            updateEngine(v);
+        }
+        if(grabScreen) {
+            pauseFrame.end();
+            grabScreen = false;
+        }
     }
 
     private void togglePause() {
         paused = !paused;
         if(paused) {
-            grabScreen = true;
+            if(pauseFrame != null) {
+                pauseFrame.dispose();
+            }
+            scheduleGrabScreen();
         }
+    }
+
+    private void scheduleGrabScreen() {
+        pauseFrame = new FrameBuffer(Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+        pauseViewport = new FitViewport(pauseFrame.getWidth(), pauseFrame.getHeight());
+        pauseViewport.update(pauseFrame.getWidth(), pauseFrame.getHeight(), true);
+        Logger.log(this, pauseFrame.getWidth(), pauseFrame.getHeight());
+        grabScreen = true;
     }
 
     @Override
@@ -596,8 +624,14 @@ public class BossFightScreen extends AbstractScreen {
         if(paused && !grabScreen) {
             Gdx.gl.glClearColor(0, 0, 0, 1.0f);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+            pauseViewport.apply();
+            batch.setProjectionMatrix(pauseViewport.getCamera().combined);
+
+            batch.setColor(Color.WHITE);
             batch.begin();
-            batch.draw(pauseFrame.getColorBufferTexture(), 0, 0);
+            TextureRegion tr = new TextureRegion(pauseFrame.getColorBufferTexture());
+            tr.flip(false, true);
+            batch.draw(tr, 0, 0);
             batch.end();
             return;
         }
@@ -642,10 +676,6 @@ public class BossFightScreen extends AbstractScreen {
 //            }
 //            shapeRenderer.end();
             renderEntities();
-        }
-        if(grabScreen) {
-            pauseFrame.end();
-            grabScreen = false;
         }
     }
 
@@ -693,6 +723,9 @@ public class BossFightScreen extends AbstractScreen {
     public void reSize(int width, int height) {
         renderSystem.resize(width, height);
         guiViewport.update(width, height, true);
+        if(paused) {
+            scheduleGrabScreen();
+        }
     }
 
     @Override
