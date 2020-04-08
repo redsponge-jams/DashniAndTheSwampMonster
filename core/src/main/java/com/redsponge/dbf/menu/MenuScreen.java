@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -20,6 +21,7 @@ import com.redsponge.redengine.screen.AbstractScreen;
 import com.redsponge.redengine.transitions.Transitions;
 import com.redsponge.redengine.utils.GameAccessor;
 import com.redsponge.redengine.utils.GeneralUtils;
+import com.redsponge.redengine.utils.Logger;
 
 public class MenuScreen extends AbstractScreen {
 
@@ -107,20 +109,54 @@ public class MenuScreen extends AbstractScreen {
     }
 
     public void showMenuScreen() {
-        addButton(viewport.getWorldWidth() / 2, 200, 1, "Play (Normal - Recommended)", () -> {
+        addButton(viewport.getWorldWidth() / 4, 200, 1, "Play (Normal)", () -> {
             ga.transitionTo(new BossFightScreen(ga, false), Transitions.sineSlide(2, batch, shapeRenderer));
         });
 
-        addButton(viewport.getWorldWidth() / 2, 150, 1, "Play (Easy)", () -> {
+        addButton(viewport.getWorldWidth() / 4 * 3, 200, 1, "Play (Easy)", () -> {
             ga.transitionTo(new BossFightScreen(ga, true), Transitions.sineSlide(2, batch, shapeRenderer));
         });
 
-        addButton(viewport.getWorldWidth() / 2, 100, 1.5f, "Credits", () -> {
+        addButton(viewport.getWorldWidth() / 2, 150, 1.5f, "Settings", () -> {
+            swapMenu(this::showSettingsScreen);
+        });
+
+        addButton(viewport.getWorldWidth() / 2, 100, 2, "Credits", () -> {
             swapMenu(this::showCredits);
         });
 
-        addButton(viewport.getWorldWidth() / 2, 50, 2, "Exit", () -> {
+        addButton(viewport.getWorldWidth() / 2, 50, 2.5f, "Exit", () -> {
             Gdx.app.exit();
+        });
+    }
+
+    private void addSlider(String label, float min, float max, float stepSize, boolean vertical, float x, float y, float delay, ChangeListener onChange) {
+
+        Slider slider = new Slider(min, max, stepSize, vertical, skin);
+        slider.setPosition(x, -slider.getHeight(), Align.center);
+        slider.addAction(Actions.delay(delay, Actions.moveToAligned(x, y, Align.center, 1, Interpolation.exp5)));
+        slider.addListener(onChange);
+        Label lbl = new Label(label, skin);
+        lbl.setPosition(x - slider.getWidth(), -slider.getHeight());
+        lbl.addAction(Actions.delay(delay, Actions.moveTo(x - slider.getWidth(), y, 1, Interpolation.exp5)));
+
+        stage.addActor(lbl);
+        stage.addActor(slider);
+    }
+
+    public void showSettingsScreen() {
+        addSlider("Music", 0, 1, 0.01f, false, viewport.getWorldWidth() / 2f, 200, 0, new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                Logger.log(this, ((Slider)actor).getValue());
+            }
+        });
+
+        addSlider("Sfx", 0, 1, 0.01f, false, viewport.getWorldWidth() / 2f, 175, .5f, new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                Logger.log(this, ((Slider)actor).getValue());
+            }
         });
     }
 
