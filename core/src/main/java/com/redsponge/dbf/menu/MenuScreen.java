@@ -16,6 +16,9 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.redsponge.dbf.DashniBossFight;
 import com.redsponge.dbf.bossfight.BossFightScreen;
+import com.redsponge.dbf.constants.Constants;
+import com.redsponge.dbf.notification.IValueNotified;
+import com.redsponge.dbf.notification.NotificationHub;
 import com.redsponge.redengine.assets.AssetSpecifier;
 import com.redsponge.redengine.screen.AbstractScreen;
 import com.redsponge.redengine.transitions.Transitions;
@@ -37,6 +40,8 @@ public class MenuScreen extends AbstractScreen {
 
     private Texture trophy;
 
+    private IValueNotified<Float> musicChangeListener;
+
     public MenuScreen(GameAccessor ga, Music alreadyStartedIntro) {
         super(ga);
         this.intro = alreadyStartedIntro;
@@ -44,6 +49,15 @@ public class MenuScreen extends AbstractScreen {
 
     @Override
     public void show() {
+        musicChangeListener = (v) -> {
+            if(intro != null) {
+                intro.setVolume(v);
+            } else {
+                loop.setVolume(v);
+            }
+        };
+        Constants.MUSIC_HUB.addListener(musicChangeListener);
+
         if(DashniBossFight.wonNormal) {
             trophy = new Texture("menu/trophy_shown.png");
         } else {
@@ -75,20 +89,21 @@ public class MenuScreen extends AbstractScreen {
             intro.setOnCompletionListener((music) -> {
                 intro.dispose();
                 disposedIntro = true;
-                loop.setVolume(0.5f);
+                intro = null;
+                loop.setVolume(Constants.MUSIC_HUB.getValue());
                 loop.play();
                 loop.setLooping(true);
             });
         } else if(!intro.isPlaying()){
             intro.dispose();
             loop.setLooping(true);
-            loop.setVolume(0.5f);
+            loop.setVolume(Constants.MUSIC_HUB.getValue());
             loop.play();
         } else {
             intro.setOnCompletionListener((music) -> {
                 intro.dispose();
                 disposedIntro = true;
-                loop.setVolume(0.5f);
+                loop.setVolume(Constants.MUSIC_HUB.getValue());
                 loop.play();
                 loop.setLooping(true);
             });
@@ -130,12 +145,13 @@ public class MenuScreen extends AbstractScreen {
         });
     }
 
-    private void addSlider(String label, float min, float max, float stepSize, boolean vertical, float x, float y, float delay, ChangeListener onChange) {
+    private void addSlider(String label, float min, float max, float stepSize, float value, boolean vertical, float x, float y, float delay, ChangeListener onChange) {
 
         Slider slider = new Slider(min, max, stepSize, vertical, skin);
         slider.setPosition(x, -slider.getHeight(), Align.center);
         slider.addAction(Actions.delay(delay, Actions.moveToAligned(x, y, Align.center, 1, Interpolation.exp5)));
         slider.addListener(onChange);
+        slider.setValue(value);
         Label lbl = new Label(label, skin);
         lbl.setPosition(x - slider.getWidth(), -slider.getHeight());
         lbl.addAction(Actions.delay(delay, Actions.moveTo(x - slider.getWidth(), y, 1, Interpolation.exp5)));
@@ -145,18 +161,22 @@ public class MenuScreen extends AbstractScreen {
     }
 
     public void showSettingsScreen() {
-        addSlider("Music", 0, 1, 0.01f, false, viewport.getWorldWidth() / 2f, 200, 0, new ChangeListener() {
+        addSlider("Music", 0, 1, 0.01f, Constants.MUSIC_HUB.getValue(), false, viewport.getWorldWidth() / 2f, 200, 0, new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                Constants.MUSIC_HUB.updateValue(((Slider)actor).getValue());
+            }
+        });
+
+        addSlider("Sfx", 0, 1, 0.01f, Constants.SOUND_HUB.getValue(), false, viewport.getWorldWidth() / 2f, 175, .5f, new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 Logger.log(this, ((Slider)actor).getValue());
             }
         });
 
-        addSlider("Sfx", 0, 1, 0.01f, false, viewport.getWorldWidth() / 2f, 175, .5f, new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent changeEvent, Actor actor) {
-                Logger.log(this, ((Slider)actor).getValue());
-            }
+        addButton(viewport.getWorldWidth() / 2f, 20, 2, "Back", () -> {
+            swapMenu(this::showMenuScreen);
         });
     }
 
@@ -223,6 +243,7 @@ public class MenuScreen extends AbstractScreen {
     @Override
     public void hide() {
         Gdx.input.setInputProcessor(null);
+        Constants.MUSIC_HUB.removeListener(musicChangeListener);
     }
 
     @Override

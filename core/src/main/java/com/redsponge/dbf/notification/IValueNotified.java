@@ -1,4 +1,4 @@
-package com.redsponge.dbf.sound;
+package com.redsponge.dbf.notification;
 
 @FunctionalInterface
 public interface IValueNotified<ValueType> {

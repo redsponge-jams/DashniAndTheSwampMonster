@@ -1,4 +1,4 @@
-package com.redsponge.dbf.sound;
+package com.redsponge.dbf.notification;
 
 import com.badlogic.gdx.utils.Array;
 
@@ -10,6 +10,11 @@ public class NotificationHub<ValueType> {
 
     public NotificationHub() {
         listeners = new Array<>();
+    }
+
+    public NotificationHub(ValueType defaultValue) {
+        this();
+        this.value = defaultValue;
     }
 
     public void addListener(IValueNotified<ValueType> listener) {
@@ -29,5 +34,9 @@ public class NotificationHub<ValueType> {
         for (int i = 0; i < listeners.size; i++) {
             listeners.get(i).update(value);
         }
+    }
+
+    public ValueType getValue() {
+        return value;
     }
 }
