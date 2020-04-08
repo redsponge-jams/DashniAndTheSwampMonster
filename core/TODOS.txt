@@ -1,4 +1,7 @@
  - Pause Menu
+ - Hitboxes
+    - Dashni Punch Up Left isn't aligned
+    - Dashni Punch down moves him down.
  - Splash Sound:
     - On Geyser End
     - On Dashni Water Death
