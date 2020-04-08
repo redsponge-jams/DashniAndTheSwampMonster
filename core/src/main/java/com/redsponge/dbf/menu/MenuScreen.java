@@ -171,7 +171,7 @@ public class MenuScreen extends AbstractScreen {
         addSlider("Sfx", 0, 1, 0.01f, Constants.SOUND_HUB.getValue(), false, viewport.getWorldWidth() / 2f, 175, .5f, new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                Logger.log(this, ((Slider)actor).getValue());
+                Constants.SOUND_HUB.updateValue(((Slider)actor).getValue());
             }
         });
 

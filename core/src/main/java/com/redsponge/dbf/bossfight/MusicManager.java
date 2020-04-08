@@ -2,13 +2,16 @@ package com.redsponge.dbf.bossfight;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
+import com.redsponge.dbf.constants.Constants;
+import com.redsponge.dbf.notification.IValueNotified;
+import com.redsponge.dbf.notification.NotificationHub;
 
-public class MusicManager {
+public class MusicManager implements IValueNotified<Float> {
 
     private String[] paths = {"music/birds.ogg", "music/1.ogg", "music/2.ogg", "music/3.ogg", "music/4.ogg", "music/5.ogg", "music/6.ogg", "music/final.ogg"};
     private boolean[] keepPosition = {false, true, true, true, true, true, false};
     private boolean[] loop = {true, true, true, true, true, true, true, false};
-    private float[] volume = {1, .25f, .25f, .25f, .25f, .25f, .25f, 1};
+    private float[] volume = {2, 1, 1, 1, 1, 1, 1, 2};
     private int currentIndex;
 
     private Music current;
@@ -22,6 +25,7 @@ public class MusicManager {
         am.load(paths[currentIndex], Music.class);
         am.finishLoading();
         current = am.get(paths[currentIndex]);
+        current.setVolume(Constants.MUSIC_HUB.getValue());
         current.play();
         current.setLooping(true);
         prepNext();
@@ -31,7 +35,7 @@ public class MusicManager {
         am.load(paths[(currentIndex + 1) % paths.length], Music.class);
     }
 
-    public void update() {
+    public void tick() {
         am.update();
     }
 
@@ -44,7 +48,7 @@ public class MusicManager {
         }
         next.play();
         next.setLooping(loop[(currentIndex + 1) % paths.length]);
-        next.setVolume(volume[(currentIndex + 1) % paths.length]);
+        next.setVolume(volume[(currentIndex + 1) % paths.length] * Constants.MUSIC_HUB.getValue());
         next.setPosition(pos);
         current.stop();
 
@@ -62,5 +66,10 @@ public class MusicManager {
 
     public void stop() {
         current.stop();
+    }
+
+    @Override
+    public void update(Float newValue) {
+        current.setVolume(newValue * volume[currentIndex]);
     }
 }

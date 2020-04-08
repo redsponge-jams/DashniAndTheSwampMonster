@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.redsponge.dbf.constants.Constants;
 import com.redsponge.redengine.screen.INotified;
 import com.redsponge.redengine.screen.components.AnimationComponent;
 import com.redsponge.redengine.screen.entity.ScreenEntity;
@@ -154,7 +155,7 @@ public class TargetOctopus extends ScreenEntity implements INotified {
     private void attacked() {
         Logger.log(this, "OUCHY WOWCHI");
         hitsLeft--;
-        ouchSound.play();
+        ouchSound.play(Constants.SOUND_HUB.getValue());
         if(hitsLeft == 0) {
             notifyScreen(Notifications.TARGET_OCTOPUS_DOWN);
             anim.setAnimation(hurtAnimation);

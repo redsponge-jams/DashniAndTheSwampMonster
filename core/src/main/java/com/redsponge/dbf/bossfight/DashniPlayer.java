@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
+import com.redsponge.dbf.constants.Constants;
 import com.redsponge.dbf.input.Input;
 import com.redsponge.redengine.physics.PActor;
 import com.redsponge.redengine.physics.PBodyType;
@@ -193,7 +194,7 @@ public class DashniPlayer extends ScreenEntity {
 
     private void beginAttacking() {
         float vert = Input.getVertical();
-        attackSound.play();
+        attackSound.play(Constants.SOUND_HUB.getValue());
         if(vert > 0) {
             attackType = AttackType.UP;
             anim.setAnimation(attackUpAnimation);

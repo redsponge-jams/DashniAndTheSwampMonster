@@ -15,13 +15,19 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.redsponge.dbf.DashniBossFight;
+import com.redsponge.dbf.constants.Constants;
 import com.redsponge.dbf.menu.MenuScreen;
 import com.redsponge.redengine.assets.AssetSpecifier;
 import com.redsponge.redengine.assets.Fonts;
@@ -50,7 +56,7 @@ public class BossFightScreen extends AbstractScreen {
 
     private ParticleManager pm;
 
-    private static MusicManager mm;
+    private static MusicManager musicManager;
 
     private DelayedRemovalArray<Rectangle> attackBoxes;
 
@@ -88,8 +94,10 @@ public class BossFightScreen extends AbstractScreen {
 
     private BitmapFont font;
 
+    private Skin skin;
+
     public static void progressPhase() {
-        mm.swap();
+        musicManager.swap();
         if(phase == FightPhase.ZERO) {
             phase = FightPhase.ONE;
         } else if(phase == FightPhase.ONE) {
@@ -274,7 +282,7 @@ public class BossFightScreen extends AbstractScreen {
                     timeUntilGeiser = 2;
                     PositionComponent pos = Mappers.position.get(chosenIsland);
                     bubbles = screen.getPm().spawnLineBubbles((int) pos.getX(), (int) pos.getY());
-                    bubblingSound.play();
+                    bubblingSound.play(Constants.SOUND_HUB.getValue());
                 }
                 if(chosenIsland != null) {
                     timeUntilGeiser -= delta;
@@ -344,7 +352,7 @@ public class BossFightScreen extends AbstractScreen {
                 if(timeUntilGeiserChosen <= 0 && chosenIsland == null) {
                     chosenIsland = screen.islands.random();
                     timeUntilGeiser = 2;
-                    bubblingSound.play();
+                    bubblingSound.play(Constants.SOUND_HUB.getValue());
                     PositionComponent pos = Mappers.position.get(chosenIsland);
                     bubbles = screen.getPm().spawnLineBubbles((int) pos.getX(), (int) pos.getY());
                 }
@@ -416,7 +424,7 @@ public class BossFightScreen extends AbstractScreen {
                 if(timeUntilGeiserChosen <= 0 && chosenIsland == null) {
                     chosenIsland = screen.islands.random();
                     timeUntilGeiser = 2;
-                    bubblingSound.play();
+                    bubblingSound.play(Constants.SOUND_HUB.getValue());
                     PositionComponent pos = Mappers.position.get(chosenIsland);
                     bubbles = screen.getPm().spawnLineBubbles((int) pos.getX(), (int) pos.getY());
                 }
@@ -510,7 +518,7 @@ public class BossFightScreen extends AbstractScreen {
 
     @Override
     public void show() {
-        mm = new MusicManager();
+        musicManager = new MusicManager();
         phase = FightPhase.ZERO;
         guiViewport = new FitViewport(getScreenWidth(), getScreenHeight());
         pm = new ParticleManager(batch, shapeRenderer);
@@ -541,6 +549,35 @@ public class BossFightScreen extends AbstractScreen {
 
         scheduledEntities = new ConcurrentHashMap<>();
         pauseStage = new Stage(guiViewport, batch);
+        skin = new Skin(Gdx.files.internal("skins/menu/menu_skin.json"));
+        Slider musicSlider = new Slider(0, 1, 0.01f, false, skin);
+        musicSlider.setValue(Constants.MUSIC_HUB.getValue());
+        musicSlider.setPosition(guiViewport.getWorldWidth() / 2, 200);
+        musicSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                Constants.MUSIC_HUB.updateValue(((Slider)actor).getValue());
+            }
+        });
+        pauseStage.addActor(musicSlider);
+        Label lbl = new Label("Music", skin);
+        lbl.setPosition(guiViewport.getWorldWidth() / 3, 200);
+        pauseStage.addActor(lbl);
+        Constants.MUSIC_HUB.addListener(musicManager);
+
+        Slider soundSlider = new Slider(0, 1, 0.01f, false, skin);
+        soundSlider.setValue(Constants.SOUND_HUB.getValue());
+        soundSlider.setPosition(guiViewport.getWorldWidth() / 2, 175);
+        soundSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                Constants.SOUND_HUB.updateValue(((Slider)actor).getValue());
+            }
+        });
+        pauseStage.addActor(soundSlider);
+        Label soundLbl = new Label("Sfx", skin);
+        soundLbl.setPosition(guiViewport.getWorldWidth() / 3, 175);
+        pauseStage.addActor(soundLbl);
 
         font = Fonts.getFont("pixelmix", 16);
     }
@@ -553,6 +590,7 @@ public class BossFightScreen extends AbstractScreen {
     @Override
     public void tick(float v) {
         if(transitioning) return;
+        musicManager.tick();
         if(isDashniDead) {
             if(Gdx.input.isKeyJustPressed(Keys.ENTER)) {
                 ga.transitionTo(new BossFightScreen(ga, isEasy), Transitions.linearFade(1, batch, shapeRenderer));
@@ -588,6 +626,8 @@ public class BossFightScreen extends AbstractScreen {
                     scheduledEntities.remove(screenEntity);
                 }
             }
+        } else {
+            pauseStage.act(v);
         }
 
         if(grabScreen) {
@@ -609,7 +649,10 @@ public class BossFightScreen extends AbstractScreen {
             if(pauseFrame != null) {
                 pauseFrame.dispose();
             }
+            Gdx.input.setInputProcessor(pauseStage);
             scheduleGrabScreen();
+        } else {
+            Gdx.input.setInputProcessor(null);
         }
     }
 
@@ -646,6 +689,7 @@ public class BossFightScreen extends AbstractScreen {
             batch.begin();
             font.draw(batch, "Paused", 0, 300, guiViewport.getWorldWidth(), Align.center, true);
             batch.end();
+            pauseStage.draw();
             return;
         }
 
@@ -705,7 +749,7 @@ public class BossFightScreen extends AbstractScreen {
         } else if(notification == Notifications.DASHNI_DEAD) {
             hits++;
             isDashniDead = true;
-            mm.stop();
+            musicManager.stop();
             PositionComponent pos = Mappers.position.get(player);
             deadDashniPos = new IntVector2((int) pos.getX(),(int) pos.getY());
             deadDashniTime = 0;
@@ -745,7 +789,7 @@ public class BossFightScreen extends AbstractScreen {
     @Override
     public void disposeAssets() {
         pdr.dispose();
-        mm.dispose();
+        musicManager.dispose();
         pauseStage.dispose();
     }
 

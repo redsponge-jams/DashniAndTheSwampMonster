@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.redsponge.dbf.bossfight.BossFightScreen.FightPhase;
+import com.redsponge.dbf.constants.Constants;
 import com.redsponge.redengine.screen.INotified;
 import com.redsponge.redengine.screen.components.AnimationComponent;
 import com.redsponge.redengine.screen.entity.ScreenEntity;
@@ -133,7 +134,7 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
         timeLeftStunned = 2;
         state = HeadState.STUN;
         eye.set(0, 0, 0, 0);
-        stunSound.play();
+        stunSound.play(Constants.SOUND_HUB.getValue());
         BossFightScreen.progressPhase();
         if(BossFightScreen.phase == FightPhase.WIN) {
             screen.addEntity(new WhiteFlagArm(batch, shapeRenderer));
