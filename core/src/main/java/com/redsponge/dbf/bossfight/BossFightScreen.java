@@ -26,6 +26,7 @@ import com.redsponge.dbf.menu.MenuScreen;
 import com.redsponge.redengine.assets.AssetSpecifier;
 import com.redsponge.redengine.assets.Fonts;
 import com.redsponge.redengine.physics.PhysicsDebugRenderer;
+import com.redsponge.redengine.render.util.ScreenFiller;
 import com.redsponge.redengine.screen.AbstractScreen;
 import com.redsponge.redengine.screen.components.Mappers;
 import com.redsponge.redengine.screen.components.PositionComponent;
@@ -84,6 +85,8 @@ public class BossFightScreen extends AbstractScreen {
     private boolean grabScreen;
 
     private Viewport pauseViewport;
+
+    private BitmapFont font;
 
     public static void progressPhase() {
         mm.swap();
@@ -538,6 +541,8 @@ public class BossFightScreen extends AbstractScreen {
 
         scheduledEntities = new ConcurrentHashMap<>();
         pauseStage = new Stage(guiViewport, batch);
+
+        font = Fonts.getFont("pixelmix", 16);
     }
 
     public void spawnBubble(float x, float y) {
@@ -633,6 +638,14 @@ public class BossFightScreen extends AbstractScreen {
             tr.flip(false, true);
             batch.draw(tr, 0, 0);
             batch.end();
+
+            ScreenFiller.fillScreen(shapeRenderer, 0, 0, 0, 0.5f);
+            guiViewport.apply();
+            batch.setProjectionMatrix(guiViewport.getCamera().combined);
+
+            batch.begin();
+            font.draw(batch, "Paused", 0, 300, guiViewport.getWorldWidth(), Align.center, true);
+            batch.end();
             return;
         }
 
@@ -723,6 +736,7 @@ public class BossFightScreen extends AbstractScreen {
     public void reSize(int width, int height) {
         renderSystem.resize(width, height);
         guiViewport.update(width, height, true);
+        ScreenFiller.resize(width, height);
         if(paused) {
             scheduleGrabScreen();
         }
