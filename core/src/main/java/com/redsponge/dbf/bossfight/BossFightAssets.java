@@ -128,4 +128,18 @@ public class BossFightAssets extends AssetSpecifier {
 
     @Asset("sounds/bubbling.ogg")
     private Sound bubblingSound;
+
+
+
+    @Asset("textures/lights/lights.atlas")
+    private TextureAtlas lightAtlas;
+
+    @AtlasFrame(atlas = "lightAtlas", frameName = "diagonal_regular")
+    private TextureRegion lightDiag;
+
+    @AtlasFrame(atlas = "lightAtlas", frameName = "diagonal_down")
+    private TextureRegion lightDiagDown;
+
+    @AtlasFrame(atlas = "lightAtlas", frameName = "diagonal_side")
+    private TextureRegion lightDiagSide;
 }

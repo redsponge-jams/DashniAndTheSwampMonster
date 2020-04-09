@@ -122,13 +122,6 @@ attack_down
   size: 48, 128
   orig: 48, 128
   offset: 0, 0
-  index: 6
-attack_down
-  rotate: false
-  xy: 332, 122
-  size: 48, 128
-  orig: 48, 128
-  offset: 0, 0
   index: 9
 attack_down
   rotate: false
@@ -144,6 +137,13 @@ attack_down
   orig: 48, 128
   offset: 0, 0
   index: 8
+attack_down
+  rotate: false
+  xy: 332, 122
+  size: 48, 128
+  orig: 48, 128
+  offset: 0, 0
+  index: 6
 attack_up
   rotate: false
   xy: 382, 122
@@ -192,13 +192,6 @@ attack_up
   size: 48, 128
   orig: 48, 128
   offset: 0, 0
-  index: 8
-attack_up
-  rotate: false
-  xy: 582, 122
-  size: 48, 128
-  orig: 48, 128
-  offset: 0, 0
   index: 7
 attack_up
   rotate: false
@@ -214,6 +207,13 @@ attack_up
   orig: 48, 128
   offset: 0, 0
   index: 6
+attack_up
+  rotate: false
+  xy: 582, 122
+  size: 48, 128
+  orig: 48, 128
+  offset: 0, 0
+  index: 8
 dead
   rotate: false
   xy: 2, 52

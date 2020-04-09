@@ -1,7 +1,7 @@
  x Pause Menu
- - Hitboxes
-    - Dashni Punch Up Left isn't aligned
-    - Dashni Punch down moves him down.
+ x Hitboxes
+    x Dashni Punch Up Left isn't aligned
+    x Dashni Punch down moves him down.
  - Splash Sound:
     - On Geyser End
     - On Dashni Water Death
@@ -15,3 +15,4 @@
  - Tooltips
     - If you haven't touched the small octopus for like 5 seconds, write [Press X To Punch]
     - If you haven't touched the octo eye for like 5 seconds, write [Punch the octopus's eye]
+ - Add light system

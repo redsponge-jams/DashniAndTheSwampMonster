@@ -11,6 +11,11 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.redsponge.dbf.constants.Constants;
 import com.redsponge.dbf.input.Input;
+import com.redsponge.redengine.lighting.LightTextures;
+import com.redsponge.redengine.lighting.LightTextures.Point;
+import com.redsponge.redengine.lighting.LightTextures.Soft;
+import com.redsponge.redengine.lighting.LightType;
+import com.redsponge.redengine.lighting.PointLight;
 import com.redsponge.redengine.physics.PActor;
 import com.redsponge.redengine.physics.PBodyType;
 import com.redsponge.redengine.physics.PEntity;
@@ -63,6 +68,9 @@ public class DashniPlayer extends ScreenEntity {
     private boolean dead;
     private boolean locked;
 
+    private PointLight mulLight;
+    private PointLight light;
+
     public DashniPlayer(SpriteBatch batch, ShapeRenderer shapeRenderer) {
         super(batch, shapeRenderer);
     }
@@ -78,6 +86,15 @@ public class DashniPlayer extends ScreenEntity {
 
         tmpA = new IntVector2();
         tmpB = new IntVector2();
+
+        mulLight = new PointLight(pos.getX(), pos.getY(), 96, Point.star);
+        mulLight.getColor().set(Color.WHITE);
+        ((BossFightScreen)screen).getLightSystem().addLight(mulLight, LightType.MULTIPLICATIVE);
+
+        light = new PointLight(pos.getX(), pos.getY(), 96, Point.feathered);
+        light.getColor().set(Color.TEAL);
+        light.getColor().a = 0.2f;
+        ((BossFightScreen)screen).getLightSystem().addLight(light, LightType.ADDITIVE);
     }
 
     @Override
@@ -175,6 +192,8 @@ public class DashniPlayer extends ScreenEntity {
                 die();
             }
         }
+        light.pos.set(pos.getX() + size.getX() / 2f, pos.getY() + size.getY() / 2f);
+        mulLight.pos.set(pos.getX() + size.getX() / 2f, pos.getY() + size.getY() / 2f);
         if(pos.getY() < 0) {
             die();
         }

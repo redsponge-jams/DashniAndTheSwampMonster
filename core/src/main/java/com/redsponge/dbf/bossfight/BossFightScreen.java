@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.MathUtils;
@@ -35,6 +37,12 @@ import com.redsponge.dbf.constants.Constants;
 import com.redsponge.dbf.menu.MenuScreen;
 import com.redsponge.redengine.assets.AssetSpecifier;
 import com.redsponge.redengine.assets.Fonts;
+import com.redsponge.redengine.lighting.Light;
+import com.redsponge.redengine.lighting.LightSystem;
+import com.redsponge.redengine.lighting.LightTextures;
+import com.redsponge.redengine.lighting.LightTextures.Soft;
+import com.redsponge.redengine.lighting.LightType;
+import com.redsponge.redengine.lighting.PointLight;
 import com.redsponge.redengine.physics.PhysicsDebugRenderer;
 import com.redsponge.redengine.render.util.ScreenFiller;
 import com.redsponge.redengine.screen.AbstractScreen;
@@ -99,6 +107,8 @@ public class BossFightScreen extends AbstractScreen {
     private BitmapFont font;
 
     private Skin skin;
+
+    private LightSystem lightSystem;
 
     public static void progressPhase() {
         musicManager.swap();
@@ -522,6 +532,23 @@ public class BossFightScreen extends AbstractScreen {
 
     @Override
     public void show() {
+        lightSystem = new LightSystem(getScreenWidth(), getScreenHeight(), batch);
+        lightSystem.registerLightType(LightType.MULTIPLICATIVE);
+        lightSystem.registerLightType(LightType.ADDITIVE);
+        lightSystem.setAmbianceColor(new Color(0.6f, 0.8f, 0.9f, 0.5f), LightType.MULTIPLICATIVE);
+
+        PointLight line = new PointLight(getScreenWidth() - 96, getScreenHeight() - 96, 256*2, new AtlasRegion(assets.getTextureRegion("lightDiag")));
+        line.getColor().a = 0.5f;
+        lightSystem.addLight(line, LightType.ADDITIVE);
+
+         line = new PointLight(getScreenWidth() - 96, getScreenHeight() - 96, 256*1.5f, new AtlasRegion(assets.getTextureRegion("lightDiagSide")));
+        line.getColor().set(0.5f, 0.7f, 0.9f, 1.0f);
+        lightSystem.addLight(line, LightType.ADDITIVE);
+
+         line = new PointLight(getScreenWidth() - 96, getScreenHeight() - 96, 256*2, new AtlasRegion(assets.getTextureRegion("lightDiagDown")));
+        line.getColor().set(Color.TEAL);
+        lightSystem.addLight(line, LightType.ADDITIVE);
+
         musicManager = new MusicManager();
         phase = FightPhase.ZERO;
         guiViewport = new FitViewport(getScreenWidth(), getScreenHeight());
@@ -748,6 +775,11 @@ public class BossFightScreen extends AbstractScreen {
 //            shapeRenderer.end();
             renderEntities();
         }
+
+        lightSystem.prepareMap(LightType.MULTIPLICATIVE, renderSystem.getViewport());
+        lightSystem.renderToScreen(LightType.MULTIPLICATIVE);
+        lightSystem.prepareMap(LightType.ADDITIVE, renderSystem.getViewport());
+        lightSystem.renderToScreen(LightType.ADDITIVE);
     }
 
 
@@ -792,6 +824,7 @@ public class BossFightScreen extends AbstractScreen {
 
     @Override
     public void reSize(int width, int height) {
+        lightSystem.resize(width, height);
         renderSystem.resize(width, height);
         guiViewport.update(width, height, true);
         ScreenFiller.resize(width, height);
@@ -825,5 +858,9 @@ public class BossFightScreen extends AbstractScreen {
 
     public boolean isEasy() {
         return isEasy;
+    }
+
+    public LightSystem getLightSystem() {
+        return lightSystem;
     }
 }
