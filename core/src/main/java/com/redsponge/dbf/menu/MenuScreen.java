@@ -109,9 +109,6 @@ public class MenuScreen extends AbstractScreen {
                 loop.setLooping(true);
             });
         }
-        InputKeySelector iks = new InputKeySelector(skin);
-        iks.setPosition(100, 100);
-        stage.addActor(iks);
     }
 
     private void swapMenu(Runnable menuBuilder) {
@@ -119,9 +116,9 @@ public class MenuScreen extends AbstractScreen {
             Actor actor = stage.getActors().get(i);
             if(!(actor instanceof Image)) {
                 if (i == stage.getActors().size - 1) {
-                    actor.addAction(Actions.sequence(Actions.moveTo(-1000, actor.getY(), 1, Interpolation.exp5),Actions.run(menuBuilder), Actions.removeActor()));
+                    actor.addAction(Actions.sequence(Actions.moveBy(-stage.getWidth(), 0, 1, Interpolation.exp5),Actions.run(menuBuilder), Actions.removeActor()));
                 } else {
-                    actor.addAction(Actions.sequence(Actions.moveTo(-300, actor.getY(), 1, Interpolation.exp5), Actions.removeActor()));
+                    actor.addAction(Actions.sequence(Actions.moveBy(-stage.getWidth(),0, 1, Interpolation.exp5), Actions.removeActor()));
                 }
             }
         }
@@ -179,7 +176,12 @@ public class MenuScreen extends AbstractScreen {
             }
         });
 
-        addButton(viewport.getWorldWidth() / 2f, 20, 2, "Back", () -> {
+        InputKeySelector iks = new InputKeySelector(skin);
+        iks.setPosition(getScreenWidth() / 2f, -iks.getHeight(), Align.center);
+        iks.addAction(Actions.delay(1, Actions.moveToAligned(getScreenWidth() / 2f, 100, Align.center, 1, Interpolation.exp5)));
+        stage.addActor(iks);
+
+        addButton(viewport.getWorldWidth() / 2f, 20, 1.5f, "Back", () -> {
             swapMenu(this::showMenuScreen);
         });
     }

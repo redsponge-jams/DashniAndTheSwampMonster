@@ -53,5 +53,7 @@ public class InputKeySelector extends KeySelectorGroup {
         add(down).pad(5);
         add(right).pad(5);
         add(jump).colspan(3).pad(5);
+
+        pack();
     }
 }
