@@ -5,12 +5,12 @@ import com.badlogic.gdx.Input.Keys;
 
 public class Input {
 
-    public static final int KEY_RIGHT = Keys.RIGHT;
-    public static final int KEY_LEFT = Keys.LEFT;
-    public static final int KEY_UP = Keys.UP;
-    public static final int KEY_DOWN = Keys.DOWN;
-    public static final int KEY_JUMP = Keys.SPACE;
-    public static final int KEY_ATTACK = Keys.X;
+    public static int KEY_RIGHT = Keys.RIGHT;
+    public static int KEY_LEFT = Keys.LEFT;
+    public static int KEY_UP = Keys.UP;
+    public static int KEY_DOWN = Keys.DOWN;
+    public static int KEY_JUMP = Keys.SPACE;
+    public static int KEY_ATTACK = Keys.X;
 
     public static float getHorizontal() {
         return (Gdx.input.isKeyPressed(KEY_RIGHT) ? 1 : 0) - (Gdx.input.isKeyPressed(KEY_LEFT) ? 1 : 0);

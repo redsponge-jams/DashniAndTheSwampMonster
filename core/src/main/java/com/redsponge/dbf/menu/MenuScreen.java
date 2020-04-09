@@ -19,6 +19,7 @@ import com.redsponge.dbf.bossfight.BossFightScreen;
 import com.redsponge.dbf.constants.Constants;
 import com.redsponge.dbf.notification.IValueNotified;
 import com.redsponge.dbf.notification.NotificationHub;
+import com.redsponge.dbf.ui.InputKeySelector;
 import com.redsponge.redengine.assets.AssetSpecifier;
 import com.redsponge.redengine.screen.AbstractScreen;
 import com.redsponge.redengine.transitions.Transitions;
@@ -108,6 +109,9 @@ public class MenuScreen extends AbstractScreen {
                 loop.setLooping(true);
             });
         }
+        InputKeySelector iks = new InputKeySelector(skin);
+        iks.setPosition(100, 100);
+        stage.addActor(iks);
     }
 
     private void swapMenu(Runnable menuBuilder) {
