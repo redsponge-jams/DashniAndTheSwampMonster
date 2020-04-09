@@ -24,6 +24,14 @@ public class InputKeySelector extends KeySelectorGroup {
         jump.setKeySelectorGroup(this);
         attack.setKeySelectorGroup(this);
 
+        addLabel("up",up);
+        addLabel("down",down);
+        addLabel("right",right);
+        addLabel("left",left);
+        addLabel("jump", jump);
+        addLabel("atk", attack);
+
+
         build();
     }
 

@@ -1,6 +1,5 @@
 package com.redsponge.dbf.ui;
 
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -40,7 +39,7 @@ public class KeySelector extends TextButton {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 keySelectorGroup.deactivateAll();
-                active = true;
+                setActive(true);
                 getStage().setKeyboardFocus(KeySelector.this);
             }
         });
