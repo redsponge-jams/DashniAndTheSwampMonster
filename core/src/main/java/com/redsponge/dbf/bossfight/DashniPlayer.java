@@ -1,10 +1,12 @@
 package com.redsponge.dbf.bossfight;
 
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.redsponge.dbf.constants.Constants;
@@ -16,6 +18,7 @@ import com.redsponge.redengine.screen.components.AnimationComponent;
 import com.redsponge.redengine.screen.components.PhysicsComponent;
 import com.redsponge.redengine.screen.components.TextureComponent;
 import com.redsponge.redengine.screen.entity.ScreenEntity;
+import com.redsponge.redengine.screen.systems.RenderSystem;
 import com.redsponge.redengine.utils.IntVector2;
 import com.redsponge.redengine.utils.MathUtilities;
 
@@ -183,13 +186,13 @@ public class DashniPlayer extends ScreenEntity {
 
     @Override
     public void additionalRender() {
-//        shapeRenderer.setProjectionMatrix(screen.getEntitySystem(RenderSystem.class).getCamera().combined);
-//        shapeRenderer.begin(ShapeType.Line);
-//        if(attackBox != null) {
-//            shapeRenderer.setColor(Color.RED);
-//            shapeRenderer.rect(attackBox.x, attackBox.y, attackBox.width, attackBox.height);
-//        }
-//        shapeRenderer.end();
+        shapeRenderer.setProjectionMatrix(screen.getEntitySystem(RenderSystem.class).getCamera().combined);
+        shapeRenderer.begin(ShapeType.Line);
+        if(attackBox != null) {
+            shapeRenderer.setColor(Color.RED);
+            shapeRenderer.rect(attackBox.x, attackBox.y, attackBox.width, attackBox.height);
+        }
+        shapeRenderer.end();
     }
 
     private void beginAttacking() {
@@ -201,7 +204,7 @@ public class DashniPlayer extends ScreenEntity {
         } else if(vert < 0) {
             attackType = AttackType.DOWN;
             anim.setAnimation(attackDownAnimation);
-            render.setOffsetY(-96);
+            render.setOffsetY(-86);
         } else {
             attackType = AttackType.REGULAR;
             anim.setAnimation(attackAnimation);
@@ -221,8 +224,10 @@ public class DashniPlayer extends ScreenEntity {
         if(attackType == AttackType.REGULAR && lookingLeft) {
             render.setOffsetX(-96-8);
         }
-        if(attackType == AttackType.DOWN && lookingLeft) {
-            render.setOffsetX(-16);
+        if(attackType == AttackType.DOWN) {
+            if(lookingLeft) {
+                render.setOffsetX(-16);
+            }
         }
         if(attackType == AttackType.UP && lookingLeft) {
             render.setOffsetX(-18);
@@ -235,16 +240,16 @@ public class DashniPlayer extends ScreenEntity {
     private void createAttackBox() {
         switch (attackType) {
             case UP: {
-                attackBox = new Rectangle(pos.getX(), pos.getY() + size.getY(), 32, 80);
+                attackBox = new Rectangle(pos.getX(), pos.getY() + size.getY(), 24, 90);
             } break;
             case DOWN: {
-                attackBox = new Rectangle(pos.getX() + 8, pos.getY() - 80, 16, 80);
+                attackBox = new Rectangle(pos.getX() + 8, pos.getY() - 72, 16, 80);
             } break;
             case REGULAR: {
                 if(lookingLeft) {
-                    attackBox = new Rectangle(pos.getX() - 80, pos.getY() + 10, 80, 32);
+                    attackBox = new Rectangle(pos.getX() - 80, pos.getY() + 16, 80, 32-6);
                 } else {
-                    attackBox = new Rectangle(pos.getX() + size.getX(), pos.getY() + 10, 80, 32);
+                    attackBox = new Rectangle(pos.getX() + size.getX(), pos.getY() + 16, 80, 32-6);
                 }
             } break;
         }
