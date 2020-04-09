@@ -9,8 +9,8 @@
     - On Octopus Head Raise
     - On Bubble-Arm Raise
     - On Dashni Water Touch
- - Settings Menu
-    - Control Config
+ x Settings Menu
+    x Control Config
     x Music Control
  - Tooltips
     - If you haven't touched the small octopus for like 5 seconds, write [Press X To Punch]
