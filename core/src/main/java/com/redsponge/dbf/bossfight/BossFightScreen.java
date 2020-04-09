@@ -16,11 +16,15 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
@@ -578,6 +582,16 @@ public class BossFightScreen extends AbstractScreen {
         Label soundLbl = new Label("Sfx", skin);
         soundLbl.setPosition(guiViewport.getWorldWidth() / 3, 175);
         pauseStage.addActor(soundLbl);
+
+        TextButton backButton = new TextButton("Back", skin);
+        backButton.setPosition(guiViewport.getWorldWidth() / 2, 100, Align.center);
+        backButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ga.transitionTo(new MenuScreen(ga, null), Transitions.sineSlide(1, batch, shapeRenderer));
+            }
+        });
+        pauseStage.addActor(backButton);
 
         font = Fonts.getFont("pixelmix", 16);
     }
