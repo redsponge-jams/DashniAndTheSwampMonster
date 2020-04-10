@@ -20,7 +20,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
@@ -34,13 +33,11 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.redsponge.dbf.DashniBossFight;
 import com.redsponge.dbf.constants.Constants;
+import com.redsponge.dbf.lights.FadingLight;
 import com.redsponge.dbf.menu.MenuScreen;
 import com.redsponge.redengine.assets.AssetSpecifier;
 import com.redsponge.redengine.assets.Fonts;
-import com.redsponge.redengine.lighting.Light;
 import com.redsponge.redengine.lighting.LightSystem;
-import com.redsponge.redengine.lighting.LightTextures;
-import com.redsponge.redengine.lighting.LightTextures.Soft;
 import com.redsponge.redengine.lighting.LightType;
 import com.redsponge.redengine.lighting.PointLight;
 import com.redsponge.redengine.physics.PhysicsDebugRenderer;
@@ -109,6 +106,8 @@ public class BossFightScreen extends AbstractScreen {
     private Skin skin;
 
     private LightSystem lightSystem;
+
+    private DelayedRemovalArray<FadingLight> lights;
 
     public static void progressPhase() {
         musicManager.swap();
@@ -537,17 +536,13 @@ public class BossFightScreen extends AbstractScreen {
         lightSystem.registerLightType(LightType.ADDITIVE);
         lightSystem.setAmbianceColor(new Color(0.6f, 0.8f, 0.9f, 0.5f), LightType.MULTIPLICATIVE);
 
-        PointLight line = new PointLight(getScreenWidth() - 96, getScreenHeight() - 96, 256*2, new AtlasRegion(assets.getTextureRegion("lightDiag")));
-        line.getColor().a = 0.5f;
-        lightSystem.addLight(line, LightType.ADDITIVE);
+        lights = new DelayedRemovalArray<>();
 
-         line = new PointLight(getScreenWidth() - 96, getScreenHeight() - 96, 256*1.5f, new AtlasRegion(assets.getTextureRegion("lightDiagSide")));
-        line.getColor().set(0.5f, 0.7f, 0.9f, 1.0f);
-        lightSystem.addLight(line, LightType.ADDITIVE);
-
-         line = new PointLight(getScreenWidth() - 96, getScreenHeight() - 96, 256*2, new AtlasRegion(assets.getTextureRegion("lightDiagDown")));
-        line.getColor().set(Color.TEAL);
-        lightSystem.addLight(line, LightType.ADDITIVE);
+        addFadingLight(getScreenWidth() - 96, getScreenHeight() - 96, 256 * 2, assets.getTextureRegion("lightDiag"), 0x44FDFFFF);
+        addFadingLight(getScreenWidth() - 96, getScreenHeight() - 96, 256 * 1.5f, assets.getTextureRegion("lightDiagSide"), 0x7F6987FF);
+        addFadingLight(getScreenWidth() - 96, getScreenHeight() - 96, 256 * 2, assets.getTextureRegion("lightDiagDown"), 0x007F7FFF);
+        addFadingLight(getScreenWidth() - 96, getScreenHeight() - 96, 256 * 3, assets.getTextureRegion("lightDiagSide"), 0xFCFFB199);
+        addFadingLight(getScreenWidth() - 96 * 4, getScreenHeight() - 96, 256 * 2, assets.getTextureRegion("lightDiag"), 0x228b22ff);
 
         musicManager = new MusicManager();
         phase = FightPhase.ZERO;
@@ -623,6 +618,14 @@ public class BossFightScreen extends AbstractScreen {
         font = Fonts.getFont("pixelmix", 16);
     }
 
+    private FadingLight addFadingLight(float x, float y, float rad, TextureRegion tex, int color) {
+        FadingLight line = new FadingLight(x, y, rad, new AtlasRegion(tex));
+        line.getColor().set(color);
+        lightSystem.addLight(line, LightType.ADDITIVE);
+        lights.add(line);
+        return line;
+    }
+
     public void spawnBubble(float x, float y) {
         PositionComponent playerPos = Mappers.position.get(player);
         addEntity(new AttackBubble(batch, shapeRenderer, x, y, playerPos.getX(), playerPos.getY()));
@@ -647,6 +650,9 @@ public class BossFightScreen extends AbstractScreen {
         }
 
         if(!paused) {
+            for (int i = 0; i < lights.size; i++) {
+                lights.get(i).tick(v);
+            }
             if (!headUp && phase != FightPhase.WIN) {
                 phase.processAttack(v, this, bam);
             }
@@ -775,7 +781,6 @@ public class BossFightScreen extends AbstractScreen {
 //            shapeRenderer.end();
             renderEntities();
         }
-
         lightSystem.prepareMap(LightType.MULTIPLICATIVE, renderSystem.getViewport());
         lightSystem.renderToScreen(LightType.MULTIPLICATIVE);
         lightSystem.prepareMap(LightType.ADDITIVE, renderSystem.getViewport());
