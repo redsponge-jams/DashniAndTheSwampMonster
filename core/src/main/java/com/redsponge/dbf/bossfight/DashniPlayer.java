@@ -36,7 +36,6 @@ public class DashniPlayer extends ScreenEntity {
     private float maxSpeed = 140;
     private float frictionMultiplier = 0.85f;
     private float horizStartBoostMultiplier = 30;
-
     private float jumpVelocity = 320;
     private float fallMultiplier = 3f;
     private float lowJumpMultiplier = 4f;
@@ -296,6 +295,12 @@ public class DashniPlayer extends ScreenEntity {
             vel.setY(vel.getY() + gravity * (lowJumpMultiplier - 1) * delta);
         }
 
+    }
+
+    @Override
+    public void removed() {
+        ((BossFightScreen)screen).getLightSystem().removeLight(light, LightType.ADDITIVE);
+        ((BossFightScreen)screen).getLightSystem().removeLight(mulLight, LightType.MULTIPLICATIVE);
     }
 
     private void onYCollide(PEntity other) {

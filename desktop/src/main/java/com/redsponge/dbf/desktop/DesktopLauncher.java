@@ -20,6 +20,7 @@ public class DesktopLauncher {
 		configuration.title = "DashniBossFight";
 		configuration.width = 640;
 		configuration.height = 480;
+		configuration.audioDeviceBufferCount = 4096 * 10;
 		for (int size : new int[] { 128, 64, 32 }) {
 			configuration.addIcon(size + ".png", FileType.Internal);
 		}

@@ -545,6 +545,10 @@ public class BossFightScreen extends AbstractScreen {
         addFadingLight(getScreenWidth() - 96, getScreenHeight() - 96, 256 * 3, assets.getTextureRegion("lightDiagSide"), 0xFCFFB199);
         addFadingLight(getScreenWidth() - 96 * 4, getScreenHeight() - 96, 256 * 2, assets.getTextureRegion("lightDiag"), 0x228b22ff);
 
+        for (int i = 0; i < 10; i++) {
+            addEntity(new FlyLight(batch, shapeRenderer));
+        }
+
         musicManager = new MusicManager();
         phase = FightPhase.ZERO;
         guiViewport = new FitViewport(getScreenWidth(), getScreenHeight());
@@ -691,6 +695,8 @@ public class BossFightScreen extends AbstractScreen {
         } else {
             pauseStage.act(v);
         }
+        lightSystem.prepareMap(LightType.ADDITIVE, renderSystem.getViewport());
+        lightSystem.prepareMap(LightType.MULTIPLICATIVE, renderSystem.getViewport());
 
         if(grabScreen) {
             pauseFrame.begin();
@@ -698,6 +704,8 @@ public class BossFightScreen extends AbstractScreen {
         if(!paused || grabScreen) {
             tickEntities(v);
             updateEngine(v);
+            lightSystem.renderToScreen(LightType.MULTIPLICATIVE);
+            lightSystem.renderToScreen(LightType.ADDITIVE);
         }
         if(grabScreen) {
             pauseFrame.end();
@@ -801,10 +809,6 @@ public class BossFightScreen extends AbstractScreen {
 //            }
 //            shapeRenderer.end();
             renderEntities();
-            lightSystem.prepareMap(LightType.MULTIPLICATIVE, renderSystem.getViewport());
-            lightSystem.renderToScreen(LightType.MULTIPLICATIVE);
-            lightSystem.prepareMap(LightType.ADDITIVE, renderSystem.getViewport());
-            lightSystem.renderToScreen(LightType.ADDITIVE);
         }
     }
 

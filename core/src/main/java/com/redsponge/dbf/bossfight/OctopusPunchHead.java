@@ -162,6 +162,7 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
         eye.set(0, 0, 0, 0);
         stunSound.play(Constants.SOUND_HUB.getValue());
         BossFightScreen.progressPhase();
+        notifyScreen(Notifications.CHANGED_PHASE);
         if(BossFightScreen.phase == FightPhase.WIN) {
             screen.addEntity(new WhiteFlagArm(batch, shapeRenderer));
         }
@@ -170,6 +171,7 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
     @Override
     public void removed() {
         notifyScreen(Notifications.OCTOPUS_EYE_GONE);
+        ((BossFightScreen)screen).getLightSystem().removeLight(eyeLights, LightType.ADDITIVE);
     }
 
     private enum HeadState {

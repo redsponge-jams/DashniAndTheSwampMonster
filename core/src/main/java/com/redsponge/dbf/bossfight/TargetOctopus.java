@@ -147,6 +147,12 @@ public class TargetOctopus extends ScreenEntity implements INotified {
     }
 
     @Override
+    public void removed() {
+        ((BossFightScreen)screen).getLightSystem().removeLight(light, LightType.ADDITIVE);
+        ((BossFightScreen)screen).getLightSystem().removeLight(mulLight, LightType.MULTIPLICATIVE);
+    }
+
+    @Override
     public void notified(Object o, int i) {
         if(done) return;
         if(i == Notifications.PLAYER_ATTACK_BOX_SPAWNED && hitsLeft > 0 && hurtTime <= 0) {
