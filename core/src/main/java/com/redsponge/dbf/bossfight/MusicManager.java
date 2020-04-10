@@ -2,6 +2,8 @@ package com.redsponge.dbf.bossfight;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.redsponge.dbf.constants.Constants;
 import com.redsponge.dbf.notification.IValueNotified;
 import com.redsponge.dbf.notification.NotificationHub;
@@ -28,6 +30,7 @@ public class MusicManager implements IValueNotified<Float> {
         current.setVolume(Constants.MUSIC_HUB.getValue());
         current.play();
         current.setLooping(true);
+        ShapeRenderer sr;
         prepNext();
     }
 
@@ -46,7 +49,22 @@ public class MusicManager implements IValueNotified<Float> {
         if(!keepPosition[currentIndex]) {
             pos = 0;
         }
-        next.play();
+        boolean success = false;
+        int failTimes = 0;
+        while(!success) {
+            success = true;
+            try {
+                next.play();
+            } catch (GdxRuntimeException exception) {
+                exception.printStackTrace();
+                failTimes++;
+                success = false;
+                if(failTimes > 10) {
+                    throw new RuntimeException("Couldn't load music", exception);
+                }
+            }
+        }
+
         next.setLooping(loop[(currentIndex + 1) % paths.length]);
         next.setVolume(volume[(currentIndex + 1) % paths.length] * Constants.MUSIC_HUB.getValue());
         next.setPosition(pos);

@@ -8,7 +8,7 @@ public class FadingLight extends PointLight {
 
     public FadingLight(float x, float y, float radius, AtlasRegion texture) {
         super(x, y, radius, texture);
-        time = MathUtils.random(5);
+        time = MathUtils.random(MathUtils.PI2);
     }
 
 

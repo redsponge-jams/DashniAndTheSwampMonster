@@ -6,9 +6,14 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.redsponge.dbf.constants.Constants;
+import com.redsponge.redengine.lighting.Light;
+import com.redsponge.redengine.lighting.LightTextures.Point;
+import com.redsponge.redengine.lighting.LightType;
+import com.redsponge.redengine.lighting.PointLight;
 import com.redsponge.redengine.screen.INotified;
 import com.redsponge.redengine.screen.components.AnimationComponent;
 import com.redsponge.redengine.screen.entity.ScreenEntity;
@@ -39,6 +44,9 @@ public class TargetOctopus extends ScreenEntity implements INotified {
     private Sound ouchSound;
     private boolean done;
 
+    private PointLight light;
+    private PointLight mulLight;
+
 
     public TargetOctopus(SpriteBatch batch, ShapeRenderer shapeRenderer) {
         super(batch, shapeRenderer);
@@ -54,6 +62,13 @@ public class TargetOctopus extends ScreenEntity implements INotified {
         pos.set(screen.getScreenWidth() / 2f - 24, screen.getScreenHeight() / 3);
         size.set(48, 48);
         render.setUseRegH(true).setUseRegW(true).setScaleX(2).setScaleY(2).setOffsetX(-8).setOffsetY(-8);
+        light = new PointLight(pos.getX(), pos.getY(), 96, Point.star);
+        light.getColor().set(0xAAFFFF55);
+
+        mulLight = new PointLight(pos.getX(), pos.getY(), 96, Point.feathered);
+
+        ((BossFightScreen)screen).getLightSystem().addLight(light, LightType.ADDITIVE);
+        ((BossFightScreen)screen).getLightSystem().addLight(mulLight, LightType.MULTIPLICATIVE);
         generateTarget();
     }
 
@@ -81,11 +96,13 @@ public class TargetOctopus extends ScreenEntity implements INotified {
             pos.setX(MathUtilities.lerp(pos.getX(), screen.getScreenWidth() / 2f - size.getX() / 2f, 0.2f));
             pos.setY(MathUtilities.lerp(pos.getY(), screen.getScreenHeight() / 2f - size.getY() / 2f + 100, 0.2f));
             vel.set(0, 0);
+            light.getColor().set(Color.CLEAR);
+            mulLight.getColor().set(Color.CLEAR);
             render.getColor().lerp(stunColor, 0.1f);
         } else {
             anim.setAnimationSpeed(1);
             render.setRotation(MathUtilities.lerp(render.getRotation(), (float) Math.sin(3 * timeExists) * 10, 0.1f));
-            render.getColor().a =((float)Math.sin(timeExists) + 1) / 8 + 0.75f;
+            render.getColor().a = MathUtils.map(-1, 1, 0.4f, 0.9f, (float) Math.sin(timeExists));
 
             float diffX = targetLoc.x - (pos.getX() + size.getX() / 2f);
             float diffY = targetLoc.y - (pos.getY() + size.getY() / 2f);
@@ -97,10 +114,14 @@ public class TargetOctopus extends ScreenEntity implements INotified {
             vel.setX(MathUtilities.lerp(vel.getX(), wantedVX * BossFightScreen.phase.getOctopusSpeed(), BossFightScreen.phase.getOctopusLerpPower()));
             vel.setY(MathUtilities.lerp(vel.getY(), wantedVY * BossFightScreen.phase.getOctopusSpeed(), BossFightScreen.phase.getOctopusLerpPower()));
             self.set(pos.getX(), pos.getY(), size.getX(), size.getY());
+            light.getColor().set(0xAAFFFF55);
+            mulLight.getColor().set(Color.WHITE);
         }
         if(done) {
             vel.set(0, 0);
         }
+        light.pos.set(pos.getX() + size.getX() / 2f, pos.getY() + size.getY() / 2f);
+        mulLight.pos.set(pos.getX() + size.getX() / 2f, pos.getY() + size.getY() / 2f);
     }
 
     @Override

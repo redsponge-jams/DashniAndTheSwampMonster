@@ -1,6 +1,7 @@
 package com.redsponge.dbf.bossfight;
 
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -8,9 +9,14 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.redsponge.dbf.bossfight.BossFightScreen.FightPhase;
 import com.redsponge.dbf.constants.Constants;
+import com.redsponge.redengine.lighting.LightTextures.Point;
+import com.redsponge.redengine.lighting.LightType;
+import com.redsponge.redengine.lighting.PointLight;
 import com.redsponge.redengine.screen.INotified;
 import com.redsponge.redengine.screen.components.AnimationComponent;
 import com.redsponge.redengine.screen.entity.ScreenEntity;
+
+import java.util.HashMap;
 
 public class OctopusPunchHead extends ScreenEntity implements INotified {
 
@@ -28,6 +34,10 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
 
     private Sound stunSound;
 
+    private PointLight eyeLights;
+
+    private HashMap<Animation<TextureRegion>, EyePos[]> eyeLightPositions;
+
     public OctopusPunchHead(SpriteBatch batch, ShapeRenderer shapeRenderer) {
         super(batch, shapeRenderer);
     }
@@ -44,6 +54,13 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
         if(BossFightScreen.phase == FightPhase.ZERO) {
             timeBeforeBored = Integer.MAX_VALUE;
         }
+
+        eyeLights = new PointLight(0, 0, 64, Point.feathered);
+        eyeLights.getColor().set(Color.ORANGE);
+        eyeLights.getColor().a = 0.5f;
+        eyeLights.getColor().b += 0.2f;
+        eyeLights.getColor().g += 0.2f;
+        ((BossFightScreen)screen).getLightSystem().addLight(eyeLights, LightType.ADDITIVE);
     }
 
     @Override
@@ -56,6 +73,11 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
         anim = new AnimationComponent(raise);
         state = HeadState.RAISE;
         add(anim);
+
+        eyeLightPositions = new HashMap<>();
+        eyeLightPositions.put(raise, new EyePos[]{EyePos.NONE, EyePos.NONE, new EyePos(35, 65, 64), new EyePos(45, 125, 96)});
+        eyeLightPositions.put(stun, new EyePos[] {new EyePos(48, 115), new EyePos(60, 96), new EyePos(68, 85), new EyePos(78, 70), new EyePos(62, 69), new EyePos(38, 103), new EyePos(29, 124), new EyePos(27, 134), new EyePos(25, 161), new EyePos(28, 153), new EyePos(29, 142), new EyePos(43, 131)});
+        eyeLightPositions.put(sink, new EyePos[] {new EyePos(46, 133), new EyePos(46, 206), new EyePos(45, 255), EyePos.NONE});
     }
 
     public void sink() {
@@ -67,7 +89,11 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
 
     @Override
     public void additionalTick(float delta) {
-        super.additionalTick(delta);
+
+        EyePos eyePos = eyeLightPositions.get(anim.getAnimation())[anim.getAnimation().getKeyFrameIndex(anim.getAnimationTime())];
+        eyeLights.pos.set(pos.getX() + eyePos.x() * render.getScaleX(), pos.getY() + eyePos.y());
+        eyeLights.setRadius(eyePos.rad());
+
         if(bored) {
             if(anim.getAnimationTime() <= 0) remove();
             return;
@@ -151,5 +177,32 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
         IDLE,
         STUN,
         OUT
+    }
+
+    private static class EyePos {
+        public static final EyePos NONE = new EyePos(0, 0, 0);
+        private final int x, y, rad;
+
+        public EyePos(int x, int y) {
+            this(x, 256 - y, 96);
+        }
+
+        public EyePos(int x, int y, int rad) {
+            this.x = x;
+            this.y = y;
+            this.rad = rad;
+        }
+
+        public int x() {
+            return x;
+        }
+
+        public int y() {
+            return y;
+        }
+
+        public int rad() {
+            return rad;
+        }
     }
 }

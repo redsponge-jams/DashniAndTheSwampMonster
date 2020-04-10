@@ -54,6 +54,7 @@ import com.redsponge.redengine.utils.GeneralUtils;
 import com.redsponge.redengine.utils.IntVector2;
 import com.redsponge.redengine.utils.Logger;
 import com.redsponge.redengine.utils.MathUtilities;
+import org.lwjgl.opengl.Display;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -540,7 +541,7 @@ public class BossFightScreen extends AbstractScreen {
 
         addFadingLight(getScreenWidth() - 96, getScreenHeight() - 96, 256 * 2, assets.getTextureRegion("lightDiag"), 0x44FDFFFF);
         addFadingLight(getScreenWidth() - 96, getScreenHeight() - 96, 256 * 1.5f, assets.getTextureRegion("lightDiagSide"), 0x7F6987FF);
-        addFadingLight(getScreenWidth() - 96, getScreenHeight() - 96, 256 * 2, assets.getTextureRegion("lightDiagDown"), 0x007F7FFF);
+        addFadingLight(getScreenWidth() - 96, getScreenHeight() - 96*2, 256 * 2, assets.getTextureRegion("lightDiagDown"), 0x007F7FFF);
         addFadingLight(getScreenWidth() - 96, getScreenHeight() - 96, 256 * 3, assets.getTextureRegion("lightDiagSide"), 0xFCFFB199);
         addFadingLight(getScreenWidth() - 96 * 4, getScreenHeight() - 96, 256 * 2, assets.getTextureRegion("lightDiag"), 0x228b22ff);
 
@@ -605,8 +606,18 @@ public class BossFightScreen extends AbstractScreen {
         soundLbl.setPosition(guiViewport.getWorldWidth() / 3, 175);
         pauseStage.addActor(soundLbl);
 
-        TextButton backButton = new TextButton("Back", skin);
-        backButton.setPosition(guiViewport.getWorldWidth() / 2, 100, Align.center);
+        TextButton resumeButton = new TextButton("Resume", skin);
+        resumeButton.setPosition(guiViewport.getWorldWidth() / 2, 100, Align.center);
+        resumeButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                togglePause();
+            }
+        });
+        pauseStage.addActor(resumeButton);
+
+        TextButton backButton = new TextButton("Exit", skin);
+        backButton.setPosition(guiViewport.getWorldWidth() / 2, 50, Align.center);
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -634,6 +645,10 @@ public class BossFightScreen extends AbstractScreen {
     @Override
     public void tick(float v) {
         if(transitioning) return;
+        if(!paused && !Display.isActive()) {
+            togglePause();
+            return;
+        }
         musicManager.tick();
         if(isDashniDead) {
             if(Gdx.input.isKeyJustPressed(Keys.ENTER)) {
@@ -701,6 +716,12 @@ public class BossFightScreen extends AbstractScreen {
         } else {
             Gdx.input.setInputProcessor(null);
         }
+    }
+
+    @Override
+    public void pause() {
+        Logger.log(this, "YE");
+        togglePause();
     }
 
     private void scheduleGrabScreen() {
@@ -780,11 +801,11 @@ public class BossFightScreen extends AbstractScreen {
 //            }
 //            shapeRenderer.end();
             renderEntities();
+            lightSystem.prepareMap(LightType.MULTIPLICATIVE, renderSystem.getViewport());
+            lightSystem.renderToScreen(LightType.MULTIPLICATIVE);
+            lightSystem.prepareMap(LightType.ADDITIVE, renderSystem.getViewport());
+            lightSystem.renderToScreen(LightType.ADDITIVE);
         }
-        lightSystem.prepareMap(LightType.MULTIPLICATIVE, renderSystem.getViewport());
-        lightSystem.renderToScreen(LightType.MULTIPLICATIVE);
-        lightSystem.prepareMap(LightType.ADDITIVE, renderSystem.getViewport());
-        lightSystem.renderToScreen(LightType.ADDITIVE);
     }
 
 
