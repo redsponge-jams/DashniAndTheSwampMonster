@@ -2,13 +2,12 @@ package com.redsponge.dbf.bossfight;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.redsponge.dbf.constants.Constants;
 import com.redsponge.dbf.notification.IValueNotified;
-import com.redsponge.dbf.notification.NotificationHub;
 
-public class MusicManager implements IValueNotified<Float> {
+public class MusicManager implements Disposable, IValueNotified<Float> {
 
     private String[] paths = {"music/birds.ogg", "music/1.ogg", "music/2.ogg", "music/3.ogg", "music/4.ogg", "music/5.ogg", "music/6.ogg", "music/final.ogg"};
     private boolean[] keepPosition = {false, true, true, true, true, true, false};
@@ -17,9 +16,8 @@ public class MusicManager implements IValueNotified<Float> {
     private int currentIndex;
 
     private Music current;
-    private Music next;
 
-    private AssetManager am;
+    private final AssetManager am;
 
     public MusicManager() {
         currentIndex = 0;
@@ -27,11 +25,27 @@ public class MusicManager implements IValueNotified<Float> {
         am.load(paths[currentIndex], Music.class);
         am.finishLoading();
         current = am.get(paths[currentIndex]);
-        current.setVolume(Constants.MUSIC_HUB.getValue());
-        current.play();
+        current.setVolume(Constants.MUSIC_HUB.getValue() * volume[currentIndex]);
         current.setLooping(true);
-        ShapeRenderer sr;
+        tryPlay(current);
+        current.play();
         prepNext();
+    }
+
+    private void tryPlay(Music current) {
+        int fails = 0;
+        while(true) {
+            try {
+                current.play();
+                return;
+            } catch (GdxRuntimeException e) {
+                e.printStackTrace();
+                fails++;
+                if(fails >= 10) {
+                    throw new RuntimeException("Couldn't Play Music", e);
+                }
+            }
+        }
     }
 
     private void prepNext() {
@@ -44,27 +58,12 @@ public class MusicManager implements IValueNotified<Float> {
 
     public void swap() {
         am.finishLoading();
-        next = am.get(paths[(currentIndex + 1) % paths.length]);
+        Music next = am.get(paths[(currentIndex + 1) % paths.length]);
         float pos = current.getPosition();
         if(!keepPosition[currentIndex]) {
             pos = 0;
         }
-        boolean success = false;
-        int failTimes = 0;
-        while(!success) {
-            success = true;
-            try {
-                next.play();
-            } catch (GdxRuntimeException exception) {
-                exception.printStackTrace();
-                failTimes++;
-                success = false;
-                if(failTimes > 10) {
-                    throw new RuntimeException("Couldn't load music", exception);
-                }
-            }
-        }
-
+        tryPlay(next);
         next.setLooping(loop[(currentIndex + 1) % paths.length]);
         next.setVolume(volume[(currentIndex + 1) % paths.length] * Constants.MUSIC_HUB.getValue());
         next.setPosition(pos);
@@ -78,6 +77,7 @@ public class MusicManager implements IValueNotified<Float> {
         prepNext();
     }
 
+    @Override
     public void dispose() {
         am.dispose();
     }

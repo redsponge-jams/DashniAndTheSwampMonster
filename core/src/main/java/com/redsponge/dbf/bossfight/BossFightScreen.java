@@ -736,7 +736,6 @@ public class BossFightScreen extends AbstractScreen {
         pauseFrame = new FrameBuffer(Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
         pauseViewport = new FitViewport(pauseFrame.getWidth(), pauseFrame.getHeight());
         pauseViewport.update(pauseFrame.getWidth(), pauseFrame.getHeight(), true);
-        Logger.log(this, pauseFrame.getWidth(), pauseFrame.getHeight());
         grabScreen = true;
     }
 
