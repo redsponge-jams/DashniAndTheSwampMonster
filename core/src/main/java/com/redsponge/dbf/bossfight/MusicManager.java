@@ -1,16 +1,15 @@
 package com.redsponge.dbf.bossfight;
 
-import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.redsponge.dbf.constants.Constants;
 import com.redsponge.dbf.notification.IValueNotified;
 import com.redsponge.dbf.utils.Utils;
 
 public class MusicManager implements Disposable, IValueNotified<Float> {
 
-    private String[] paths = {"music/birds.ogg", "music/1.ogg", "music/2.ogg", "music/3.ogg", "music/4.ogg", "music/5.ogg", "music/6.ogg", "music/final.ogg"};
+    private String[] paths = {"music/birds.ogg", "music/1.ogg", "music/2.ogg", "music/3.ogg", "music/4.ogg", "music/5_new.ogg", "music/6.ogg", "music/final.ogg"};
     private boolean[] keepPosition = {false, true, true, true, true, true, false};
     private boolean[] loop = {true, true, true, true, true, true, true, false};
     private float[] volume = {2, 1, 1, 1, 1, 1, 1, 2};
@@ -18,23 +17,12 @@ public class MusicManager implements Disposable, IValueNotified<Float> {
 
     private Music current;
 
-    private final AssetManager am;
-
     public MusicManager() {
         currentIndex = 0;
-        am = new AssetManager();
-        am.load(paths[currentIndex], Music.class);
-        am.finishLoading();
-        current = am.get(paths[currentIndex]);
+        current = Gdx.audio.newMusic(Gdx.files.internal(paths[currentIndex]));
         current.setVolume(Constants.MUSIC_HUB.getValue() * volume[currentIndex]);
         current.setLooping(true);
         Utils.tryPlay(current);
-
-        prepNext();
-    }
-
-    private void prepNext() {
-        am.load(paths[(currentIndex + 1) % paths.length], Music.class);
     }
 
     public void tick() {
@@ -42,8 +30,7 @@ public class MusicManager implements Disposable, IValueNotified<Float> {
     }
 
     public void swap() {
-        am.finishLoading();
-        Music next = am.get(paths[(currentIndex + 1) % paths.length]);
+        Music next = Gdx.audio.newMusic(Gdx.files.internal(paths[(currentIndex + 1) % paths.length]));
         float pos = current.getPosition();
         if(!keepPosition[currentIndex % keepPosition.length]) {
             pos = 0;
@@ -52,19 +39,18 @@ public class MusicManager implements Disposable, IValueNotified<Float> {
         next.setLooping(loop[(currentIndex + 1) % paths.length]);
         next.setVolume(volume[(currentIndex + 1) % paths.length] * Constants.MUSIC_HUB.getValue());
         next.setPosition(pos);
-        current.stop();
+
+        current.dispose();
 
         current = next;
-        next = null;
-        am.unload(paths[currentIndex]);
+
         currentIndex++;
         currentIndex %= paths.length;
-        prepNext();
     }
 
     @Override
     public void dispose() {
-        am.dispose();
+        current.dispose();
     }
 
     public void stop() {

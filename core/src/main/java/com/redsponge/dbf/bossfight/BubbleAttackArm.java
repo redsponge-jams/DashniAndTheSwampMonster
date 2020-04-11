@@ -63,7 +63,7 @@ public class BubbleAttackArm extends ScreenEntity {
         idleAnimation = assets.getAnimation("octopusAttackBubbleIdleAnimation");
         attackAnimation = assets.getAnimation("octopusAttackBubbleAttackAnimation");
 
-        bubbles = ((BossFightScreen)screen).getPm().spawnBubbles((int) pos.getX(), (int) pos.getY() + 16);
+        bubbles = ((BossFightScreen)screen).getParticleManager().spawnBubbles((int) pos.getX(), (int) pos.getY() + 16);
         anim = new AnimationComponent(raiseAnimation);
     }
 
