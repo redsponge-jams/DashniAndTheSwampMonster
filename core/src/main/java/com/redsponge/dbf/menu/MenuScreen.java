@@ -22,6 +22,7 @@ import com.redsponge.dbf.constants.Constants;
 import com.redsponge.dbf.notification.IValueNotified;
 import com.redsponge.dbf.notification.NotificationHub;
 import com.redsponge.dbf.ui.InputKeySelector;
+import com.redsponge.dbf.utils.Utils;
 import com.redsponge.redengine.assets.AssetSpecifier;
 import com.redsponge.redengine.screen.AbstractScreen;
 import com.redsponge.redengine.transitions.Transitions;
@@ -87,27 +88,28 @@ public class MenuScreen extends AbstractScreen {
 
         if(intro == null) {
             intro = Gdx.audio.newMusic(Gdx.files.internal("music/musica.ogg"));
-            intro.setVolume(0.5f);
-            intro.play();
+            intro.setVolume(Constants.MUSIC_HUB.getValue());
+
+            Utils.tryPlay(intro);
             intro.setOnCompletionListener((music) -> {
                 intro.dispose();
                 disposedIntro = true;
                 intro = null;
                 loop.setVolume(Constants.MUSIC_HUB.getValue());
-                loop.play();
+                Utils.tryPlay(loop);
                 loop.setLooping(true);
             });
         } else if(!intro.isPlaying()){
             intro.dispose();
             loop.setLooping(true);
             loop.setVolume(Constants.MUSIC_HUB.getValue());
-            loop.play();
+            Utils.tryPlay(loop);
         } else {
             intro.setOnCompletionListener((music) -> {
                 intro.dispose();
                 disposedIntro = true;
                 loop.setVolume(Constants.MUSIC_HUB.getValue());
-                loop.play();
+                Utils.tryPlay(loop);
                 loop.setLooping(true);
             });
         }

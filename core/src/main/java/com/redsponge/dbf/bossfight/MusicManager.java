@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.redsponge.dbf.constants.Constants;
 import com.redsponge.dbf.notification.IValueNotified;
+import com.redsponge.dbf.utils.Utils;
 
 public class MusicManager implements Disposable, IValueNotified<Float> {
 
@@ -27,25 +28,9 @@ public class MusicManager implements Disposable, IValueNotified<Float> {
         current = am.get(paths[currentIndex]);
         current.setVolume(Constants.MUSIC_HUB.getValue() * volume[currentIndex]);
         current.setLooping(true);
-        tryPlay(current);
-        current.play();
-        prepNext();
-    }
+        Utils.tryPlay(current);
 
-    private void tryPlay(Music current) {
-        int fails = 0;
-        while(true) {
-            try {
-                current.play();
-                return;
-            } catch (GdxRuntimeException e) {
-                e.printStackTrace();
-                fails++;
-                if(fails >= 10) {
-                    throw new RuntimeException("Couldn't Play Music", e);
-                }
-            }
-        }
+        prepNext();
     }
 
     private void prepNext() {
@@ -53,17 +38,17 @@ public class MusicManager implements Disposable, IValueNotified<Float> {
     }
 
     public void tick() {
-        am.update();
+//        am.update();
     }
 
     public void swap() {
         am.finishLoading();
         Music next = am.get(paths[(currentIndex + 1) % paths.length]);
         float pos = current.getPosition();
-        if(!keepPosition[currentIndex]) {
+        if(!keepPosition[currentIndex % keepPosition.length]) {
             pos = 0;
         }
-        tryPlay(next);
+        Utils.tryPlay(next);
         next.setLooping(loop[(currentIndex + 1) % paths.length]);
         next.setVolume(volume[(currentIndex + 1) % paths.length] * Constants.MUSIC_HUB.getValue());
         next.setPosition(pos);

@@ -648,6 +648,9 @@ public class BossFightScreen extends AbstractScreen {
 
     @Override
     public void tick(float v) {
+        if(Gdx.input.isKeyJustPressed(Keys.P)) {
+            musicManager.swap();
+        };
         if(transitioning) return;
         if(!paused && !Display.isActive()) {
             togglePause();
@@ -864,8 +867,8 @@ public class BossFightScreen extends AbstractScreen {
 
     @Override
     public void disposeAssets() {
-        pdr.dispose();
         musicManager.dispose();
+        pdr.dispose();
         pauseStage.dispose();
     }
 
