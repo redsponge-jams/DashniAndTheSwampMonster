@@ -1,18 +1,13 @@
- x Pause Menu
- x Hitboxes
-    x Dashni Punch Up Left isn't aligned
-    x Dashni Punch down moves him down.
- - Splash Sound:
-    - On Geyser End
-    - On Dashni Water Death
- - Splash Particles
-    - On Octopus Head Raise
-    - On Bubble-Arm Raise
-    - On Dashni Water Touch
- x Settings Menu
-    x Control Config
-    x Music Control
  - Tooltips
     - If you haven't touched the small octopus for like 5 seconds, write [Press X To Punch]
     - If you haven't touched the octo eye for like 5 seconds, write [Punch the octopus's eye]
- x Add light system
+ - Dashni Sounds
+    - Jump
+    - Get Hit
+    - Walk on stone
+    - Land
+ - Sounds
+    - Arm whip
+ - Controls
+    - Jump in air detection (jump once landed)
+    - good onGround system
