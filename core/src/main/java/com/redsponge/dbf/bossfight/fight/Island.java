@@ -1,8 +1,10 @@
 package com.redsponge.dbf.bossfight.fight;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.redsponge.dbf.bossfight.BossFightScreen;
 import com.redsponge.redengine.physics.PBodyType;
 import com.redsponge.redengine.screen.components.PhysicsComponent;
 import com.redsponge.redengine.screen.components.TextureComponent;
@@ -45,6 +47,10 @@ public class Island extends ScreenEntity {
             if(boostTime >= 1) {
                 vel.setY((boostYStart - pos.getY()) / delta);
                 boosting = false;
+                ((BossFightScreen)screen).playRandomSplash();
+                ((BossFightScreen) screen).getParticleManager().mediumSplash().spawn(pos.getX() + size.getX() / 2f - 50, boostYStart + size.getY() / 2f);
+                ((BossFightScreen) screen).getParticleManager().mediumSplash().spawn(pos.getX() + size.getX() / 2f, boostYStart + size.getY() / 2f);
+                ((BossFightScreen) screen).getParticleManager().mediumSplash().spawn(pos.getX() + size.getX() / 2f + 20, boostYStart + size.getY() / 2f);
             }
         } else {
             timeExists += delta;
@@ -61,5 +67,6 @@ public class Island extends ScreenEntity {
         boosting = true;
         boostTime = 0;
         boostYStart = pos.getY();
+        ((BossFightScreen)screen).getParticleManager().geyser().spawn(pos.getX() + 8, pos.getY());
     }
 }

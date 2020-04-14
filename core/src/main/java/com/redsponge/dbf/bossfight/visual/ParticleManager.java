@@ -7,31 +7,47 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffectPool.PooledEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
+import com.badlogic.gdx.utils.Disposable;
 import com.redsponge.dbf.bossfight.Notifications;
 import com.redsponge.redengine.screen.INotified;
 import com.redsponge.redengine.screen.components.RenderRunnableComponent;
 import com.redsponge.redengine.screen.entity.ScreenEntity;
 
-public class ParticleManager extends ScreenEntity implements INotified {
+public class ParticleManager extends ScreenEntity implements INotified, Disposable {
 
-    private ParticleEffectPool bubblePool;
-    private DelayedRemovalArray<PooledEffect> bubbleEffects;
+    private final Particle bubble;
+    private final Particle intenseBubble;
+    private final Particle lineBubble;
+    private final Particle wideSplash;
+    private final Particle thinSplash;
+    private final Particle mediumSplash;
+    private final Particle geyser;
 
-    private ParticleEffectPool intenseBubblePool;
-    private DelayedRemovalArray<PooledEffect> intenseBubbleEffects;
+    private final Particle[] particles;
 
-    private ParticleEffectPool lineBubblePool;
-    private DelayedRemovalArray<PooledEffect> lineBubbleEffects;
-
-    private ParticleEffectPool splashPool;
-    private DelayedRemovalArray<PooledEffect> splashEffects;
+    public Particle geyser() {
+        return geyser;
+    }
 
     public ParticleManager(SpriteBatch batch, ShapeRenderer sr) {
         super(batch, sr);
-        bubbleEffects = new DelayedRemovalArray<>();
-        intenseBubbleEffects = new DelayedRemovalArray<>();
-        lineBubbleEffects = new DelayedRemovalArray<>();
-        splashEffects = new DelayedRemovalArray<>();
+        bubble = new Particle("particles/bubbling.p");
+        intenseBubble = new Particle("particles/bubbling_tense.p");
+        lineBubble = new Particle("particles/bubbling_line.p");
+        wideSplash = new Particle("particles/splash.p");
+        thinSplash = new Particle("particles/splash_small.p");
+        mediumSplash = new Particle("particles/splash_medium.p");
+        geyser = new Particle("particles/geyser.p");
+
+        particles = new Particle[] {
+                bubble,
+                intenseBubble,
+                lineBubble,
+                wideSplash,
+                thinSplash,
+                mediumSplash,
+                geyser
+        };
     }
 
     @Override
@@ -40,100 +56,57 @@ public class ParticleManager extends ScreenEntity implements INotified {
         pos.setZ(5);
     }
 
-    public void loadAssets() {
-        ParticleEffect effect = new ParticleEffect();
-        effect.load(Gdx.files.internal("particles/bubbling.p"), Gdx.files.internal("particles"));
-
-        bubblePool = new ParticleEffectPool(effect, 10, 100);
-
-        ParticleEffect intenseEffect = new ParticleEffect();
-        intenseEffect.load(Gdx.files.internal("particles/bubbling_tense.p"), Gdx.files.internal("particles"));
-
-        intenseBubblePool = new ParticleEffectPool(intenseEffect, 10, 100);
-
-
-        ParticleEffect lineEffect = new ParticleEffect();
-        lineEffect.load(Gdx.files.internal("particles/bubbling_line.p"), Gdx.files.internal("particles"));
-
-        lineBubblePool = new ParticleEffectPool(lineEffect, 10, 100);
-
-        ParticleEffect splashEffect = new ParticleEffect();
-        splashEffect.load(Gdx.files.internal("particles/splash.p"), Gdx.files.internal("particles"));
-
-        splashPool = new ParticleEffectPool(splashEffect, 10, 100);
-    }
-
-    public PooledEffect spawnBubbles(int x, int y) {
-        PooledEffect effect = bubblePool.obtain();
-        effect.setPosition(x, y);
-        bubbleEffects.add(effect);
-        return effect;
-    }
-
-    public PooledEffect spawnIntenseBubbles(int x, int y) {
-        PooledEffect effect = intenseBubblePool.obtain();
-        effect.setPosition(x, y);
-        intenseBubbleEffects.add(effect);
-        return effect;
-    }
-
-    public PooledEffect spawnLineBubbles(int x, int y) {
-        PooledEffect effect = lineBubblePool.obtain();
-        effect.setPosition(x, y);
-        lineBubbleEffects.add(effect);
-        return effect;
-    }
-
-    public PooledEffect spawnSplash(int x, int y) {
-        PooledEffect effect = splashPool.obtain();
-        effect.setPosition(x, y);
-        splashEffects.add(effect);
-        return effect;
-    }
-
-    private void updateEffect(DelayedRemovalArray<PooledEffect> effects, float delta) {
-        for (int i = 0; i < effects.size; i++) {
-            effects.get(i).update(delta);
-            if(effects.get(i).isComplete()) {
-                effects.get(i).free();
-                effects.removeIndex(i);
-            }
-        }
-    }
-
     public void additionalTick(float delta) {
-        updateEffect(bubbleEffects, delta);
-        updateEffect(intenseBubbleEffects, delta);
-        updateEffect(lineBubbleEffects, delta);
-        updateEffect(splashEffects, delta);
-    }
-
-    private void drawEffect(DelayedRemovalArray<PooledEffect> effects) {
-        for (int i = 0; i < effects.size; i++) {
-            effects.get(i).draw(batch);
+        for (int i = 0; i < particles.length; i++) {
+            particles[i].tick(delta);
         }
     }
 
     public void render() {
-        drawEffect(bubbleEffects);
-        drawEffect(intenseBubbleEffects);
-        drawEffect(lineBubbleEffects);
-        drawEffect(splashEffects);
+        for (int i = 0; i < particles.length; i++) {
+            particles[i].render(batch);
+        }
     }
 
     @Override
-    public void notified(Object o, int i) {
-        if(Notifications.TARGET_OCTOPUS_DOWN == i) {
-            removeAllSpawned(bubbleEffects);
-            removeAllSpawned(intenseBubbleEffects);
-            removeAllSpawned(lineBubbleEffects);
+    public void notified(Object o, int notification) {
+        if(Notifications.TARGET_OCTOPUS_DOWN == notification) {
+            for (Particle particle : particles) {
+                if(!particle.getPath().contains("splash")) {
+                    particle.clearAll();
+                }
+            }
         }
     }
 
-    private void removeAllSpawned(DelayedRemovalArray<PooledEffect> effects) {
-        for (int i = 0; i < effects.size; i++) {
-            effects.get(i).free();
+    @Override
+    public void dispose() {
+        for (Particle particle : particles) {
+            particle.dispose();
         }
-        effects.clear();
+    }
+
+    public Particle bubble() {
+        return bubble;
+    }
+
+    public Particle intenseBubble() {
+        return intenseBubble;
+    }
+
+    public Particle lineBubble() {
+        return lineBubble;
+    }
+
+    public Particle wideSplash() {
+        return wideSplash;
+    }
+
+    public Particle thinSplash() {
+        return thinSplash;
+    }
+
+    public Particle mediumSplash() {
+        return mediumSplash;
     }
 }

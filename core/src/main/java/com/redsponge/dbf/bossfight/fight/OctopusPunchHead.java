@@ -65,9 +65,13 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
         eyeLights.getColor().g += 0.2f;
         ((BossFightScreen)screen).getLightSystem().addLight(eyeLights, LightType.ADDITIVE);
 //        ((BossFightScreen) screen).getParticleManager().spawnSplash((int) pos.getX() + 50, (int) pos.getY() - 10);
+    }
+
+    private void performCoveringSplash() {
         for(int i = 70; i <= 150; i += 10) {
-            ((BossFightScreen) screen).getParticleManager().spawnSplash((int) pos.getX() + i, (int) pos.getY() - 20);
+            ((BossFightScreen) screen).getParticleManager().wideSplash().spawn( pos.getX() + i, pos.getY() - 20);
         }
+        splashSound.play(Constants.SOUND_HUB.getValue() / 2);
     }
 
     @Override
@@ -76,7 +80,6 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
         stun = assets.getAnimation("octopusStunAnimation");
         sink = assets.getAnimation("octopusSinkAnimation");
         splashSound = assets.get("bigSplashSound", Sound.class);
-        splashSound.play(Constants.SOUND_HUB.getValue());
 
         stunSound = assets.get("octopusStunSound", Sound.class);
         anim = new AnimationComponent(raise);
@@ -87,6 +90,8 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
         eyeLightPositions.put(raise, new EyePos[]{EyePos.NONE, EyePos.NONE, new EyePos(35, 65, 64), new EyePos(45, 125, 96)});
         eyeLightPositions.put(stun, new EyePos[] {new EyePos(48, 115), new EyePos(60, 96), new EyePos(68, 85), new EyePos(78, 70), new EyePos(62, 69), new EyePos(38, 103), new EyePos(29, 124), new EyePos(27, 134), new EyePos(25, 161), new EyePos(28, 153), new EyePos(29, 142), new EyePos(43, 131)});
         eyeLightPositions.put(sink, new EyePos[] {new EyePos(46, 133), new EyePos(46, 206), new EyePos(45, 255), EyePos.NONE});
+
+        performCoveringSplash();
     }
 
     public void sink() {
@@ -94,10 +99,7 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
         anim.setAnimationTime(0);
         state = HeadState.OUT;
         stunSound.stop();
-        splashSound.play(Constants.SOUND_HUB.getValue());
-        for(int i = 70; i <= 150; i += 10) {
-            ((BossFightScreen) screen).getParticleManager().spawnSplash((int) pos.getX() + i, (int) pos.getY() - 20);
-        }
+        performCoveringSplash();
     }
 
     @Override
@@ -144,10 +146,7 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
         anim.setAnimationTime(raise.getAnimationDuration());
         anim.setAnimationSpeed(-1);
         bored = true;
-        splashSound.play(Constants.SOUND_HUB.getValue());
-        for(int i = 70; i <= 150; i += 10) {
-            ((BossFightScreen) screen).getParticleManager().spawnSplash((int) pos.getX() + i, (int) pos.getY() - 20);
-        }
+        performCoveringSplash();
     }
 
     @Override

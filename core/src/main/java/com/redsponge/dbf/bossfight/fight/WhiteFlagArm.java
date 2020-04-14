@@ -30,7 +30,7 @@ public class WhiteFlagArm extends ScreenEntity {
         super.added();
         pos.set(50, 0);
         size.set(48 * 2, 128 * 2);
-        bubbles = ((BossFightScreen)screen).getParticleManager().spawnIntenseBubbles(bubbleX , 0);
+        bubbles = ((BossFightScreen)screen).getParticleManager().intenseBubble().spawn(bubbleX , 0);
 
 
         pos.set(-5000,0);

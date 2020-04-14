@@ -3,6 +3,7 @@ package com.redsponge.dbf.bossfight;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -33,18 +34,14 @@ import com.redsponge.dbf.bossfight.attacks.AttackBubble;
 import com.redsponge.dbf.bossfight.attacks.BossAttackManager;
 import com.redsponge.dbf.bossfight.attacks.BossAttacks;
 import com.redsponge.dbf.bossfight.attacks.BubbleAttackArm;
-import com.redsponge.dbf.bossfight.fight.DashniPlayer;
-import com.redsponge.dbf.bossfight.fight.GeiserHandler;
-import com.redsponge.dbf.bossfight.fight.Island;
-import com.redsponge.dbf.bossfight.fight.OctopusPunchHead;
-import com.redsponge.dbf.bossfight.fight.TargetOctopus;
+import com.redsponge.dbf.bossfight.fight.*;
 import com.redsponge.dbf.bossfight.visual.Background;
 import com.redsponge.dbf.bossfight.visual.FlyLight;
 import com.redsponge.dbf.bossfight.visual.ParticleManager;
 import com.redsponge.dbf.bossfight.visual.Water;
-import com.redsponge.dbf.utils.Constants;
 import com.redsponge.dbf.lights.FadingLight;
 import com.redsponge.dbf.menu.MenuScreen;
+import com.redsponge.dbf.utils.Constants;
 import com.redsponge.dbf.win.WinScreen;
 import com.redsponge.redengine.assets.AssetSpecifier;
 import com.redsponge.redengine.assets.Fonts;
@@ -59,17 +56,14 @@ import com.redsponge.redengine.screen.entity.ScreenEntity;
 import com.redsponge.redengine.screen.systems.PhysicsSystem;
 import com.redsponge.redengine.screen.systems.RenderSystem;
 import com.redsponge.redengine.transitions.Transitions;
-import com.redsponge.redengine.utils.GameAccessor;
-import com.redsponge.redengine.utils.GeneralUtils;
-import com.redsponge.redengine.utils.IntVector2;
-import com.redsponge.redengine.utils.Logger;
-import com.redsponge.redengine.utils.MathUtilities;
+import com.redsponge.redengine.utils.*;
 import org.lwjgl.opengl.Display;
 
-import javax.swing.JScrollPane;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class BossFightScreen extends AbstractScreen {
+
+    private Sound[] splashSounds;
 
     private RenderSystem renderSystem;
     private PhysicsDebugRenderer pdr;
@@ -121,7 +115,7 @@ public class BossFightScreen extends AbstractScreen {
 
     private DelayedRemovalArray<FadingLight> lights;
 
-    private GeiserHandler geiserHandler;
+    private GeyserHandler geyserHandler;
 
     public static void progressPhase() {
         musicManager.swap();
@@ -148,7 +142,7 @@ public class BossFightScreen extends AbstractScreen {
 
     public enum FightPhase {
         ZERO(-1) {
-            IntVector2 octoPoint = new IntVector2(640 / 2, 360 / 3 + 20);
+            final IntVector2 octoPoint = new IntVector2(640 / 2, 360 / 3 + 20);
             @Override
             public IntVector2 createOctopusPoint() {
                 return octoPoint;
@@ -442,10 +436,10 @@ public class BossFightScreen extends AbstractScreen {
         }
         ;
 
-        private final float geiserTime;
+        private final float geyserTime;
 
-        FightPhase(float geiserTime) {
-            this.geiserTime = geiserTime;
+        FightPhase(float geyserTime) {
+            this.geyserTime = geyserTime;
         }
 
         public IntVector2 createOctopusPoint() { throw new RuntimeException("Not Implemented"); }
@@ -460,8 +454,8 @@ public class BossFightScreen extends AbstractScreen {
             throw new RuntimeException("Not Implemented");
         }
 
-        public float getGeiserTime() {
-            return geiserTime;
+        public float getGeyserTime() {
+            return geyserTime;
         }
     }
 
@@ -476,7 +470,7 @@ public class BossFightScreen extends AbstractScreen {
 
     @Override
     public void show() {
-        geiserHandler = new GeiserHandler(this);
+        geyserHandler = new GeyserHandler(this);
 
         lightSystem = new LightSystem(getScreenWidth(), getScreenHeight(), batch);
         lightSystem.registerLightType(LightType.MULTIPLICATIVE);
@@ -496,7 +490,7 @@ public class BossFightScreen extends AbstractScreen {
         }
 
         musicManager = new MusicManager();
-        phase = FightPhase.SIX;
+        phase = FightPhase.FOUR;
         guiViewport = new FitViewport(getScreenWidth(), getScreenHeight());
         pm = new ParticleManager(batch, shapeRenderer);
         addEntity(pm);
@@ -521,6 +515,10 @@ public class BossFightScreen extends AbstractScreen {
 
         dashniDeadAnimation = assets.getAnimation("playerDieAnimation");
 
+        splashSounds = new Sound[5];
+        for (int i = 0; i < splashSounds.length; i++) {
+            splashSounds[i] = assets.get("splashSound" + (i + 1), Sound.class);
+        }
 
         pdr = new PhysicsDebugRenderer();
 
@@ -577,6 +575,10 @@ public class BossFightScreen extends AbstractScreen {
         pauseStage.addActor(backButton);
 
         font = Fonts.getFont("pixelmix", 16);
+    }
+
+    public void playRandomSplash() {
+        GeneralUtils.randomItem(splashSounds).play(Constants.SOUND_HUB.getValue());
     }
 
     private FadingLight addFadingLight(float x, float y, float rad, TextureRegion tex, int color) {
@@ -651,14 +653,20 @@ public class BossFightScreen extends AbstractScreen {
             tickEntities(v);
             updateEngine(v);
             if(!headUp) {
-                float geiserTime = phase.getGeiserTime();
-                if(geiserTime > 0) {
-                    geiserHandler.update(v, geiserTime);
+                float geyserTime = phase.getGeyserTime();
+                if(geyserTime > 0) {
+                    geyserHandler.update(v, geyserTime);
                 }
             }
 
             lightSystem.renderToScreen(LightType.MULTIPLICATIVE);
             lightSystem.renderToScreen(LightType.ADDITIVE);
+
+//            renderSystem.getViewport().apply();
+//            batch.setProjectionMatrix(renderSystem.getCamera().combined);
+//            batch.begin();
+//            getParticleManager().geyser().render(batch);
+//            batch.end();
         }
         if(grabScreen) {
             pauseFrame.end();
@@ -772,7 +780,7 @@ public class BossFightScreen extends AbstractScreen {
         if(notification == Notifications.TARGET_OCTOPUS_DOWN) {
             addEntity(new OctopusPunchHead(batch, shapeRenderer));
             headUp = true;
-            geiserHandler.cancelGeiser();
+            geyserHandler.cancelGeyser();
         } else if(notification == Notifications.OCTOPUS_EYE_GONE) {
             headUp = false;
         } else if(notification == Notifications.DASHNI_DEAD) {

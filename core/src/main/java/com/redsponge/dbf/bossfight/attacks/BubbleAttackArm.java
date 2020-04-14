@@ -1,5 +1,6 @@
 package com.redsponge.dbf.bossfight.attacks;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool.PooledEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -7,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.redsponge.dbf.bossfight.BossFightScreen;
+import com.redsponge.dbf.utils.Constants;
 import com.redsponge.redengine.screen.components.AnimationComponent;
 import com.redsponge.redengine.screen.components.Mappers;
 import com.redsponge.redengine.screen.entity.ScreenEntity;
@@ -38,6 +40,8 @@ public class BubbleAttackArm extends ScreenEntity {
 
     private float timeBetweenAttacks;
 
+    private Sound bubblingSound;
+
     public BubbleAttackArm(SpriteBatch batch, ShapeRenderer shapeRenderer, int x, float telegraphTime, int persistenceTime, float timeBetweenAttacks) {
         super(batch, shapeRenderer);
         this.x = x;
@@ -64,8 +68,14 @@ public class BubbleAttackArm extends ScreenEntity {
         idleAnimation = assets.getAnimation("octopusAttackBubbleIdleAnimation");
         attackAnimation = assets.getAnimation("octopusAttackBubbleAttackAnimation");
 
-        bubbles = ((BossFightScreen)screen).getParticleManager().spawnBubbles((int) pos.getX(), (int) pos.getY() + 16);
+        bubbles = ((BossFightScreen)screen).getParticleManager().bubble().spawn(pos.getX(), pos.getY() + 16);
         anim = new AnimationComponent(raiseAnimation);
+        bubblingSound = assets.get("bubblingSound", Sound.class);
+    }
+
+    private void spawnSplash() {
+        ((BossFightScreen)screen).playRandomSplash();
+        ((BossFightScreen)screen).getParticleManager().thinSplash().spawn(pos.getX(), pos.getY());
     }
 
     @Override
@@ -137,6 +147,7 @@ public class BubbleAttackArm extends ScreenEntity {
         anim.setAnimationTime(raiseAnimation.getAnimationDuration());
         anim.setAnimationSpeed(-1);
         phase = BubbleAttackPhase.OUT;
+        spawnSplash();
     }
 
     private void beginRaise() {
@@ -145,6 +156,8 @@ public class BubbleAttackArm extends ScreenEntity {
         phase = BubbleAttackPhase.RAISE;
         add(anim);
         bubbles.allowCompletion();
+        bubblingSound.stop();
+        spawnSplash();
     }
 
     @Override

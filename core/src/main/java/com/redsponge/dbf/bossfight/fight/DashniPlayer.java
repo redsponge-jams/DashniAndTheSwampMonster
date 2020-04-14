@@ -29,16 +29,15 @@ import com.redsponge.redengine.utils.MathUtilities;
 
 public class DashniPlayer extends ScreenEntity {
 
-    private TextureComponent tex;
     private PhysicsComponent physics;
-    private float gravity = -600;
-    private float horizAccelPerSecond = 320;
-    private float maxSpeed = 140;
-    private float frictionMultiplier = 0.85f;
-    private float horizStartBoostMultiplier = 30;
-    private float jumpVelocity = 320;
-    private float fallMultiplier = 3f;
-    private float lowJumpMultiplier = 4f;
+    private final float gravity = -600;
+    private final float horizAccelPerSecond = 320;
+    private final float maxSpeed = 140;
+    private final float frictionMultiplier = 0.85f;
+    private final float horizStartBoostMultiplier = 30;
+    private final float jumpVelocity = 320;
+    private final float fallMultiplier = 3f;
+    private final float lowJumpMultiplier = 4f;
 
     private Sound attackSound;
 
@@ -194,6 +193,7 @@ public class DashniPlayer extends ScreenEntity {
         light.pos.set(pos.getX() + size.getX() / 2f, pos.getY() + size.getY() / 2f);
         mulLight.pos.set(pos.getX() + size.getX() / 2f, pos.getY() + size.getY() / 2f);
         if(pos.getY() < 0) {
+            ((BossFightScreen) screen).playRandomSplash();
             die();
         }
     }
