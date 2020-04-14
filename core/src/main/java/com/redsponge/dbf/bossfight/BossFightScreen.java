@@ -633,12 +633,6 @@ public class BossFightScreen extends AbstractScreen {
                     scheduledEntities.remove(screenEntity);
                 }
             }
-            if(!headUp) {
-                float geiserTime = phase.getGeiserTime();
-                if(geiserTime > 0) {
-                    geiserHandler.update(v, geiserTime);
-                }
-            }
         } else {
             pauseStage.act(v);
         }
@@ -651,6 +645,13 @@ public class BossFightScreen extends AbstractScreen {
         if(!paused || grabScreen) {
             tickEntities(v);
             updateEngine(v);
+            if(!headUp) {
+                float geiserTime = phase.getGeiserTime();
+                if(geiserTime > 0) {
+                    geiserHandler.update(v, geiserTime);
+                }
+            }
+
             lightSystem.renderToScreen(LightType.MULTIPLICATIVE);
             lightSystem.renderToScreen(LightType.ADDITIVE);
         }

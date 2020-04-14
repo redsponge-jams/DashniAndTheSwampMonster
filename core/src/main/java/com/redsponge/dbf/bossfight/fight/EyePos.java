@@ -1,6 +1,6 @@
 package com.redsponge.dbf.bossfight.fight;
 
-public class EyePos {
+public final class EyePos {
     public static final EyePos NONE = new EyePos(0, 0, 0);
 
     private final int x, y, rad;
