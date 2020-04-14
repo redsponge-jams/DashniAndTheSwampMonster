@@ -1,4 +1,4 @@
-package com.redsponge.dbf.bossfight;
+package com.redsponge.dbf.bossfight.fight;
 
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
@@ -9,11 +9,11 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
-import com.redsponge.dbf.constants.Constants;
+import com.redsponge.dbf.bossfight.BossFightScreen;
+import com.redsponge.dbf.bossfight.Notifications;
+import com.redsponge.dbf.utils.Constants;
 import com.redsponge.dbf.input.Input;
-import com.redsponge.redengine.lighting.LightTextures;
 import com.redsponge.redengine.lighting.LightTextures.Point;
-import com.redsponge.redengine.lighting.LightTextures.Soft;
 import com.redsponge.redengine.lighting.LightType;
 import com.redsponge.redengine.lighting.PointLight;
 import com.redsponge.redengine.physics.PActor;

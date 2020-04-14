@@ -1,10 +1,12 @@
-package com.redsponge.dbf.bossfight;
+package com.redsponge.dbf.bossfight.fight;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool.PooledEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.redsponge.dbf.bossfight.BossFightScreen;
+import com.redsponge.dbf.bossfight.Notifications;
 import com.redsponge.redengine.screen.components.AnimationComponent;
 import com.redsponge.redengine.screen.entity.ScreenEntity;
 import com.redsponge.redengine.utils.Logger;

@@ -1,10 +1,12 @@
-package com.redsponge.dbf.bossfight;
+package com.redsponge.dbf.bossfight.visual;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.redsponge.dbf.bossfight.BossFightScreen;
+import com.redsponge.dbf.bossfight.Notifications;
 import com.redsponge.redengine.lighting.LightTextures;
 import com.redsponge.redengine.lighting.LightType;
 import com.redsponge.redengine.lighting.PointLight;

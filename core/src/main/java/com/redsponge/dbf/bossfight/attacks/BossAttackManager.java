@@ -1,5 +1,7 @@
-package com.redsponge.dbf.bossfight;
+package com.redsponge.dbf.bossfight.attacks;
 
+import com.redsponge.dbf.bossfight.BossFightScreen;
+import com.redsponge.dbf.bossfight.Notifications;
 import com.redsponge.redengine.screen.INotified;
 import com.redsponge.redengine.screen.components.Mappers;
 import com.redsponge.redengine.utils.GeneralUtils;

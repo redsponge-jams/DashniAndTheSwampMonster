@@ -4,23 +4,24 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.redsponge.dbf.DashniBossFight;
 import com.redsponge.dbf.bossfight.BossFightScreen;
-import com.redsponge.dbf.constants.Constants;
+import com.redsponge.dbf.utils.Constants;
 import com.redsponge.dbf.notification.IValueNotified;
-import com.redsponge.dbf.notification.NotificationHub;
 import com.redsponge.dbf.ui.InputKeySelector;
 import com.redsponge.dbf.utils.Utils;
 import com.redsponge.redengine.assets.AssetSpecifier;
@@ -28,7 +29,6 @@ import com.redsponge.redengine.screen.AbstractScreen;
 import com.redsponge.redengine.transitions.Transitions;
 import com.redsponge.redengine.utils.GameAccessor;
 import com.redsponge.redengine.utils.GeneralUtils;
-import com.redsponge.redengine.utils.Logger;
 
 public class MenuScreen extends AbstractScreen {
 

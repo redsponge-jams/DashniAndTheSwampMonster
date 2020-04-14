@@ -1,6 +1,5 @@
-package com.redsponge.dbf.bossfight;
+package com.redsponge.dbf.bossfight.fight;
 
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;

@@ -1,8 +1,9 @@
-package com.redsponge.dbf.bossfight;
+package com.redsponge.dbf.bossfight.attacks;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.redsponge.dbf.bossfight.BossFightScreen;
 
 public class BossAttacks {
 

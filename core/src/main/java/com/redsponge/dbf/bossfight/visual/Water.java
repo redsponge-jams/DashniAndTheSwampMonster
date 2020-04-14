@@ -1,4 +1,4 @@
-package com.redsponge.dbf.bossfight;
+package com.redsponge.dbf.bossfight.visual;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;

@@ -1,4 +1,4 @@
-package com.redsponge.dbf.constants;
+package com.redsponge.dbf.utils;
 
 import com.redsponge.dbf.notification.NotificationHub;
 

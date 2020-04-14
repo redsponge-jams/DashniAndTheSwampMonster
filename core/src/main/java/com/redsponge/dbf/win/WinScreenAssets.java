@@ -1,4 +1,4 @@
-package com.redsponge.dbf.bossfight;
+package com.redsponge.dbf.win;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;

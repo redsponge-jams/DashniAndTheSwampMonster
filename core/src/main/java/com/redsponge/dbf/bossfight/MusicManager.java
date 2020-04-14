@@ -3,7 +3,7 @@ package com.redsponge.dbf.bossfight;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.utils.Disposable;
-import com.redsponge.dbf.constants.Constants;
+import com.redsponge.dbf.utils.Constants;
 import com.redsponge.dbf.notification.IValueNotified;
 import com.redsponge.dbf.utils.Utils;
 

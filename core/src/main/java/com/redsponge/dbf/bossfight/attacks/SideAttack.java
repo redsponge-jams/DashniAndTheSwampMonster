@@ -1,10 +1,12 @@
-package com.redsponge.dbf.bossfight;
+package com.redsponge.dbf.bossfight.attacks;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.redsponge.dbf.bossfight.BossFightScreen;
+import com.redsponge.dbf.bossfight.Notifications;
 import com.redsponge.redengine.physics.PSolid;
 import com.redsponge.redengine.physics.PhysicsWorld;
 import com.redsponge.redengine.screen.INotified;

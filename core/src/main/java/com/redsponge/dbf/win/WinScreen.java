@@ -1,4 +1,4 @@
-package com.redsponge.dbf.bossfight;
+package com.redsponge.dbf.win;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;

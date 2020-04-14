@@ -1,4 +1,4 @@
-package com.redsponge.dbf.bossfight;
+package com.redsponge.dbf.bossfight.visual;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
@@ -6,8 +6,8 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool.PooledEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
+import com.redsponge.dbf.bossfight.Notifications;
 import com.redsponge.redengine.screen.INotified;
 import com.redsponge.redengine.screen.components.RenderRunnableComponent;
 import com.redsponge.redengine.screen.entity.ScreenEntity;

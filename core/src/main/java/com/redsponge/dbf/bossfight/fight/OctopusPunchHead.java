@@ -1,4 +1,4 @@
-package com.redsponge.dbf.bossfight;
+package com.redsponge.dbf.bossfight.fight;
 
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
@@ -7,8 +7,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.redsponge.dbf.bossfight.BossFightScreen;
 import com.redsponge.dbf.bossfight.BossFightScreen.FightPhase;
-import com.redsponge.dbf.constants.Constants;
+import com.redsponge.dbf.bossfight.Notifications;
+import com.redsponge.dbf.utils.Constants;
 import com.redsponge.redengine.lighting.LightTextures.Point;
 import com.redsponge.redengine.lighting.LightType;
 import com.redsponge.redengine.lighting.PointLight;
@@ -179,32 +181,5 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
         IDLE,
         STUN,
         OUT
-    }
-
-    private static class EyePos {
-        public static final EyePos NONE = new EyePos(0, 0, 0);
-        private final int x, y, rad;
-
-        public EyePos(int x, int y) {
-            this(x, 256 - y, 96);
-        }
-
-        public EyePos(int x, int y, int rad) {
-            this.x = x;
-            this.y = y;
-            this.rad = rad;
-        }
-
-        public int x() {
-            return x;
-        }
-
-        public int y() {
-            return y;
-        }
-
-        public int rad() {
-            return rad;
-        }
     }
 }

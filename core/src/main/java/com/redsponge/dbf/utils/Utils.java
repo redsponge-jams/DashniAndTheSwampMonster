@@ -14,6 +14,7 @@ public class Utils {
                 success = true;
             } catch (GdxRuntimeException e) {
                 e.printStackTrace();
+                success = false;
                 fails++;
                 if(fails >= 10) {
                     throw new RuntimeException("Couldn't Play Music", e);

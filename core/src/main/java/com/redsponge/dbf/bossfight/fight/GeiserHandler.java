@@ -1,8 +1,9 @@
-package com.redsponge.dbf.bossfight;
+package com.redsponge.dbf.bossfight.fight;
 
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool.PooledEffect;
-import com.redsponge.dbf.constants.Constants;
+import com.redsponge.dbf.bossfight.BossFightScreen;
+import com.redsponge.dbf.utils.Constants;
 import com.redsponge.redengine.screen.components.Mappers;
 import com.redsponge.redengine.screen.components.PositionComponent;
 
