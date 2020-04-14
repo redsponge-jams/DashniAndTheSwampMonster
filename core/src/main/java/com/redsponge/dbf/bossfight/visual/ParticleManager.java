@@ -23,11 +23,15 @@ public class ParticleManager extends ScreenEntity implements INotified {
     private ParticleEffectPool lineBubblePool;
     private DelayedRemovalArray<PooledEffect> lineBubbleEffects;
 
+    private ParticleEffectPool splashPool;
+    private DelayedRemovalArray<PooledEffect> splashEffects;
+
     public ParticleManager(SpriteBatch batch, ShapeRenderer sr) {
         super(batch, sr);
         bubbleEffects = new DelayedRemovalArray<>();
         intenseBubbleEffects = new DelayedRemovalArray<>();
         lineBubbleEffects = new DelayedRemovalArray<>();
+        splashEffects = new DelayedRemovalArray<>();
     }
 
     @Override
@@ -52,6 +56,11 @@ public class ParticleManager extends ScreenEntity implements INotified {
         lineEffect.load(Gdx.files.internal("particles/bubbling_line.p"), Gdx.files.internal("particles"));
 
         lineBubblePool = new ParticleEffectPool(lineEffect, 10, 100);
+
+        ParticleEffect splashEffect = new ParticleEffect();
+        splashEffect.load(Gdx.files.internal("particles/splash.p"), Gdx.files.internal("particles"));
+
+        splashPool = new ParticleEffectPool(splashEffect, 10, 100);
     }
 
     public PooledEffect spawnBubbles(int x, int y) {
@@ -75,6 +84,13 @@ public class ParticleManager extends ScreenEntity implements INotified {
         return effect;
     }
 
+    public PooledEffect spawnSplash(int x, int y) {
+        PooledEffect effect = splashPool.obtain();
+        effect.setPosition(x, y);
+        splashEffects.add(effect);
+        return effect;
+    }
+
     private void updateEffect(DelayedRemovalArray<PooledEffect> effects, float delta) {
         for (int i = 0; i < effects.size; i++) {
             effects.get(i).update(delta);
@@ -89,6 +105,7 @@ public class ParticleManager extends ScreenEntity implements INotified {
         updateEffect(bubbleEffects, delta);
         updateEffect(intenseBubbleEffects, delta);
         updateEffect(lineBubbleEffects, delta);
+        updateEffect(splashEffects, delta);
     }
 
     private void drawEffect(DelayedRemovalArray<PooledEffect> effects) {
@@ -101,6 +118,7 @@ public class ParticleManager extends ScreenEntity implements INotified {
         drawEffect(bubbleEffects);
         drawEffect(intenseBubbleEffects);
         drawEffect(lineBubbleEffects);
+        drawEffect(splashEffects);
     }
 
     @Override

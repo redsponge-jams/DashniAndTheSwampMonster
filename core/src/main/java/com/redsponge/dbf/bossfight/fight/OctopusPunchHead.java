@@ -35,6 +35,7 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
     private HeadState state;
 
     private Sound stunSound;
+    private Sound splashSound;
 
     private PointLight eyeLights;
 
@@ -63,6 +64,10 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
         eyeLights.getColor().b += 0.2f;
         eyeLights.getColor().g += 0.2f;
         ((BossFightScreen)screen).getLightSystem().addLight(eyeLights, LightType.ADDITIVE);
+//        ((BossFightScreen) screen).getParticleManager().spawnSplash((int) pos.getX() + 50, (int) pos.getY() - 10);
+        for(int i = 70; i <= 150; i += 10) {
+            ((BossFightScreen) screen).getParticleManager().spawnSplash((int) pos.getX() + i, (int) pos.getY() - 20);
+        }
     }
 
     @Override
@@ -70,6 +75,8 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
         raise = assets.getAnimation("octopusRaiseAnimation");
         stun = assets.getAnimation("octopusStunAnimation");
         sink = assets.getAnimation("octopusSinkAnimation");
+        splashSound = assets.get("bigSplashSound", Sound.class);
+        splashSound.play(Constants.SOUND_HUB.getValue());
 
         stunSound = assets.get("octopusStunSound", Sound.class);
         anim = new AnimationComponent(raise);
@@ -87,11 +94,14 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
         anim.setAnimationTime(0);
         state = HeadState.OUT;
         stunSound.stop();
+        splashSound.play(Constants.SOUND_HUB.getValue());
+        for(int i = 70; i <= 150; i += 10) {
+            ((BossFightScreen) screen).getParticleManager().spawnSplash((int) pos.getX() + i, (int) pos.getY() - 20);
+        }
     }
 
     @Override
     public void additionalTick(float delta) {
-
         EyePos eyePos = eyeLightPositions.get(anim.getAnimation())[anim.getAnimation().getKeyFrameIndex(anim.getAnimationTime())];
         eyeLights.pos.set(pos.getX() + eyePos.x() * render.getScaleX(), pos.getY() + eyePos.y());
         eyeLights.setRadius(eyePos.rad());
@@ -134,6 +144,10 @@ public class OctopusPunchHead extends ScreenEntity implements INotified {
         anim.setAnimationTime(raise.getAnimationDuration());
         anim.setAnimationSpeed(-1);
         bored = true;
+        splashSound.play(Constants.SOUND_HUB.getValue());
+        for(int i = 70; i <= 150; i += 10) {
+            ((BossFightScreen) screen).getParticleManager().spawnSplash((int) pos.getX() + i, (int) pos.getY() - 20);
+        }
     }
 
     @Override

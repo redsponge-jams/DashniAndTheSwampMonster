@@ -18,7 +18,7 @@ public class MusicManager implements Disposable, IValueNotified<Float> {
     private Music current;
 
     public MusicManager() {
-        currentIndex = 0;
+        currentIndex = 6;
         current = Gdx.audio.newMusic(Gdx.files.internal(paths[currentIndex]));
         current.setVolume(Constants.MUSIC_HUB.getValue() * volume[currentIndex]);
         current.setLooping(true);

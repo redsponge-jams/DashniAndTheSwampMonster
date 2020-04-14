@@ -130,6 +130,27 @@ public class BossFightAssets extends AssetSpecifier {
     private Sound bubblingSound;
 
 
+    // Splashes
+    @Asset("sounds/small_splash_1.ogg")
+    private Sound splashSound1;
+
+    @Asset("sounds/small_splash_2.ogg")
+    private Sound splashSound2;
+
+    @Asset("sounds/small_splash_3.ogg")
+    private Sound splashSound3;
+
+    @Asset("sounds/small_splash_4.ogg")
+    private Sound splashSound4;
+
+    @Asset("sounds/small_splash_5.ogg")
+    private Sound splashSound5;
+
+
+    @Asset("sounds/octo_head_splash_up.ogg")
+    private Sound bigSplashSound;
+
+
 
     @Asset("textures/lights/lights.atlas")
     private TextureAtlas lightAtlas;

@@ -66,6 +66,7 @@ import com.redsponge.redengine.utils.Logger;
 import com.redsponge.redengine.utils.MathUtilities;
 import org.lwjgl.opengl.Display;
 
+import javax.swing.JScrollPane;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class BossFightScreen extends AbstractScreen {
@@ -139,6 +140,10 @@ public class BossFightScreen extends AbstractScreen {
         } else if(phase == FightPhase.SIX) {
             phase = FightPhase.WIN;
         }
+    }
+
+    public RenderSystem getRenderSystem() {
+        return renderSystem;
     }
 
     public enum FightPhase {
@@ -491,7 +496,7 @@ public class BossFightScreen extends AbstractScreen {
         }
 
         musicManager = new MusicManager();
-        phase = FightPhase.ZERO;
+        phase = FightPhase.SIX;
         guiViewport = new FitViewport(getScreenWidth(), getScreenHeight());
         pm = new ParticleManager(batch, shapeRenderer);
         addEntity(pm);
