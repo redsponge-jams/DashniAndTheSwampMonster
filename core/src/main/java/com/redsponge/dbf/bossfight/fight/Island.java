@@ -67,6 +67,6 @@ public class Island extends ScreenEntity {
         boosting = true;
         boostTime = 0;
         boostYStart = pos.getY();
-        ((BossFightScreen)screen).getParticleManager().geyser().spawn(pos.getX() + 8, pos.getY());
+        ((BossFightScreen)screen).getParticleManager().geyser().spawn(pos.getX() + 12, pos.getY());
     }
 }

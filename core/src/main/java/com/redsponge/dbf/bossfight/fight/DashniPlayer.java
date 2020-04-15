@@ -25,6 +25,7 @@ import com.redsponge.redengine.screen.components.TextureComponent;
 import com.redsponge.redengine.screen.entity.ScreenEntity;
 import com.redsponge.redengine.screen.systems.RenderSystem;
 import com.redsponge.redengine.utils.IntVector2;
+import com.redsponge.redengine.utils.Logger;
 import com.redsponge.redengine.utils.MathUtilities;
 
 public class DashniPlayer extends ScreenEntity {
@@ -68,6 +69,7 @@ public class DashniPlayer extends ScreenEntity {
 
     private PointLight mulLight;
     private PointLight light;
+    private boolean isOnGround;
 
     public DashniPlayer(SpriteBatch batch, ShapeRenderer shapeRenderer) {
         super(batch, shapeRenderer);
@@ -144,6 +146,9 @@ public class DashniPlayer extends ScreenEntity {
 
     @Override
     public void additionalTick(float delta) {
+        isOnGround = ((PActor)physics.getBody()).getFirstCollision(tmpA.set((int) pos.getX(), (int) pos.getY()).add(0, -1)) != null;
+        Logger.log(this, isOnGround);
+
         if(locked) {
             vel.set(0, 0);
             lookingLeft = true;
@@ -199,7 +204,7 @@ public class DashniPlayer extends ScreenEntity {
     }
 
     private boolean canJump() {
-        return jumpsLeft > 0;
+        return isOnGround;
     }
 
     @Override
@@ -304,11 +309,8 @@ public class DashniPlayer extends ScreenEntity {
     }
 
     private void onYCollide(PEntity other) {
-        if(vel.getY() < 0) {
-            jumpsLeft = 1;
-            if(BossFightScreen.phase == BossFightScreen.FightPhase.WIN) {
-                locked = true;
-            }
+        if(BossFightScreen.phase == BossFightScreen.FightPhase.WIN) {
+            locked = true;
         }
         vel.setY(0);
     }
