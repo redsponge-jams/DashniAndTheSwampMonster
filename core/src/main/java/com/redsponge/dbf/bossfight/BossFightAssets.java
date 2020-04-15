@@ -150,6 +150,25 @@ public class BossFightAssets extends AssetSpecifier {
     private Sound splashSound5;
 
 
+    @Asset("sounds/step_1.ogg")
+    private Sound stepSound1;
+
+    @Asset("sounds/step_2.ogg")
+    private Sound stepSound2;
+
+    @Asset("sounds/step_3.ogg")
+    private Sound stepSound3;
+
+    @Asset("sounds/step_4.ogg")
+    private Sound stepSound4;
+
+    @Asset("sounds/step_5.ogg")
+    private Sound stepSound5;
+
+    @Asset("sounds/step_6.ogg")
+    private Sound stepSound6;
+
+
     @Asset("sounds/octo_head_splash_up.ogg")
     private Sound bigSplashSound;
 

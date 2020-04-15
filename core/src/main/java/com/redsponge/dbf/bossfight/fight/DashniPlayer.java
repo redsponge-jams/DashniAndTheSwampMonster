@@ -24,6 +24,7 @@ import com.redsponge.redengine.screen.components.AnimationComponent;
 import com.redsponge.redengine.screen.components.PhysicsComponent;
 import com.redsponge.redengine.screen.entity.ScreenEntity;
 import com.redsponge.redengine.screen.systems.RenderSystem;
+import com.redsponge.redengine.utils.GeneralUtils;
 import com.redsponge.redengine.utils.IntVector2;
 import com.redsponge.redengine.utils.Logger;
 import com.redsponge.redengine.utils.MathUtilities;
@@ -78,6 +79,9 @@ public class DashniPlayer extends ScreenEntity {
     private float jumpInAirMemoryTimeLeft;
     private final float jumpInAirMemoryTime = 0.2f; // The time for which a jump press is remembered, and will be executed once the player lands
 
+    private Sound[] stepSounds;
+    private float stepSoundInterval;
+
     public DashniPlayer(SpriteBatch batch, ShapeRenderer shapeRenderer) {
         super(batch, shapeRenderer);
     }
@@ -96,19 +100,19 @@ public class DashniPlayer extends ScreenEntity {
 
         mulLight = new PointLight(pos.getX(), pos.getY(), 96, Point.star);
         mulLight.getColor().set(Color.WHITE);
-        ((BossFightScreen)screen).getLightSystem().addLight(mulLight, LightType.MULTIPLICATIVE);
+        ((BossFightScreen) screen).getLightSystem().addLight(mulLight, LightType.MULTIPLICATIVE);
 
         light = new PointLight(pos.getX(), pos.getY(), 96, Point.feathered);
         light.getColor().set(Color.TEAL);
         light.getColor().a = 0.2f;
-        ((BossFightScreen)screen).getLightSystem().addLight(light, LightType.ADDITIVE);
+        ((BossFightScreen) screen).getLightSystem().addLight(light, LightType.ADDITIVE);
     }
 
     @Override
     public void addedToEngine() {
         physics.setOnCollideY(this::onYCollide);
-        ((PActor)physics.getBody()).setRidingCheck((self, solid) -> {
-            if(solid.getPhysicsBodyTag().equals("Slippery")) {
+        ((PActor) physics.getBody()).setRidingCheck((self, solid) -> {
+            if (solid.getPhysicsBodyTag().equals("Slippery")) {
                 return false;
             }
             return RidingCheck.DEFAULT.isRiding(self, solid);
@@ -128,14 +132,19 @@ public class DashniPlayer extends ScreenEntity {
         anim = new AnimationComponent(idleAnimation);
         attackSound = assets.get("dashniAttackSound", Sound.class);
         add(anim);
+
+        stepSounds = new Sound[6];
+        for (int i = 0; i < stepSounds.length; i++) {
+            stepSounds[i] = assets.get("stepSound" + (i + 1), Sound.class);
+        }
     }
 
     private void updateStrafing(float delta) {
         float horiz = Input.getHorizontal();
-        if(horiz != 0) {
+        if (horiz != 0) {
             lookingLeft = horiz < 0;
 
-            if(Math.abs(vel.getX()) < Math.abs(horiz * horizAccelPerSecond * delta * horizStartBoostMultiplier) || Math.signum(vel.getX()) != horiz) {
+            if (Math.abs(vel.getX()) < Math.abs(horiz * horizAccelPerSecond * delta * horizStartBoostMultiplier) || Math.signum(vel.getX()) != horiz) {
                 vel.setX(horiz * horizAccelPerSecond * delta * horizStartBoostMultiplier);
             } else {
                 vel.setX(vel.getX() + horiz * horizAccelPerSecond * delta);
@@ -146,7 +155,7 @@ public class DashniPlayer extends ScreenEntity {
             }
         } else {
             vel.setX(vel.getX() * frictionMultiplier);
-            if(Math.abs(vel.getX()) < 0.5f) {
+            if (Math.abs(vel.getX()) < 0.5f) {
                 vel.setX(0);
             }
         }
@@ -155,13 +164,14 @@ public class DashniPlayer extends ScreenEntity {
     @Override
     public void additionalTick(float delta) {
         wasOnGround = isOnGround;
-        isOnGround = ((PActor)physics.getBody()).getFirstCollision(tmpA.set((int) pos.getX(), (int) pos.getY()).add(0, -1)) != null;
-        if(isOnGround) {
+        isOnGround = ((PActor) physics.getBody()).getFirstCollision(tmpA.set((int) pos.getX(), (int) pos.getY()).add(0, -1)) != null;
+        if (isOnGround) {
             coyoteJumpTimeLeft = coyoteJumpTime;
-            if(!wasOnGround) {
-                if(jumpInAirMemoryTimeLeft > 0) {
+            if (!wasOnGround) {
+                if (jumpInAirMemoryTimeLeft > 0) {
                     vel.setY(jumpVelocity);
                 }
+                GeneralUtils.randomItem(stepSounds).play(Constants.SOUND_HUB.getValue());
             }
         } else {
             coyoteJumpTimeLeft -= delta;
@@ -169,28 +179,27 @@ public class DashniPlayer extends ScreenEntity {
 
         jumpInAirMemoryTimeLeft -= delta;
 
-        if(locked) {
+        if (locked) {
             vel.set(0, 0);
             lookingLeft = true;
             return;
         }
-        if(dead) {
+        if (dead) {
             vel.set(0, 0);
             return;
         }
-        if(isAttacking) {
+        if (isAttacking) {
             processAttack(delta);
-        }
-        else {
+        } else {
             attackCooldown -= delta;
-            if(Input.isJustJumping()) {
-                if(canJump()) {
+            if (Input.isJustJumping()) {
+                if (canJump()) {
                     vel.setY(jumpVelocity);
                 } else {
                     jumpInAirMemoryTimeLeft = jumpInAirMemoryTime;
                 }
             }
-            if(Input.isJustAttacking() && !isAttacking && attackCooldown <= 0) {
+            if (Input.isJustAttacking() && !isAttacking && attackCooldown <= 0) {
                 beginAttacking();
                 processAttack(delta);
                 return;
@@ -201,26 +210,34 @@ public class DashniPlayer extends ScreenEntity {
             vel.setY(vel.getY() + gravity * delta);
 
             render.setFlipX(lookingLeft);
-            if(Input.getHorizontal() == 0) {
+            if (Input.getHorizontal() == 0) {
                 anim.setAnimation(idleAnimation);
             } else {
                 anim.setAnimation(runAnimation);
             }
+            if (anim.getAnimation() == runAnimation && isOnGround) {
+                if (runAnimation.getKeyFrameIndex(anim.getAnimationTime()) != runAnimation.getKeyFrameIndex(anim.getAnimationTime() + delta)) {
+                    int idx = runAnimation.getKeyFrameIndex(anim.getAnimationTime());
+                    if (idx == 1 || idx == 6) {
+                        GeneralUtils.randomItem(stepSounds).play(Constants.SOUND_HUB.getValue());
+                        ((BossFightScreen)screen).getParticleManager().tinySplash().spawn(pos.getX() + size.getX() / 2f, pos.getY());
+                    }
+                }
+            }
         }
 
 
-
-        Array<Rectangle> attackBoxes = ((BossFightScreen)screen).getAttackBoxes();
+        Array<Rectangle> attackBoxes = ((BossFightScreen) screen).getAttackBoxes();
         for (int i = 0; i < attackBoxes.size; i++) {
             tmpA.set((int) attackBoxes.get(i).x, (int) attackBoxes.get(i).y);
             tmpB.set((int) attackBoxes.get(i).width, (int) attackBoxes.get(i).height);
-            if(MathUtilities.rectanglesIntersect(physics.getBody().pos, physics.getBody().size, tmpA, tmpB)) {
+            if (MathUtilities.rectanglesIntersect(physics.getBody().pos, physics.getBody().size, tmpA, tmpB)) {
                 die();
             }
         }
         light.pos.set(pos.getX() + size.getX() / 2f, pos.getY() + size.getY() / 2f);
         mulLight.pos.set(pos.getX() + size.getX() / 2f, pos.getY() + size.getY() / 2f);
-        if(pos.getY() < 0) {
+        if (pos.getY() < 0) {
             ((BossFightScreen) screen).playRandomSplash();
             die();
         }
@@ -234,7 +251,7 @@ public class DashniPlayer extends ScreenEntity {
     public void additionalRender() {
         shapeRenderer.setProjectionMatrix(screen.getEntitySystem(RenderSystem.class).getCamera().combined);
         shapeRenderer.begin(ShapeType.Line);
-        if(attackBox != null) {
+        if (attackBox != null) {
             shapeRenderer.setColor(Color.RED);
             shapeRenderer.rect(attackBox.x, attackBox.y, attackBox.width, attackBox.height);
         }
@@ -244,10 +261,10 @@ public class DashniPlayer extends ScreenEntity {
     private void beginAttacking() {
         float vert = Input.getVertical();
         attackSound.play(Constants.SOUND_HUB.getValue());
-        if(vert > 0) {
+        if (vert > 0) {
             attackType = AttackType.UP;
             anim.setAnimation(attackUpAnimation);
-        } else if(vert < 0) {
+        } else if (vert < 0) {
             attackType = AttackType.DOWN;
             anim.setAnimation(attackDownAnimation);
             render.setOffsetY(-86);
@@ -263,22 +280,22 @@ public class DashniPlayer extends ScreenEntity {
     private void processAttack(float delta) {
         attackTime += delta;
         vel.set(0, 0);
-        if(attackTime > 0.2f && attackBox == null) {
+        if (attackTime > 0.2f && attackBox == null) {
             createAttackBox();
             notifyScreen(Notifications.PLAYER_ATTACK_BOX_SPAWNED);
         }
-        if(attackType == AttackType.REGULAR && lookingLeft) {
-            render.setOffsetX(-96-8);
+        if (attackType == AttackType.REGULAR && lookingLeft) {
+            render.setOffsetX(-96 - 8);
         }
-        if(attackType == AttackType.DOWN) {
-            if(lookingLeft) {
+        if (attackType == AttackType.DOWN) {
+            if (lookingLeft) {
                 render.setOffsetX(-16);
             }
         }
-        if(attackType == AttackType.UP && lookingLeft) {
+        if (attackType == AttackType.UP && lookingLeft) {
             render.setOffsetX(-18);
         }
-        if(attackAnimation.isAnimationFinished(attackTime)) {
+        if (attackAnimation.isAnimationFinished(attackTime)) {
             endAttack();
         }
     }
@@ -287,17 +304,20 @@ public class DashniPlayer extends ScreenEntity {
         switch (attackType) {
             case UP: {
                 attackBox = new Rectangle(pos.getX(), pos.getY() + size.getY(), 24, 90);
-            } break;
+            }
+            break;
             case DOWN: {
                 attackBox = new Rectangle(pos.getX() + 8, pos.getY() - 72, 16, 80);
-            } break;
+            }
+            break;
             case REGULAR: {
-                if(lookingLeft) {
-                    attackBox = new Rectangle(pos.getX() - 80, pos.getY() + 16, 80, 32-6);
+                if (lookingLeft) {
+                    attackBox = new Rectangle(pos.getX() - 80, pos.getY() + 16, 80, 32 - 6);
                 } else {
-                    attackBox = new Rectangle(pos.getX() + size.getX(), pos.getY() + 16, 80, 32-6);
+                    attackBox = new Rectangle(pos.getX() + size.getX(), pos.getY() + 16, 80, 32 - 6);
                 }
-            } break;
+            }
+            break;
         }
     }
 
@@ -317,9 +337,9 @@ public class DashniPlayer extends ScreenEntity {
     }
 
     private void updateBetterJump(float delta) {
-        if(vel.getY() < 0) {
+        if (vel.getY() < 0) {
             vel.setY(vel.getY() + gravity * (fallMultiplier - 1) * delta);
-        } else if(vel.getY() > 0 && !Input.isJumping()) {
+        } else if (vel.getY() > 0 && !Input.isJumping()) {
             vel.setY(vel.getY() + gravity * (lowJumpMultiplier - 1) * delta);
         }
 
@@ -327,12 +347,12 @@ public class DashniPlayer extends ScreenEntity {
 
     @Override
     public void removed() {
-        ((BossFightScreen)screen).getLightSystem().removeLight(light, LightType.ADDITIVE);
-        ((BossFightScreen)screen).getLightSystem().removeLight(mulLight, LightType.MULTIPLICATIVE);
+        ((BossFightScreen) screen).getLightSystem().removeLight(light, LightType.ADDITIVE);
+        ((BossFightScreen) screen).getLightSystem().removeLight(mulLight, LightType.MULTIPLICATIVE);
     }
 
     private void onYCollide(PEntity other) {
-        if(BossFightScreen.phase == BossFightScreen.FightPhase.WIN) {
+        if (BossFightScreen.phase == BossFightScreen.FightPhase.WIN) {
             locked = true;
         }
         vel.setY(0);

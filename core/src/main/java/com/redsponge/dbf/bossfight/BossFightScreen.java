@@ -491,7 +491,7 @@ public class BossFightScreen extends AbstractScreen {
         }
 
         musicManager = new MusicManager();
-        phase = FightPhase.FOUR;
+        phase = FightPhase.ZERO;
         guiViewport = new FitViewport(getScreenWidth(), getScreenHeight());
         pm = new ParticleManager(batch, shapeRenderer);
         addEntity(pm);

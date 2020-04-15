@@ -20,6 +20,7 @@ public class ParticleManager extends ScreenEntity implements INotified, Disposab
     private final Particle lineBubble;
     private final Particle wideSplash;
     private final Particle thinSplash;
+    private final Particle tinySplash;
     private final Particle mediumSplash;
     private final Particle geyser;
 
@@ -38,6 +39,7 @@ public class ParticleManager extends ScreenEntity implements INotified, Disposab
         thinSplash = new Particle("particles/splash_small.p");
         mediumSplash = new Particle("particles/splash_medium.p");
         geyser = new Particle("particles/geyser.p");
+        tinySplash = new Particle("particles/splash_tiny.p");
 
         particles = new Particle[] {
                 bubble,
@@ -46,7 +48,8 @@ public class ParticleManager extends ScreenEntity implements INotified, Disposab
                 wideSplash,
                 thinSplash,
                 mediumSplash,
-                geyser
+                geyser,
+                tinySplash
         };
     }
 
@@ -108,5 +111,9 @@ public class ParticleManager extends ScreenEntity implements INotified, Disposab
 
     public Particle mediumSplash() {
         return mediumSplash;
+    }
+
+    public Particle tinySplash() {
+        return tinySplash;
     }
 }
