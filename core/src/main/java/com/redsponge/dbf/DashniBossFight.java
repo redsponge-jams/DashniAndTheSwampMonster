@@ -4,8 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.math.Interpolation;
 import com.redsponge.dbf.bossfight.BossFightScreen;
+import com.redsponge.dbf.intro.IntroScreen;
 import com.redsponge.dbf.menu.MenuScreen;
+import com.redsponge.dbf.splash.ToastySplashScreen;
 import com.redsponge.redengine.EngineGame;
+import com.redsponge.redengine.screen.splashscreen.SplashScreenScreen;
+import com.redsponge.redengine.transitions.Transitions;
 
 public class DashniBossFight extends EngineGame {
 
@@ -32,8 +36,8 @@ public class DashniBossFight extends EngineGame {
 
 //        setScreen(new IntroScreen(ga));
 //        setScreen(new MenuScreen(ga, null));
-        setScreen(new BossFightScreen(ga, true));
-//        setScreen(new SplashScreenScreen(ga, new ToastySplashScreen(ga), Transitions.linearFade(1, batch, shapeRenderer)));
+//        setScreen(new BossFightScreen(ga, true));
+        setScreen(new SplashScreenScreen(ga, new ToastySplashScreen(ga), Transitions.linearFade(1, batch, shapeRenderer)));
 //        setScreen(new WinScreen(ga));
     }
 }

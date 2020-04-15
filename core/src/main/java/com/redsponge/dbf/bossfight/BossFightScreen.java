@@ -769,15 +769,15 @@ public class BossFightScreen extends AbstractScreen {
             }
             batch.end();
         } else {
-            pdr.render(physicsSystem.getPhysicsWorld(), renderSystem.getViewport().getCamera().combined);
-
-            shapeRenderer.begin(ShapeType.Line);
-            shapeRenderer.setColor(Color.RED);
-            for (int i = 0; i < attackBoxes.size; i++) {
-                Rectangle r = attackBoxes.get(i);
-                shapeRenderer.rect(r.x, r.y, r.width, r.height);
-            }
-            shapeRenderer.end();
+//            pdr.render(physicsSystem.getPhysicsWorld(), renderSystem.getViewport().getCamera().combined);
+//
+//            shapeRenderer.begin(ShapeType.Line);
+//            shapeRenderer.setColor(Color.RED);
+//            for (int i = 0; i < attackBoxes.size; i++) {
+//                Rectangle r = attackBoxes.get(i);
+//                shapeRenderer.rect(r.x, r.y, r.width, r.height);
+//            }
+//            shapeRenderer.end();
             renderEntities();
         }
     }

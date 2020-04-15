@@ -269,13 +269,13 @@ public class DashniPlayer extends ScreenEntity {
 
     @Override
     public void additionalRender() {
-        shapeRenderer.setProjectionMatrix(screen.getEntitySystem(RenderSystem.class).getCamera().combined);
-        shapeRenderer.begin(ShapeType.Line);
-        if (attackBox != null) {
-            shapeRenderer.setColor(Color.RED);
-            shapeRenderer.rect(attackBox.x, attackBox.y, attackBox.width, attackBox.height);
-        }
-        shapeRenderer.end();
+//        shapeRenderer.setProjectionMatrix(screen.getEntitySystem(RenderSystem.class).getCamera().combined);
+//        shapeRenderer.begin(ShapeType.Line);
+//        if (attackBox != null) {
+//            shapeRenderer.setColor(Color.RED);
+//            shapeRenderer.rect(attackBox.x, attackBox.y, attackBox.width, attackBox.height);
+//        }
+//        shapeRenderer.end();
     }
 
     private void beginAttacking() {
