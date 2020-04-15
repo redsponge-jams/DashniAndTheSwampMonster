@@ -191,6 +191,7 @@ public class DashniPlayer extends ScreenEntity {
 
         if (locked) {
             vel.set(0, 0);
+            anim.setAnimation(idleAnimation);
             lookingLeft = true;
             return;
         }

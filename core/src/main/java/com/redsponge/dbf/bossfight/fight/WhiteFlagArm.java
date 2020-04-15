@@ -56,6 +56,7 @@ public class WhiteFlagArm extends ScreenEntity {
             bubbles = null;
             pos.set(50, 0);
             notifyScreen(Notifications.RAISED_FLAG);
+            ((BossFightScreen)screen).getParticleManager().clearParticles();
             didRaise = true;
         }
         if(didRaise && anim.getAnimation() == raiseAnimation && raiseAnimation.isAnimationFinished(anim.getAnimationTime())) {

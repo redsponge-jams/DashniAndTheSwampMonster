@@ -74,10 +74,14 @@ public class ParticleManager extends ScreenEntity implements INotified, Disposab
     @Override
     public void notified(Object o, int notification) {
         if(Notifications.TARGET_OCTOPUS_DOWN == notification) {
-            for (Particle particle : particles) {
-                if(!particle.getPath().contains("splash")) {
-                    particle.clearAll();
-                }
+            clearParticles();
+        }
+    }
+
+    public void clearParticles() {
+        for (Particle particle : particles) {
+            if(!particle.getPath().contains("splash")) {
+                particle.clearAll();
             }
         }
     }
