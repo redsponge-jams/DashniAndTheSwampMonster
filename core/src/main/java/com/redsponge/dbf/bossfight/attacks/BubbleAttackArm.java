@@ -29,6 +29,8 @@ public class BubbleAttackArm extends ScreenEntity {
     private float telegraphTime;
     private float persistenceTime;
 
+    private Sound shootSound;
+
     private BubbleAttackPhase phase;
     private float shootTimer;
     private float idleTimer;
@@ -71,6 +73,9 @@ public class BubbleAttackArm extends ScreenEntity {
         bubbles = ((BossFightScreen)screen).getParticleManager().bubble().spawn(pos.getX(), pos.getY() + 16);
         anim = new AnimationComponent(raiseAnimation);
         bubblingSound = assets.get("bubblingSound", Sound.class);
+        shootSound = assets.get("bubbleShootSound", Sound.class);
+
+        bubblingSound.play(Constants.SOUND_HUB.getValue());
     }
 
     private void spawnSplash() {
@@ -134,6 +139,7 @@ public class BubbleAttackArm extends ScreenEntity {
         attackTime = 0;
         spawnedBubble = false;
         phase = BubbleAttackPhase.ATTACK;
+        shootSound.play(Constants.SOUND_HUB.getValue());
     }
 
     private void beginIdle() {

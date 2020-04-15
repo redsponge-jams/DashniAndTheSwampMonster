@@ -10,17 +10,18 @@ A much needed quality of life update
 
 
 
-#### Controls
+#### Gameplay
 
 - Added coyote jumping - you are able to jump for a short while after you leave the ground.
 - Added in-air jump detection - if you hit the jump button a bit too early, you will now jump once you hit the ground.
+- Added tooltips for the beginning player at the beginning of the game
 
 #### Graphics
 
 - Particles
     - Added geyser particles - spawn under rock geysers.
     - Added small, medium and large splash particles - spawn when items interact with the water.
-    - Added small splashes when Dashni walks
+    - Added small splashes when Dashni walks, jumps and lands
 - Light
     - Added a lighting system.
     - Added small fireflies for ambiance.
@@ -35,7 +36,11 @@ A much needed quality of life update
 - Added geyser sound.
 - Added bubbling sound.
 - Added arm whip sound
-- Added step and land sounds
+- Added step sound
+- Added jump sound
+- Added land sound
+- Added death sound
+- Added bubble shoot sound
 
 #### Bug Fixes
 
@@ -50,7 +55,7 @@ A much needed quality of life update
     - Music & sound volume are configurable.
     
 - Added a pause menu:
-    
+  
     - Access using [ESC]
     
     - Music & sound volume are configurable from there too.

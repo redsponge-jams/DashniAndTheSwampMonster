@@ -82,7 +82,7 @@ public class KeySelector extends TextButton {
         put(Keys.LEFT, "<");
     }};
 
-    private String stringifyKey(int key) {
+    public static String stringifyKey(int key) {
         if(KEY_STRINGS.containsKey(key)) {
             return KEY_STRINGS.get(key);
         }

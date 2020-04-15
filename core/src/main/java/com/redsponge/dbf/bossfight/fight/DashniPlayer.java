@@ -19,6 +19,7 @@ import com.redsponge.redengine.lighting.PointLight;
 import com.redsponge.redengine.physics.PActor;
 import com.redsponge.redengine.physics.PBodyType;
 import com.redsponge.redengine.physics.PEntity;
+import com.redsponge.redengine.physics.PSolid;
 import com.redsponge.redengine.physics.RidingCheck;
 import com.redsponge.redengine.screen.components.AnimationComponent;
 import com.redsponge.redengine.screen.components.PhysicsComponent;
@@ -26,7 +27,6 @@ import com.redsponge.redengine.screen.entity.ScreenEntity;
 import com.redsponge.redengine.screen.systems.RenderSystem;
 import com.redsponge.redengine.utils.GeneralUtils;
 import com.redsponge.redengine.utils.IntVector2;
-import com.redsponge.redengine.utils.Logger;
 import com.redsponge.redengine.utils.MathUtilities;
 
 public class DashniPlayer extends ScreenEntity {
@@ -82,6 +82,11 @@ public class DashniPlayer extends ScreenEntity {
     private Sound[] stepSounds;
     private float stepSoundInterval;
 
+    private Sound jumpSound;
+
+    private Sound hitSound;
+    private PSolid landedOn;
+
     public DashniPlayer(SpriteBatch batch, ShapeRenderer shapeRenderer) {
         super(batch, shapeRenderer);
     }
@@ -90,7 +95,7 @@ public class DashniPlayer extends ScreenEntity {
     public void added() {
         size.set(18, 32);
         render.setOffsetX(-6);
-        pos.set(screen.getScreenWidth() / 2f - size.getX() / 2f, screen.getScreenHeight() / 2f - size.getY() / 2f);
+        pos.set(screen.getScreenWidth() / 3f - size.getX() / 2f, 80);
         render.setUseRegW(true).setUseRegH(true);
         physics = new PhysicsComponent(PBodyType.ACTOR);
         add(physics);
@@ -137,6 +142,9 @@ public class DashniPlayer extends ScreenEntity {
         for (int i = 0; i < stepSounds.length; i++) {
             stepSounds[i] = assets.get("stepSound" + (i + 1), Sound.class);
         }
+
+        jumpSound = assets.get("jumpSound", Sound.class);
+        hitSound = assets.get("hitSound", Sound.class);
     }
 
     private void updateStrafing(float delta) {
@@ -164,14 +172,16 @@ public class DashniPlayer extends ScreenEntity {
     @Override
     public void additionalTick(float delta) {
         wasOnGround = isOnGround;
-        isOnGround = ((PActor) physics.getBody()).getFirstCollision(tmpA.set((int) pos.getX(), (int) pos.getY()).add(0, -1)) != null;
+        isOnGround = (landedOn = ((PActor) physics.getBody()).getFirstCollision(tmpA.set((int) pos.getX(), (int) pos.getY()).add(0, -1))) != null;
         if (isOnGround) {
             coyoteJumpTimeLeft = coyoteJumpTime;
             if (!wasOnGround) {
+                notifyScreen(Notifications.DASHNI_LAND);
                 if (jumpInAirMemoryTimeLeft > 0) {
-                    vel.setY(jumpVelocity);
+                    beginJump();
                 }
                 GeneralUtils.randomItem(stepSounds).play(Constants.SOUND_HUB.getValue());
+                ((BossFightScreen)screen).getParticleManager().tinySplash().spawn(pos.getX() + size.getX() / 2f, pos.getY());
             }
         } else {
             coyoteJumpTimeLeft -= delta;
@@ -194,7 +204,7 @@ public class DashniPlayer extends ScreenEntity {
             attackCooldown -= delta;
             if (Input.isJustJumping()) {
                 if (canJump()) {
-                    vel.setY(jumpVelocity);
+                    beginJump();
                 } else {
                     jumpInAirMemoryTimeLeft = jumpInAirMemoryTime;
                 }
@@ -218,9 +228,12 @@ public class DashniPlayer extends ScreenEntity {
             if (anim.getAnimation() == runAnimation && isOnGround) {
                 if (runAnimation.getKeyFrameIndex(anim.getAnimationTime()) != runAnimation.getKeyFrameIndex(anim.getAnimationTime() + delta)) {
                     int idx = runAnimation.getKeyFrameIndex(anim.getAnimationTime());
-                    if (idx == 1 || idx == 6) {
-                        GeneralUtils.randomItem(stepSounds).play(Constants.SOUND_HUB.getValue());
+                    if(idx % 2 == 0) {
                         ((BossFightScreen)screen).getParticleManager().tinySplash().spawn(pos.getX() + size.getX() / 2f, pos.getY());
+                    }
+
+                    if (idx == 1 || idx == 6) {
+                        GeneralUtils.randomItem(stepSounds).play(Constants.SOUND_HUB.getValue() * 2);
                     }
                 }
             }
@@ -232,6 +245,7 @@ public class DashniPlayer extends ScreenEntity {
             tmpA.set((int) attackBoxes.get(i).x, (int) attackBoxes.get(i).y);
             tmpB.set((int) attackBoxes.get(i).width, (int) attackBoxes.get(i).height);
             if (MathUtilities.rectanglesIntersect(physics.getBody().pos, physics.getBody().size, tmpA, tmpB)) {
+                hitSound.play(Constants.SOUND_HUB.getValue());
                 die();
             }
         }
@@ -243,6 +257,12 @@ public class DashniPlayer extends ScreenEntity {
         }
     }
 
+    private void beginJump() {
+        vel.setY(jumpVelocity);
+        ((BossFightScreen)screen).getParticleManager().tinySplash().spawn(pos.getX() + size.getX() / 2f, pos.getY());
+        jumpSound.play(Constants.SOUND_HUB.getValue());
+
+    }
     private boolean canJump() {
         return coyoteJumpTimeLeft > 0;
     }
@@ -343,6 +363,10 @@ public class DashniPlayer extends ScreenEntity {
             vel.setY(vel.getY() + gravity * (lowJumpMultiplier - 1) * delta);
         }
 
+    }
+
+    public PSolid getLandedOn() {
+        return landedOn;
     }
 
     @Override

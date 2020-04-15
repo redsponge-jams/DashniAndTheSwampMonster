@@ -2,7 +2,9 @@ package com.redsponge.dbf;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.math.Interpolation;
 import com.redsponge.dbf.bossfight.BossFightScreen;
+import com.redsponge.dbf.menu.MenuScreen;
 import com.redsponge.redengine.EngineGame;
 
 public class DashniBossFight extends EngineGame {
@@ -11,22 +13,22 @@ public class DashniBossFight extends EngineGame {
 
     @Override
     public void init() {
-        Music m = Gdx.audio.newMusic(Gdx.files.internal("music/1.ogg"));
-        m.play();
-        m.dispose();
-        Music m2 = Gdx.audio.newMusic(Gdx.files.internal("music/2.ogg"));
-        m2.play();
-        m2.dispose();
-        Music m3 = Gdx.audio.newMusic(Gdx.files.internal("music/3.ogg"));
-        m3.play();
-        m3.dispose();
-        Music m4 = Gdx.audio.newMusic(Gdx.files.internal("music/4.ogg"));
-        m4.play();
-        m4.dispose();
-        Music m5 = Gdx.audio.newMusic(Gdx.files.internal("music/5.ogg"));
-        m5.play();
-        m5.setPosition(10);
-        m5.dispose();
+//        Music m = Gdx.audio.newMusic(Gdx.files.internal("music/1.ogg"));
+//        m.play();
+//        m.dispose();
+//        Music m2 = Gdx.audio.newMusic(Gdx.files.internal("music/2.ogg"));
+//        m2.play();
+//        m2.dispose();
+//        Music m3 = Gdx.audio.newMusic(Gdx.files.internal("music/3.ogg"));
+//        m3.play();
+//        m3.dispose();
+//        Music m4 = Gdx.audio.newMusic(Gdx.files.internal("music/4.ogg"));
+//        m4.play();
+//        m4.dispose();
+//        Music m5 = Gdx.audio.newMusic(Gdx.files.internal("music/5.ogg"));
+//        m5.play();
+//        m5.setPosition(10);
+//        m5.dispose();
 
 //        setScreen(new IntroScreen(ga));
 //        setScreen(new MenuScreen(ga, null));

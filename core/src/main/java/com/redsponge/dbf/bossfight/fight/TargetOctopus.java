@@ -60,7 +60,7 @@ public class TargetOctopus extends ScreenEntity implements INotified {
 
     @Override
     public void added() {
-        pos.set(screen.getScreenWidth() / 2f - 24, screen.getScreenHeight() / 3);
+        pos.set(screen.getScreenWidth() / 2f - 24, screen.getScreenHeight() / 2);
         size.set(48, 48);
         render.setUseRegH(true).setUseRegW(true).setScaleX(2).setScaleY(2).setOffsetX(-8).setOffsetY(-8);
         light = new PointLight(pos.getX(), pos.getY(), 96, Point.star);

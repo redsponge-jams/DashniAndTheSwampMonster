@@ -2,6 +2,7 @@ package com.redsponge.dbf.bossfight;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
@@ -168,12 +169,24 @@ public class BossFightAssets extends AssetSpecifier {
     @Asset("sounds/step_6.ogg")
     private Sound stepSound6;
 
+    @Asset("sounds/jump.ogg")
+    private Sound jumpSound;
+
+    @Asset("sounds/hit.ogg")
+    private Sound hitSound;
+
 
     @Asset("sounds/octo_head_splash_up.ogg")
     private Sound bigSplashSound;
 
     @Asset("sounds/whip.ogg")
     private Sound whipSound;
+
+    @Asset("sounds/bubble_shoot.ogg")
+    private Sound bubbleShootSound;
+
+    @Asset("textures/tooltip/tooltip_background.png")
+    private Texture tooltipBackground;
 
 
     @Asset("textures/lights/lights.atlas")

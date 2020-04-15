@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
@@ -39,6 +40,8 @@ import com.redsponge.dbf.bossfight.fight.*;
 import com.redsponge.dbf.bossfight.visual.Background;
 import com.redsponge.dbf.bossfight.visual.FlyLight;
 import com.redsponge.dbf.bossfight.visual.ParticleManager;
+import com.redsponge.dbf.bossfight.visual.Tooltip;
+import com.redsponge.dbf.bossfight.visual.TooltipManager;
 import com.redsponge.dbf.bossfight.visual.Water;
 import com.redsponge.dbf.lights.FadingLight;
 import com.redsponge.dbf.menu.MenuScreen;
@@ -460,6 +463,8 @@ public class BossFightScreen extends AbstractScreen {
         }
     }
 
+    private TooltipManager tooltipManager;
+
     public BossFightScreen(GameAccessor ga, boolean isEasy) {
         super(ga);
         this.isEasy = isEasy;
@@ -471,6 +476,7 @@ public class BossFightScreen extends AbstractScreen {
 
     @Override
     public void show() {
+        tooltipManager = new TooltipManager(this);
         geyserHandler = new GeyserHandler(this);
 
         lightSystem = new LightSystem(getScreenWidth(), getScreenHeight(), batch);
@@ -641,6 +647,9 @@ public class BossFightScreen extends AbstractScreen {
                     scheduledEntities.remove(screenEntity);
                 }
             }
+            if(phase == FightPhase.ZERO) {
+                tooltipManager.tick(v);
+            }
         } else {
             pauseStage.act(v);
         }
@@ -778,6 +787,7 @@ public class BossFightScreen extends AbstractScreen {
     @Override
     public void notified(Object notifier, int notification) {
         super.notified(notifier, notification);
+        tooltipManager.notified(notifier, notification);
         if(notification == Notifications.TARGET_OCTOPUS_DOWN) {
             addEntity(new OctopusPunchHead(batch, shapeRenderer));
             headUp = true;
