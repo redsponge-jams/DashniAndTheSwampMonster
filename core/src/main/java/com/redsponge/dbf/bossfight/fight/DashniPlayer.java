@@ -21,7 +21,6 @@ import com.redsponge.redengine.physics.PBodyType;
 import com.redsponge.redengine.physics.PEntity;
 import com.redsponge.redengine.screen.components.AnimationComponent;
 import com.redsponge.redengine.screen.components.PhysicsComponent;
-import com.redsponge.redengine.screen.components.TextureComponent;
 import com.redsponge.redengine.screen.entity.ScreenEntity;
 import com.redsponge.redengine.screen.systems.RenderSystem;
 import com.redsponge.redengine.utils.IntVector2;
@@ -63,13 +62,20 @@ public class DashniPlayer extends ScreenEntity {
     private boolean isAttacking;
     private AttackType attackType;
 
-    private int jumpsLeft;
     private boolean dead;
     private boolean locked;
 
     private PointLight mulLight;
     private PointLight light;
+
+    private boolean wasOnGround;
     private boolean isOnGround;
+
+    private float coyoteJumpTimeLeft;
+    private final float coyoteJumpTime = 0.2f;
+
+    private float jumpInAirMemoryTimeLeft;
+    private final float jumpInAirMemoryTime = 0.2f; // The time for which a jump press is remembered, and will be executed once the player lands
 
     public DashniPlayer(SpriteBatch batch, ShapeRenderer shapeRenderer) {
         super(batch, shapeRenderer);
@@ -146,7 +152,21 @@ public class DashniPlayer extends ScreenEntity {
 
     @Override
     public void additionalTick(float delta) {
+        wasOnGround = isOnGround;
         isOnGround = ((PActor)physics.getBody()).getFirstCollision(tmpA.set((int) pos.getX(), (int) pos.getY()).add(0, -1)) != null;
+        if(isOnGround) {
+            coyoteJumpTimeLeft = coyoteJumpTime;
+            if(!wasOnGround) {
+                if(jumpInAirMemoryTimeLeft > 0) {
+                    vel.setY(jumpVelocity);
+                }
+            }
+        } else {
+            coyoteJumpTimeLeft -= delta;
+        }
+
+        jumpInAirMemoryTimeLeft -= delta;
+
         Logger.log(this, isOnGround);
 
         if(locked) {
@@ -163,9 +183,12 @@ public class DashniPlayer extends ScreenEntity {
         }
         else {
             attackCooldown -= delta;
-            if(Input.isJustJumping() && canJump()) {
-                vel.setY(jumpVelocity);
-                jumpsLeft--;
+            if(Input.isJustJumping()) {
+                if(canJump()) {
+                    vel.setY(jumpVelocity);
+                } else {
+                    jumpInAirMemoryTimeLeft = jumpInAirMemoryTime;
+                }
             }
             if(Input.isJustAttacking() && !isAttacking && attackCooldown <= 0) {
                 beginAttacking();
@@ -204,7 +227,7 @@ public class DashniPlayer extends ScreenEntity {
     }
 
     private boolean canJump() {
-        return isOnGround;
+        return coyoteJumpTimeLeft > 0;
     }
 
     @Override
