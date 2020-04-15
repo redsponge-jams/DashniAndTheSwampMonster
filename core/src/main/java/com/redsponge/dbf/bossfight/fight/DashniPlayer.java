@@ -167,8 +167,6 @@ public class DashniPlayer extends ScreenEntity {
 
         jumpInAirMemoryTimeLeft -= delta;
 
-        Logger.log(this, isOnGround);
-
         if(locked) {
             vel.set(0, 0);
             lookingLeft = true;

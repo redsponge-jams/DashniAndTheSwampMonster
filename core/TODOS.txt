@@ -8,6 +8,3 @@
     - Land
  - Sounds
     - Arm whip
- - Controls
-    - Jump in air detection (jump once landed)
-    - good onGround system
