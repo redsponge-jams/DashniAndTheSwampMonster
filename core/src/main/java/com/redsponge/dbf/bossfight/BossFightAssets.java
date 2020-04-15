@@ -153,6 +153,8 @@ public class BossFightAssets extends AssetSpecifier {
     @Asset("sounds/octo_head_splash_up.ogg")
     private Sound bigSplashSound;
 
+    @Asset("sounds/whip.ogg")
+    private Sound whipSound;
 
 
     @Asset("textures/lights/lights.atlas")

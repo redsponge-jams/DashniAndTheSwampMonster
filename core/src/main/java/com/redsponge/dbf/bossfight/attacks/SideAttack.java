@@ -1,5 +1,6 @@
 package com.redsponge.dbf.bossfight.attacks;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -7,6 +8,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.redsponge.dbf.bossfight.BossFightScreen;
 import com.redsponge.dbf.bossfight.Notifications;
+import com.redsponge.dbf.utils.Constants;
 import com.redsponge.redengine.physics.PSolid;
 import com.redsponge.redengine.physics.PhysicsWorld;
 import com.redsponge.redengine.screen.INotified;
@@ -21,6 +23,9 @@ public class SideAttack extends ScreenEntity implements INotified {
     private Animation<TextureRegion> attackAnimation;
 
     private int y;
+
+    private Sound whipSound;
+
     private AnimationComponent anim;
     private SideAttackPhase phase;
     private float attackLingerTime;
@@ -37,6 +42,7 @@ public class SideAttack extends ScreenEntity implements INotified {
     private float persistenceTime;
 
     private float attackSpeed;
+    private boolean didPlayWhipSound;
 
     public SideAttack(SpriteBatch batch, ShapeRenderer shapeRenderer, int y, boolean comingFromRight, int length, float telegraphTime, float persistenceTime, float attackSpeed) {
         super(batch, shapeRenderer);
@@ -69,6 +75,8 @@ public class SideAttack extends ScreenEntity implements INotified {
 
         anim = new AnimationComponent(signalAnimation);
         add(anim);
+
+        whipSound = assets.get("whipSound", Sound.class);
     }
 
     @Override
@@ -92,6 +100,10 @@ public class SideAttack extends ScreenEntity implements INotified {
                 moveStandBoxTo(length * anim.getAnimationTime() / attackAnimation.getAnimationDuration() - 640, pos.getY() + 12);
             } else {
                 moveStandBoxTo(640 - length * anim.getAnimationTime() / attackAnimation.getAnimationDuration(), pos.getY() + 12);
+            }
+            if(anim.getAnimation().getKeyFrameIndex(anim.getAnimationTime()) == 4 && !didPlayWhipSound) {
+                didPlayWhipSound = true;
+                whipSound.play(Constants.SOUND_HUB.getValue());
             }
 
             if(attackAnimation.isAnimationFinished(anim.getAnimationTime())) {
