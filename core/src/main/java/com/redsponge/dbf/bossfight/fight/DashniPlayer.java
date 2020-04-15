@@ -19,6 +19,7 @@ import com.redsponge.redengine.lighting.PointLight;
 import com.redsponge.redengine.physics.PActor;
 import com.redsponge.redengine.physics.PBodyType;
 import com.redsponge.redengine.physics.PEntity;
+import com.redsponge.redengine.physics.RidingCheck;
 import com.redsponge.redengine.screen.components.AnimationComponent;
 import com.redsponge.redengine.screen.components.PhysicsComponent;
 import com.redsponge.redengine.screen.entity.ScreenEntity;
@@ -110,8 +111,9 @@ public class DashniPlayer extends ScreenEntity {
             if(solid.getPhysicsBodyTag().equals("Slippery")) {
                 return false;
             }
-            return PActor.defaultRidingCheck.isRiding(self, solid);
+            return RidingCheck.DEFAULT.isRiding(self, solid);
         });
+        ((PActor) physics.getBody()).setOnSquish((self, solid) -> die());
     }
 
     @Override

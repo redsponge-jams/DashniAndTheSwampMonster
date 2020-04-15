@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
@@ -759,15 +760,15 @@ public class BossFightScreen extends AbstractScreen {
             }
             batch.end();
         } else {
-//            pdr.render(physicsSystem.getPhysicsWorld(), renderSystem.getViewport().getCamera().combined);
-//
-//            shapeRenderer.begin(ShapeType.Line);
-//            shapeRenderer.setColor(Color.RED);
-//            for (int i = 0; i < attackBoxes.size; i++) {
-//                Rectangle r = attackBoxes.get(i);
-//                shapeRenderer.rect(r.x, r.y, r.width, r.height);
-//            }
-//            shapeRenderer.end();
+            pdr.render(physicsSystem.getPhysicsWorld(), renderSystem.getViewport().getCamera().combined);
+
+            shapeRenderer.begin(ShapeType.Line);
+            shapeRenderer.setColor(Color.RED);
+            for (int i = 0; i < attackBoxes.size; i++) {
+                Rectangle r = attackBoxes.get(i);
+                shapeRenderer.rect(r.x, r.y, r.width, r.height);
+            }
+            shapeRenderer.end();
             renderEntities();
         }
     }

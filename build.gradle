@@ -25,8 +25,8 @@ configure(subprojects) {
 }
 
 subprojects {
-	version = '0.0.1-SNAPSHOT'
-	ext.appName = 'DashniBossFight'
+	version = '1.1'
+	ext.appName = 'Dashni and the swamp monster'
 	repositories {
 		mavenLocal()
 		mavenCentral()
