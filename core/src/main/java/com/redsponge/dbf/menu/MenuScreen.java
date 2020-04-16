@@ -192,10 +192,10 @@ public class MenuScreen extends AbstractScreen {
 
     private void showCredits() {
         String[] contents = {
-            "Programing", "RedSponge",
+            "Programing & Sounds", "RedSponge",
             "Art & Music", "TheCrispyToasty",
             "Some sounds taken from", "freesound.org",
-            "Tools Used", "Bosca Ceoil, Aseprite,\nSkin Composer"
+            "Tools Used", "Bosca Ceoil, Aseprite,\nSkin Composer, Audacity\nAnd the LibGDX Framework"
         };
         String[] stupidSentences = {
                 "I wonder how much does a shwarma cost...",
@@ -206,6 +206,9 @@ public class MenuScreen extends AbstractScreen {
                 "Don't ignore your ice cream",
                 "Dashni, Dashni, and Dashni.. AND DASHNI",
                 "Normal = Trophy",
+                "Stay home & Wash your hands!",
+                "Get that carrot pie!",
+                "|  ||\n||  |_",
         };
 
         for(int i = 0; i < contents.length / 2; i++) {
@@ -213,12 +216,14 @@ public class MenuScreen extends AbstractScreen {
             String content = contents[i * 2 + 1];
 
             Label lbl = new Label(title, skin);
-            lbl.setPosition(-lbl.getWidth(), (4 - i) * 50 + 30);
+            lbl.setPosition(-lbl.getWidth(), (4 - i) * 50 + 10);
             lbl.addAction(Actions.moveTo(10, lbl.getY(), 1, Interpolation.exp5));
+            lbl.setFontScale(0.5f);
 
             Label lbl2 = new Label(content, skin);
-            lbl2.setPosition(viewport.getWorldWidth() + lbl2.getWidth(), (4 - i) * 50 + 30);
+            lbl2.setPosition(viewport.getWorldWidth() + lbl2.getWidth(), (4 - i) * 50 + 10);
             lbl2.addAction(Actions.moveTo(viewport.getWorldWidth() - 300, lbl2.getY(), 1, Interpolation.exp5));
+            lbl2.setFontScale(0.5f);
 
             stage.addActor(lbl);
             stage.addActor(lbl2);
@@ -228,7 +233,7 @@ public class MenuScreen extends AbstractScreen {
         lbl.addAction(Actions.moveBy(0, 80, 1, Interpolation.exp5));
         stage.addActor(lbl);
 
-        addButton(viewport.getWorldWidth() / 2f, 20, 2, "Back", () -> {
+        addButton(viewport.getWorldWidth() / 2f, 10, 1.5f, "Back", () -> {
             swapMenu(this::showMenuScreen);
         });
     }

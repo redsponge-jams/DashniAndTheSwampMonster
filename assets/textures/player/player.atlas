@@ -52,13 +52,6 @@ attack
   size: 128, 48
   orig: 128, 48
   offset: 0, 0
-  index: 7
-attack
-  rotate: false
-  xy: 2, 102
-  size: 128, 48
-  orig: 128, 48
-  offset: 0, 0
   index: 5
 attack
   rotate: false
@@ -66,7 +59,7 @@ attack
   size: 128, 48
   orig: 128, 48
   offset: 0, 0
-  index: 6
+  index: 7
 attack
   rotate: false
   xy: 2, 102
@@ -74,6 +67,13 @@ attack
   orig: 128, 48
   offset: 0, 0
   index: 8
+attack
+  rotate: false
+  xy: 2, 102
+  size: 128, 48
+  orig: 128, 48
+  offset: 0, 0
+  index: 6
 attack_down
   rotate: false
   xy: 132, 72
@@ -122,6 +122,13 @@ attack_down
   size: 48, 128
   orig: 48, 128
   offset: 0, 0
+  index: 6
+attack_down
+  rotate: false
+  xy: 332, 122
+  size: 48, 128
+  orig: 48, 128
+  offset: 0, 0
   index: 9
 attack_down
   rotate: false
@@ -137,13 +144,6 @@ attack_down
   orig: 48, 128
   offset: 0, 0
   index: 8
-attack_down
-  rotate: false
-  xy: 332, 122
-  size: 48, 128
-  orig: 48, 128
-  offset: 0, 0
-  index: 6
 attack_up
   rotate: false
   xy: 382, 122
@@ -192,13 +192,6 @@ attack_up
   size: 48, 128
   orig: 48, 128
   offset: 0, 0
-  index: 7
-attack_up
-  rotate: false
-  xy: 582, 122
-  size: 48, 128
-  orig: 48, 128
-  offset: 0, 0
   index: 9
 attack_up
   rotate: false
@@ -214,6 +207,13 @@ attack_up
   orig: 48, 128
   offset: 0, 0
   index: 8
+attack_up
+  rotate: false
+  xy: 582, 122
+  size: 48, 128
+  orig: 48, 128
+  offset: 0, 0
+  index: 7
 dead
   rotate: false
   xy: 2, 52
@@ -270,86 +270,100 @@ idle
   orig: 32, 48
   offset: 0, 0
   index: 6
-run
+jump_down
   rotate: false
   xy: 316, 72
   size: 32, 48
   orig: 32, 48
   offset: 0, 0
-  index: 1
-run
+  index: -1
+jump_up
   rotate: false
   xy: 632, 152
   size: 32, 48
   orig: 32, 48
   offset: 0, 0
-  index: 2
+  index: -1
 run
   rotate: false
   xy: 666, 202
   size: 32, 48
   orig: 32, 48
   offset: 0, 0
-  index: 3
+  index: 1
 run
   rotate: false
   xy: 36, 2
   size: 32, 48
   orig: 32, 48
   offset: 0, 0
-  index: 4
+  index: 2
 run
   rotate: false
   xy: 70, 52
   size: 32, 48
   orig: 32, 48
   offset: 0, 0
-  index: 5
+  index: 3
 run
   rotate: false
   xy: 350, 72
   size: 32, 48
   orig: 32, 48
   offset: 0, 0
-  index: 6
+  index: 4
 run
   rotate: false
   xy: 666, 152
   size: 32, 48
   orig: 32, 48
   offset: 0, 0
-  index: 7
+  index: 5
 run
   rotate: false
   xy: 700, 202
   size: 32, 48
   orig: 32, 48
   offset: 0, 0
-  index: 8
+  index: 6
 run
   rotate: false
   xy: 70, 2
   size: 32, 48
   orig: 32, 48
   offset: 0, 0
-  index: 9
+  index: 7
 run
   rotate: false
   xy: 384, 72
   size: 32, 48
   orig: 32, 48
   offset: 0, 0
-  index: 10
+  index: 8
 run
   rotate: false
   xy: 700, 152
   size: 32, 48
   orig: 32, 48
   offset: 0, 0
-  index: 11
+  index: 9
 run
   rotate: false
   xy: 734, 202
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: 10
+run
+  rotate: false
+  xy: 418, 72
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: 11
+run
+  rotate: false
+  xy: 734, 152
   size: 32, 48
   orig: 32, 48
   offset: 0, 0

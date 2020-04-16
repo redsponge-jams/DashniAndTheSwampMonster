@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -68,6 +69,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class BossFightScreen extends AbstractScreen {
 
     private Sound[] splashSounds;
+
+    private FPSLogger fpsLogger;
 
     private RenderSystem renderSystem;
     private PhysicsDebugRenderer pdr;
@@ -468,6 +471,7 @@ public class BossFightScreen extends AbstractScreen {
     public BossFightScreen(GameAccessor ga, boolean isEasy) {
         super(ga);
         this.isEasy = isEasy;
+        fpsLogger = new FPSLogger();
     }
 
     public void addScheduledEntity(float time, ScreenEntity entity) {
@@ -603,6 +607,7 @@ public class BossFightScreen extends AbstractScreen {
 
     @Override
     public void tick(float v) {
+        fpsLogger.log();
         if(transitioning) return;
         if(!paused && !Display.isActive()) {
             togglePause();

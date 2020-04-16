@@ -47,19 +47,20 @@ A much needed quality of life update
 - Tweaked Dashni's attack-up hit-box.
 - Tweaked Dashni's attack-down render to match his other sprites.
 - Dashni will no longer get stuck inside arms - being squished = death.
+- On win - the screen does not go into black, but rather the background now moves along.
+- On win - Dashni's animation doesn't get stuck.
 
 #### Menu
 
 - Added a settings screen:
     - Controls are configurable.
     - Music & sound volume are configurable.
-    
 - Added a pause menu:
   
     - Access using [ESC]
     
     - Music & sound volume are configurable from there too.
     - A clean way to exit the game (as oppose to dying).
-    
 - GUI scaling is now nearest (as oppose to linear) - pixel art looks crisp and not smudged.
+- All menu screen components now leave the screen at the same pace.
 

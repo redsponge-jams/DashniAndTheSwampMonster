@@ -27,6 +27,7 @@ import com.redsponge.redengine.screen.entity.ScreenEntity;
 import com.redsponge.redengine.screen.systems.RenderSystem;
 import com.redsponge.redengine.utils.GeneralUtils;
 import com.redsponge.redengine.utils.IntVector2;
+import com.redsponge.redengine.utils.Logger;
 import com.redsponge.redengine.utils.MathUtilities;
 
 public class DashniPlayer extends ScreenEntity {
@@ -49,6 +50,8 @@ public class DashniPlayer extends ScreenEntity {
     private Animation<TextureRegion> attackUpAnimation;
     private Animation<TextureRegion> attackDownAnimation;
     private Animation<TextureRegion> deathAnimation;
+    private Animation<TextureRegion> jumpUpAnimation;
+    private Animation<TextureRegion> jumpDownAnimation;
 
     private float attackTime;
     private float attackCooldown;
@@ -74,10 +77,10 @@ public class DashniPlayer extends ScreenEntity {
     private boolean isOnGround;
 
     private float coyoteJumpTimeLeft;
-    private final float coyoteJumpTime = 0.2f;
+    private final float coyoteJumpTime = 0.1f;
 
     private float jumpInAirMemoryTimeLeft;
-    private final float jumpInAirMemoryTime = 0.2f; // The time for which a jump press is remembered, and will be executed once the player lands
+    private final float jumpInAirMemoryTime = 0.1f; // The time for which a jump press is remembered, and will be executed once the player lands
 
     private Sound[] stepSounds;
     private float stepSoundInterval;
@@ -133,8 +136,10 @@ public class DashniPlayer extends ScreenEntity {
         this.attackUpAnimation = assets.getAnimation("playerAttackUpAnimation");
         this.attackDownAnimation = assets.getAnimation("playerAttackDownAnimation");
         this.deathAnimation = assets.getAnimation("playerDieAnimation");
+        this.jumpUpAnimation = assets.getAnimation("playerJumpUpAnimation");
+        this.jumpDownAnimation = assets.getAnimation("playerJumpDownAnimation");
 
-        anim = new AnimationComponent(idleAnimation);
+        anim = new AnimationComponent(jumpDownAnimation);
         attackSound = assets.get("dashniAttackSound", Sound.class);
         add(anim);
 
@@ -221,10 +226,18 @@ public class DashniPlayer extends ScreenEntity {
             vel.setY(vel.getY() + gravity * delta);
 
             render.setFlipX(lookingLeft);
-            if (Input.getHorizontal() == 0) {
-                anim.setAnimation(idleAnimation);
+            if(isOnGround) {
+                if (Input.getHorizontal() == 0) {
+                    anim.setAnimation(idleAnimation);
+                } else {
+                    anim.setAnimation(runAnimation);
+                }
             } else {
-                anim.setAnimation(runAnimation);
+                if(vel.getY() > 0) {
+                    anim.setAnimation(jumpUpAnimation);
+                } else {
+                    anim.setAnimation(jumpDownAnimation);
+                }
             }
             if (anim.getAnimation() == runAnimation && isOnGround) {
                 if (runAnimation.getKeyFrameIndex(anim.getAnimationTime()) != runAnimation.getKeyFrameIndex(anim.getAnimationTime() + delta)) {
