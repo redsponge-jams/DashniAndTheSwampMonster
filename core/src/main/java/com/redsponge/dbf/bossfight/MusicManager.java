@@ -1,66 +1,64 @@
 package com.redsponge.dbf.bossfight;
 
-import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.utils.Disposable;
+import com.redsponge.dbf.utils.Constants;
+import com.redsponge.dbf.notification.IValueNotified;
+import com.redsponge.dbf.utils.Utils;
 
-public class MusicManager {
+public class MusicManager implements Disposable, IValueNotified<Float> {
 
-    private String[] paths = {"music/birds.ogg", "music/1.ogg", "music/2.ogg", "music/3.ogg", "music/4.ogg", "music/5.ogg", "music/6.ogg", "music/final.ogg"};
-    private boolean[] keepPosition = {false, true, true, true, true, true, false};
-    private boolean[] loop = {true, true, true, true, true, true, true, false};
-    private float[] volume = {1, .25f, .25f, .25f, .25f, .25f, .25f, 1};
+    private final String[] paths = {"music/birds.ogg", "music/1.ogg", "music/2.ogg", "music/3.ogg", "music/4.ogg", "music/5_new.ogg", "music/6.ogg", "music/final.ogg"};
+    private final boolean[] keepPosition = {false, true, true, true, true, true, false};
+    private final boolean[] loop = {true, true, true, true, true, true, true, false};
+    private final float[] volumeMultiplier = {2, 1, 1, 1, 1, 1, 1, 2};
     private int currentIndex;
 
     private Music current;
-    private Music next;
-
-    private AssetManager am;
 
     public MusicManager() {
         currentIndex = 0;
-        am = new AssetManager();
-        am.load(paths[currentIndex], Music.class);
-        am.finishLoading();
-        current = am.get(paths[currentIndex]);
-        current.play();
+        current = Gdx.audio.newMusic(Gdx.files.internal(paths[currentIndex]));
+        current.setVolume(Constants.MUSIC_HUB.getValue() * volumeMultiplier[currentIndex]);
         current.setLooping(true);
-        prepNext();
+        Utils.tryPlay(current);
     }
 
-    private void prepNext() {
-        am.load(paths[(currentIndex + 1) % paths.length], Music.class);
-    }
-
-    public void update() {
-        am.update();
+    public void tick() {
+//        am.update();
     }
 
     public void swap() {
-        am.finishLoading();
-        next = am.get(paths[(currentIndex + 1) % paths.length]);
+        Music next = Gdx.audio.newMusic(Gdx.files.internal(paths[(currentIndex + 1) % paths.length]));
         float pos = current.getPosition();
-        if(!keepPosition[currentIndex]) {
+        if(!keepPosition[currentIndex % keepPosition.length]) {
             pos = 0;
         }
-        next.play();
+        Utils.tryPlay(next);
         next.setLooping(loop[(currentIndex + 1) % paths.length]);
-        next.setVolume(volume[(currentIndex + 1) % paths.length]);
+        next.setVolume(volumeMultiplier[(currentIndex + 1) % paths.length] * Constants.MUSIC_HUB.getValue());
         next.setPosition(pos);
-        current.stop();
+
+        current.dispose();
 
         current = next;
-        next = null;
-        am.unload(paths[currentIndex]);
+
         currentIndex++;
         currentIndex %= paths.length;
-        prepNext();
     }
 
+    @Override
     public void dispose() {
-        am.dispose();
+        current.dispose();
     }
 
     public void stop() {
         current.stop();
+    }
+
+    @Override
+    public void update(Float newValue) {
+        current.setVolume(newValue * volumeMultiplier[currentIndex]);
     }
 }

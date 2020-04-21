@@ -17,9 +17,11 @@ public class DesktopLauncher {
 
 	private static LwjglApplicationConfiguration getDefaultConfiguration() {
 		LwjglApplicationConfiguration configuration = new LwjglApplicationConfiguration();
-		configuration.title = "DashniBossFight";
+		configuration.title = "Dashni and the Swamp Monster";
 		configuration.width = 640;
 		configuration.height = 480;
+		configuration.audioDeviceBufferSize = 4096 * 10;
+		configuration.audioDeviceBufferCount = 32;
 		for (int size : new int[] { 128, 64, 32 }) {
 			configuration.addIcon(size + ".png", FileType.Internal);
 		}

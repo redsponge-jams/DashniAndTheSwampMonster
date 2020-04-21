@@ -6,7 +6,7 @@ public enum IntroFrame {
     THOUSANDS_OF_YEARS_LATER("For thousands of years, the earth didn't have any harming life on it, which allowed it to regrow.. mostly"),
     MUTANTS("Radiation and nuclear waste have caused most animals to mutate..."),
     DASHNI("Some became really cool rabbit-bunny-humanoid creatures"),
-    OTHERS("While some.. weren't as lucky..."),
+    OTHERS("While others.. weren't as lucky..."),
     EXCLAMATION_CARROT(""),
     OH_LO_MA_NAASE("")
     ;

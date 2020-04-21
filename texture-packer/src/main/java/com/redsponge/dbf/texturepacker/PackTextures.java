@@ -12,6 +12,7 @@ public class PackTextures {
         proc("attacks");
         proc("detail");
         proc("intro");
+        proc("lights");
     }
 
     private static void proc(String s) {

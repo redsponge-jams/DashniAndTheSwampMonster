@@ -12,8 +12,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.rafaskoberg.gdx.typinglabel.TypingLabel;
-import com.redsponge.dbf.bossfight.BossFightScreen;
+import com.redsponge.dbf.utils.Constants;
 import com.redsponge.dbf.menu.MenuScreen;
+import com.redsponge.dbf.utils.Utils;
 import com.redsponge.redengine.assets.AssetSpecifier;
 import com.redsponge.redengine.assets.Fonts;
 import com.redsponge.redengine.screen.AbstractScreen;
@@ -43,8 +44,8 @@ public class IntroScreen extends AbstractScreen {
         frame = IntroFrame.LONG_AGO;
         frameIndex = 0;
         music = Gdx.audio.newMusic(Gdx.files.internal("music/musica.ogg"));
-        music.setVolume(0.5f);
-        music.play();
+        music.setVolume(Constants.MUSIC_HUB.getValue());
+        Utils.tryPlay(music);
 
         label = new TypingLabel("{SPEED=0.3} This is a testy testy test", new LabelStyle(Fonts.getFont("pixelmix", 16), Color.WHITE));
         setText(frame.getText());

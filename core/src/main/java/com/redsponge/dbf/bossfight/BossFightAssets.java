@@ -2,6 +2,7 @@ package com.redsponge.dbf.bossfight;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
@@ -38,6 +39,12 @@ public class BossFightAssets extends AssetSpecifier {
 
     @AtlasAnimation(animationName = "dead", atlas = "playerAtlas", length = 2, frameDuration = 0.1f, playMode = PlayMode.NORMAL)
     private Animation<TextureRegion> playerDieAnimation;
+
+    @AtlasAnimation(animationName = "jump_up", atlas = "playerAtlas", length = 1, frameDuration = 0.1f, playMode = PlayMode.NORMAL, startsWith = -1)
+    private Animation<TextureRegion> playerJumpUpAnimation;
+
+    @AtlasAnimation(animationName = "jump_down", atlas = "playerAtlas", length = 1, frameDuration = 0.1f, playMode = PlayMode.NORMAL, startsWith = -1)
+    private Animation<TextureRegion> playerJumpDownAnimation;
 
 
     @Asset("textures/target/target.atlas")
@@ -128,4 +135,75 @@ public class BossFightAssets extends AssetSpecifier {
 
     @Asset("sounds/bubbling.ogg")
     private Sound bubblingSound;
+
+    @Asset("sounds/geyser.ogg")
+    private Sound geyserSound;
+
+
+    // Splashes
+    @Asset("sounds/small_splash_1.ogg")
+    private Sound splashSound1;
+
+    @Asset("sounds/small_splash_2.ogg")
+    private Sound splashSound2;
+
+    @Asset("sounds/small_splash_3.ogg")
+    private Sound splashSound3;
+
+    @Asset("sounds/small_splash_4.ogg")
+    private Sound splashSound4;
+
+    @Asset("sounds/small_splash_5.ogg")
+    private Sound splashSound5;
+
+
+    @Asset("sounds/step_1.ogg")
+    private Sound stepSound1;
+
+    @Asset("sounds/step_2.ogg")
+    private Sound stepSound2;
+
+    @Asset("sounds/step_3.ogg")
+    private Sound stepSound3;
+
+    @Asset("sounds/step_4.ogg")
+    private Sound stepSound4;
+
+    @Asset("sounds/step_5.ogg")
+    private Sound stepSound5;
+
+    @Asset("sounds/step_6.ogg")
+    private Sound stepSound6;
+
+    @Asset("sounds/jump.ogg")
+    private Sound jumpSound;
+
+    @Asset("sounds/hit.ogg")
+    private Sound hitSound;
+
+
+    @Asset("sounds/octo_head_splash_up.ogg")
+    private Sound bigSplashSound;
+
+    @Asset("sounds/whip.ogg")
+    private Sound whipSound;
+
+    @Asset("sounds/bubble_shoot.ogg")
+    private Sound bubbleShootSound;
+
+    @Asset("textures/tooltip/tooltip_background.png")
+    private Texture tooltipBackground;
+
+
+    @Asset("textures/lights/lights.atlas")
+    private TextureAtlas lightAtlas;
+
+    @AtlasFrame(atlas = "lightAtlas", frameName = "diagonal_regular")
+    private TextureRegion lightDiag;
+
+    @AtlasFrame(atlas = "lightAtlas", frameName = "diagonal_down")
+    private TextureRegion lightDiagDown;
+
+    @AtlasFrame(atlas = "lightAtlas", frameName = "diagonal_side")
+    private TextureRegion lightDiagSide;
 }
